@@ -1,3 +1,4 @@
+local RunService = game:GetService("RunService")
 local player = game.Players.LocalPlayer
 local userInputService = game:GetService("UserInputService")
 local runService = game:GetService("RunService")
@@ -10,111 +11,135 @@ local nameHighlightEnabled = false
 local highlights = {}
 local nameHighlights = {}
 
+local survivorsFolder
+local killersFolder
+
+local function clearHighlights()
+	for _, highlight in pairs(highlights) do
+		if highlight then highlight:Destroy() end
+	end
+	highlights = {}
+end
+
+local function addHighlight(model, color)
+	if highlights[model] then return end -- уже подсвечено
+	if model:IsA("Model") and model:FindFirstChild("HumanoidRootPart") then
+		local highlight = Instance.new("Highlight")
+		highlight.Adornee = model
+		highlight.FillColor = color
+		highlight.FillTransparency = 0.5
+		highlight.OutlineColor = color
+		highlight.OutlineTransparency = 0
+		highlight.Parent = player:WaitForChild("PlayerGui")
+		highlights[model] = highlight
+	end
+end
+
+local function updateHighlights()
+	if not highlightEnabled then return end
+
+	-- Обновляем папки, если их ещё нет
+	survivorsFolder = survivorsFolder or (workspace.Players and workspace.Players:FindFirstChild("Survivors"))
+	killersFolder = killersFolder or (workspace.Players and workspace.Players:FindFirstChild("Killers"))
+
+	-- Добавляем подсветку для новых моделей выживших
+	if survivorsFolder then
+		for _, model in pairs(survivorsFolder:GetChildren()) do
+			addHighlight(model, Color3.fromRGB(0, 170, 255))
+		end
+	end
+
+	-- Добавляем подсветку для новых моделей киллеров
+	if killersFolder then
+		for _, model in pairs(killersFolder:GetChildren()) do
+			addHighlight(model, Color3.fromRGB(255, 0, 0))
+		end
+	end
+
+	-- Удаляем подсветку для тех моделей, которых уже нет в папках
+	for model, highlight in pairs(highlights) do
+		local inSurvivors = survivorsFolder and survivorsFolder:FindFirstChild(model.Name)
+		local inKillers = killersFolder and killersFolder:FindFirstChild(model.Name)
+		if not inSurvivors and not inKillers then
+			highlight:Destroy()
+			highlights[model] = nil
+		end
+	end
+end
+
+local function enableHighlights()
+	highlightEnabled = true
+	clearHighlights()
+	updateHighlights()
+end
+
+local function disableHighlights()
+	highlightEnabled = false
+	clearHighlights()
+end
+
 -- Настройка персонажа для движения
 
 local function setupCharacter(character)
-    local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
-    local humanoid = character:WaitForChild("Humanoid")
+	local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
+	local humanoid = character:WaitForChild("Humanoid")
 
-    runService.RenderStepped:Connect(function(dt)
-        if speed > 0 then
-            local moveDir = humanoid.MoveDirection
-            if moveDir.Magnitude > 0 then
-                local inc = moveDir.Unit * speed * dt
-                humanoidRootPart.CFrame = humanoidRootPart.CFrame + inc
-            end
-        end
-    end)
+	runService.RenderStepped:Connect(function(dt)
+		if speed > 0 then
+			local moveDir = humanoid.MoveDirection
+			if moveDir.Magnitude > 0 then
+				local inc = moveDir.Unit * speed * dt
+				humanoidRootPart.CFrame = humanoidRootPart.CFrame + inc
+			end
+		end
+	end)
 end
 
--- Обновление обводок игроков
 
-local function updateHighlights()
-    for _, plr in pairs(players:GetPlayers()) do
-        if plr ~= player then
-            local character = plr.Character
-            if character and character:FindFirstChild("HumanoidRootPart") then
-                if highlightEnabled and not highlights[plr] then
-                    local highlight = Instance.new("Highlight")
-                    highlight.Adornee = character
-                    highlight.FillTransparency = 0.5
-                    highlight.OutlineColor = Color3.fromRGB(0, 170, 255)
-                    highlight.Parent = player.PlayerGui
-                    highlights[plr] = highlight
-                elseif not highlightEnabled and highlights[plr] then
-                    highlights[plr]:Destroy()
-                    highlights[plr] = nil
-                end
-            else
-                if highlights[plr] then
-                    highlights[plr]:Destroy()
-                    highlights[plr] = nil
-                end
-            end
-        end
-    end
-end
+
 
 -- Создание/удаление подсветки ников игроков
 
 local function updateNameHighlights()
-    for _, plr in pairs(players:GetPlayers()) do
-        if plr ~= player then
-            local character = plr.Character
-            if character and character:FindFirstChild("Head") then
-                if nameHighlightEnabled and not nameHighlights[plr] then
-                    -- Создаём BillboardGui с TextLabel над головой
-                    local billboard = Instance.new("BillboardGui")
-                    billboard.Name = "NameHighlightGui"
-                    billboard.Adornee = character.Head
-                    billboard.Size = UDim2.new(0, 150, 0, 40)
-                    billboard.StudsOffset = Vector3.new(0, 2.5, 0)
-                    billboard.AlwaysOnTop = true
-                    billboard.Parent = player.PlayerGui
+	for _, plr in pairs(players:GetPlayers()) do
+		if plr ~= player then
+			local character = plr.Character
+			if character and character:FindFirstChild("Head") then
+				if nameHighlightEnabled and not nameHighlights[plr] then
+					-- Создаём BillboardGui с TextLabel над головой
+					local billboard = Instance.new("BillboardGui")
+					billboard.Name = "NameHighlightGui"
+					billboard.Adornee = character.Head
+					billboard.Size = UDim2.new(0, 150, 0, 40)
+					billboard.StudsOffset = Vector3.new(0, 2.5, 0)
+					billboard.AlwaysOnTop = true
+					billboard.Parent = player.PlayerGui
 
-                    local label = Instance.new("TextLabel")
-                    label.Size = UDim2.new(1, 0, 1, 0)
-                    label.BackgroundTransparency = 1
-                    label.Text = plr.Name
-                    label.TextColor3 = Color3.fromRGB(0, 170, 255)
-                    label.Font = Enum.Font.SourceSansBold
-                    label.TextStrokeTransparency = 0
-                    label.TextStrokeColor3 = Color3.new(0,0,0)
-                    label.TextScaled = true
-                    label.Parent = billboard
+					local label = Instance.new("TextLabel")
+					label.Size = UDim2.new(1, 0, 1, 0)
+					label.BackgroundTransparency = 1
+					label.Text = plr.Name
+					label.TextColor3 = Color3.fromRGB(0, 170, 255)
+					label.Font = Enum.Font.SourceSansBold
+					label.TextStrokeTransparency = 0
+					label.TextStrokeColor3 = Color3.new(0,0,0)
+					label.TextScaled = true
+					label.Parent = billboard
 
-                    nameHighlights[plr] = billboard
-                elseif not nameHighlightEnabled and nameHighlights[plr] then
-                    nameHighlights[plr]:Destroy()
-                    nameHighlights[plr] = nil
-                end
-            else
-                if nameHighlights[plr] then
-                    nameHighlights[plr]:Destroy()
-                    nameHighlights[plr] = nil
-                end
-            end
-        end
-    end
+					nameHighlights[plr] = billboard
+				elseif not nameHighlightEnabled and nameHighlights[plr] then
+					nameHighlights[plr]:Destroy()
+					nameHighlights[plr] = nil
+				end
+			else
+				if nameHighlights[plr] then
+					nameHighlights[plr]:Destroy()
+					nameHighlights[plr] = nil
+				end
+			end
+		end
+	end
 end
-
-players.PlayerRemoving:Connect(function(plr)
-    if highlights[plr] then
-        highlights[plr]:Destroy()
-        highlights[plr] = nil
-    end
-    if nameHighlights[plr] then
-        nameHighlights[plr]:Destroy()
-        nameHighlights[plr] = nil
-    end
-end)
-
-players.PlayerAdded:Connect(function(plr)
-    plr.CharacterAdded:Connect(function()
-        updateHighlights()
-        updateNameHighlights()
-    end)
-end)
 
 -- Расширяем GUI
 
@@ -190,83 +215,70 @@ toggleNameButton.Font = Enum.Font.SourceSansBold
 toggleNameButton.TextSize = 18
 toggleNameButton.Text = "ВКЛ"
 
-toggleButton.MouseButton1Click:Connect(function()
-    highlightEnabled = not highlightEnabled
-    if highlightEnabled then
-        toggleHighlightLabel.Text = "Обводка игроков: ВКЛ"
-        toggleButton.Text = "ВЫКЛ"
-    else
-        toggleHighlightLabel.Text = "Обводка игроков: ВЫКЛ"
-        toggleButton.Text = "ВКЛ"
-    end
-    updateHighlights()
+toggleNameButton.MouseButton1Click:Connect(function()
+	nameHighlightEnabled = not nameHighlightEnabled
+	if nameHighlightEnabled then
+		toggleNameLabel.Text = "Подсветка ников: ВКЛ"
+		toggleNameButton.Text = "ВЫКЛ"
+	else
+		toggleNameLabel.Text = "Подсветка ников: ВЫКЛ"
+		toggleNameButton.Text = "ВКЛ"
+	end
+	updateNameHighlights()
 end)
 
-toggleNameButton.MouseButton1Click:Connect(function()
-    nameHighlightEnabled = not nameHighlightEnabled
-    if nameHighlightEnabled then
-        toggleNameLabel.Text = "Подсветка ников: ВКЛ"
-        toggleNameButton.Text = "ВЫКЛ"
-    else
-        toggleNameLabel.Text = "Подсветка ников: ВЫКЛ"
-        toggleNameButton.Text = "ВКЛ"
-    end
-    updateNameHighlights()
+toggleButton.MouseButton1Click:Connect(function()
+	if highlightEnabled then
+		disableHighlights()
+		toggleHighlightLabel.Text = "Обводка игроков: ВЫКЛ"
+		toggleButton.Text = "ВКЛ"
+	else
+		toggleHighlightLabel.Text = "Обводка игроков: ВКЛ"
+		enableHighlights()
+		toggleButton.Text = "ВЫКЛ"
+	end
 end)
 
 knob.InputBegan:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.MouseButton1 then
-        dragging = true
-    end
+	if input.UserInputType == Enum.UserInputType.MouseButton1 then
+		dragging = true
+	end
 end)
 
 userInputService.InputChanged:Connect(function(input)
-    if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
-        local relativeX = math.clamp(input.Position.X - bar.AbsolutePosition.X, 0, bar.AbsoluteSize.X)
-        local percent = relativeX / bar.AbsoluteSize.X
-        speed = math.floor(percent * 100 + 0.5)
+	if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
+		local relativeX = math.clamp(input.Position.X - bar.AbsolutePosition.X, 0, bar.AbsoluteSize.X)
+		local percent = relativeX / bar.AbsoluteSize.X
+		speed = math.floor(percent * 100 + 0.5)
 
-        fill.Size = UDim2.new(percent, 0, 1, 0)
-        knob.Position = UDim2.new(percent, -15, 0, -5)
-        label.Text = "Ускорение: "..speed
-    end
+		fill.Size = UDim2.new(percent, 0, 1, 0)
+		knob.Position = UDim2.new(percent, -15, 0, -5)
+		label.Text = "Ускорение: "..speed
+	end
 end)
 
 userInputService.InputEnded:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.MouseButton1 then
-        dragging = false
-    end
+	if input.UserInputType == Enum.UserInputType.MouseButton1 then
+		dragging = false
+	end
 end)
 
 if player.Character then
-    setupCharacter(player.Character)
+	setupCharacter(player.Character)
 end
 
 player.CharacterAdded:Connect(function(char)
-    setupCharacter(char)
+	setupCharacter(char)
 end)
 
-players.PlayerAdded:Connect(function(plr)
-    plr.CharacterAdded:Connect(function()
-        updateHighlights()
-        updateNameHighlights()
-    end)
-    if plr.Character then
-        updateHighlights()
-        updateNameHighlights()
-    end
+RunService.Heartbeat:Connect(function()
+	if highlightEnabled then
+		updateHighlights()
+	end
 end)
 
-for _, plr in pairs(players:GetPlayers()) do
-    plr.CharacterAdded:Connect(function()
-        updateHighlights()
-        updateNameHighlights()
-    end)
-    if plr.Character then
-        updateHighlights()
-        updateNameHighlights()
-    end
-end
-
-updateHighlights()
-updateNameHighlights()
+RunService.Heartbeat:Connect(function()
+	if nameHighlightEnabled then
+		updateNameHighlights()
+	end
+end)
