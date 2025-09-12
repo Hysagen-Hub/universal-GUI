@@ -9,16 +9,89 @@ local dragging = false
 local highlightEnabled = false
 local nameHighlightEnabled = false
 local highlights = {}
-local nameHighlights = {}
+local nameTags = {}
+
 
 local survivorsFolder
 local killersFolder
+
+local function clearNameTags()
+	for _, tag in pairs(nameTags) do
+		if tag then tag:Destroy() end
+	end
+	nameTags = {}
+end
 
 local function clearHighlights()
 	for _, highlight in pairs(highlights) do
 		if highlight then highlight:Destroy() end
 	end
 	highlights = {}
+end
+
+local function createNameTag(model, color)
+	if nameTags[model] then return end
+	if model:IsA("Model") and model:FindFirstChild("HumanoidRootPart") then
+		local billboard = Instance.new("BillboardGui")
+		billboard.Name = "NameTag"
+		billboard.Adornee = model:FindFirstChild("HumanoidRootPart")
+		billboard.Size = UDim2.new(0, 100, 0, 30)
+		billboard.StudsOffset = Vector3.new(0, 2.5, 0)
+		billboard.AlwaysOnTop = true
+		billboard.Parent = player:WaitForChild("PlayerGui")
+
+		local textLabel = Instance.new("TextLabel")
+		textLabel.BackgroundTransparency = 1
+		textLabel.Size = UDim2.new(1, 0, 1, 0)
+		textLabel.Font = Enum.Font.SourceSansBold
+		textLabel.TextSize = 20
+		textLabel.TextColor3 = color
+		textLabel.TextStrokeTransparency = 0.4
+		textLabel.Text = model.Name
+		textLabel.Parent = billboard
+
+		nameTags[model] = billboard
+	end
+end
+
+local function updateNameTags()
+	if not nameHighlightEnabled then return end
+
+	survivorsFolder = survivorsFolder or (workspace.Players and workspace.Players:FindFirstChild("Survivors"))
+	killersFolder = killersFolder or (workspace.Players and workspace.Players:FindFirstChild("Killers"))
+
+	if survivorsFolder then
+		for _, model in pairs(survivorsFolder:GetChildren()) do
+			createNameTag(model, Color3.fromRGB(0, 120, 255)) -- синий для survivors
+		end
+	end
+
+	if killersFolder then
+		for _, model in pairs(killersFolder:GetChildren()) do
+			createNameTag(model, Color3.fromRGB(139, 0, 0)) -- темно-красный для killers
+		end
+	end
+
+	-- Удаляем nameTags для моделей, которых уже нет
+	for model, tag in pairs(nameTags) do
+		local inSurvivors = survivorsFolder and survivorsFolder:FindFirstChild(model.Name)
+		local inKillers = killersFolder and killersFolder:FindFirstChild(model.Name)
+		if not inSurvivors and not inKillers then
+			tag:Destroy()
+			nameTags[model] = nil
+		end
+	end
+end
+
+local function enableNameTags()
+	nameHighlightEnabled = true
+	clearNameTags()
+	updateNameTags()
+end
+
+local function disableNameTags()
+	nameHighlightEnabled = false
+	clearNameTags()
 end
 
 local function addHighlight(model, color)
@@ -37,10 +110,6 @@ end
 
 local function updateHighlights()
 	if not highlightEnabled then return end
-
-	-- Обновляем папки, если их ещё нет
-	survivorsFolder = survivorsFolder or (workspace.Players and workspace.Players:FindFirstChild("Survivors"))
-	killersFolder = killersFolder or (workspace.Players and workspace.Players:FindFirstChild("Killers"))
 
 	-- Добавляем подсветку для новых моделей выживших
 	if survivorsFolder then
@@ -95,53 +164,6 @@ local function setupCharacter(character)
 	end)
 end
 
-
-
-
--- Создание/удаление подсветки ников игроков
-
-local function updateNameHighlights()
-	for _, plr in pairs(players:GetPlayers()) do
-		if plr ~= player then
-			local character = plr.Character
-			if character and character:FindFirstChild("Head") then
-				if nameHighlightEnabled and not nameHighlights[plr] then
-					-- Создаём BillboardGui с TextLabel над головой
-					local billboard = Instance.new("BillboardGui")
-					billboard.Name = "NameHighlightGui"
-					billboard.Adornee = character.Head
-					billboard.Size = UDim2.new(0, 150, 0, 40)
-					billboard.StudsOffset = Vector3.new(0, 2.5, 0)
-					billboard.AlwaysOnTop = true
-					billboard.Parent = player.PlayerGui
-
-					local label = Instance.new("TextLabel")
-					label.Size = UDim2.new(1, 0, 1, 0)
-					label.BackgroundTransparency = 1
-					label.Text = plr.Name
-					label.TextColor3 = Color3.fromRGB(0, 170, 255)
-					label.Font = Enum.Font.SourceSansBold
-					label.TextStrokeTransparency = 0
-					label.TextStrokeColor3 = Color3.new(0,0,0)
-					label.TextScaled = true
-					label.Parent = billboard
-
-					nameHighlights[plr] = billboard
-				elseif not nameHighlightEnabled and nameHighlights[plr] then
-					nameHighlights[plr]:Destroy()
-					nameHighlights[plr] = nil
-				end
-			else
-				if nameHighlights[plr] then
-					nameHighlights[plr]:Destroy()
-					nameHighlights[plr] = nil
-				end
-			end
-		end
-	end
-end
-
--- Расширяем GUI
 
 local screenGui = Instance.new("ScreenGui")
 screenGui.Name = "SpeedControlGui"
@@ -216,15 +238,15 @@ toggleNameButton.TextSize = 18
 toggleNameButton.Text = "ВКЛ"
 
 toggleNameButton.MouseButton1Click:Connect(function()
-	nameHighlightEnabled = not nameHighlightEnabled
 	if nameHighlightEnabled then
-		toggleNameLabel.Text = "Подсветка ников: ВКЛ"
-		toggleNameButton.Text = "ВЫКЛ"
-	else
+		disableNameTags()
 		toggleNameLabel.Text = "Подсветка ников: ВЫКЛ"
 		toggleNameButton.Text = "ВКЛ"
+	else
+		enableNameTags()
+		toggleNameLabel.Text = "Подсветка ников: ВКЛ"
+		toggleNameButton.Text = "ВЫКЛ"
 	end
-	updateNameHighlights()
 end)
 
 toggleButton.MouseButton1Click:Connect(function()
@@ -279,6 +301,7 @@ end)
 
 RunService.Heartbeat:Connect(function()
 	if nameHighlightEnabled then
-		updateNameHighlights()
+		updateNameTags()
 	end
 end)
+
