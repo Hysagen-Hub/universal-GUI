@@ -3,14 +3,14 @@ local player = game.Players.LocalPlayer
 local userInputService = game:GetService("UserInputService")
 local runService = game:GetService("RunService")
 local players = game:GetService("Players")
-
+local espEnabled = false
 local speed = 0
 local dragging = false
 local highlightEnabled = false
 local nameHighlightEnabled = false
 local highlights = {}
 local nameTags = {}
-
+local highlights1 = {}
 
 local survivorsFolder
 local killersFolder
@@ -27,6 +27,43 @@ local function clearHighlights()
 		if highlight then highlight:Destroy() end
 	end
 	highlights = {}
+end
+
+local function clearHighlights1()
+	for _, highlight in pairs(highlights1) do
+		if highlight then highlight:Destroy() end
+	end
+	highlights1 = {}
+end
+
+local function highlightInstances()
+	clearHighlights1()
+	local mapRoot = game.Workspace:FindFirstChild("Map")
+	if mapRoot then
+		local ingame = mapRoot:FindFirstChild("Ingame")
+		if ingame then
+			local map = ingame:FindFirstChild("Map")
+			if map then
+				for _, obj in pairs(map:GetChildren()) do
+					if obj.Name == "Generator" then
+						local instances = obj:FindFirstChild("Instances")
+						if instances then
+							local lastgen = instances:FindFirstChild("Generator")
+							if lastgen and lastgen:IsA("Model") then
+								local highlight = Instance.new("Highlight")
+								highlight.Adornee = lastgen
+								highlight.FillColor = Color3.fromRGB(255, 0, 0) -- ярко красный
+								highlight.OutlineColor = Color3.new(1, 1, 1)   -- белый контур
+								highlight.Parent = lastgen
+
+								highlights1[lastgen] = highlight
+							end
+						end
+					end
+				end
+			end
+		end
+	end
 end
 
 local function createNameTag(model, color)
@@ -110,8 +147,9 @@ end
 
 local function updateHighlights()
 	if not highlightEnabled then return end
-
 	-- Добавляем подсветку для новых моделей выживших
+	survivorsFolder = workspace.Players.Survivors
+	killersFolder = workspace.Players.Killers
 	if survivorsFolder then
 		for _, model in pairs(survivorsFolder:GetChildren()) do
 			addHighlight(model, Color3.fromRGB(0, 170, 255))
@@ -138,8 +176,8 @@ end
 
 local function enableHighlights()
 	highlightEnabled = true
-	clearHighlights()
 	updateHighlights()
+	
 end
 
 local function disableHighlights()
@@ -171,7 +209,7 @@ screenGui.ResetOnSpawn = false
 screenGui.Parent = player:WaitForChild("PlayerGui")
 
 local frame = Instance.new("Frame", screenGui)
-frame.Size = UDim2.new(0, 350, 0, 180)
+frame.Size = UDim2.new(0, 350, 0, 200)
 frame.Position = UDim2.new(0.5, -175, 0.5, -90)
 frame.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
 frame.Active = true
@@ -237,6 +275,36 @@ toggleNameButton.Font = Enum.Font.SourceSansBold
 toggleNameButton.TextSize = 18
 toggleNameButton.Text = "ВКЛ"
 
+local toggleGENButton = Instance.new("TextButton", frame)
+toggleGENButton.Size = UDim2.new(0, 80, 0, 30)
+toggleGENButton.Position = UDim2.new(0, 240, 0, 165)
+toggleGENButton.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
+toggleGENButton.TextColor3 = Color3.new(1,1,1)
+toggleGENButton.Font = Enum.Font.SourceSansBold
+toggleGENButton.TextSize = 18
+toggleGENButton.Text = "ВКЛ"
+
+local toggleHighlightLabelGEN = Instance.new("TextLabel", frame)
+toggleHighlightLabelGEN.Size = UDim2.new(0, 200, 0, 30)
+toggleHighlightLabelGEN.Position = UDim2.new(0, 30, 0, 165)
+toggleHighlightLabelGEN.BackgroundTransparency = 1
+toggleHighlightLabelGEN.TextColor3 = Color3.new(1,1,1)
+toggleHighlightLabelGEN.Font = Enum.Font.SourceSans
+toggleHighlightLabelGEN.TextSize = 18
+toggleHighlightLabelGEN.Text = "генератор есп: ВЫКЛ"
+
+toggleButton.MouseButton1Click:Connect(function()
+	if highlightEnabled then
+		disableHighlights()
+		toggleHighlightLabel.Text = "Обводка игроков: ВЫКЛ"
+		toggleButton.Text = "ВКЛ"
+	else
+		toggleHighlightLabel.Text = "Обводка игроков: ВКЛ"
+		enableHighlights()
+		toggleButton.Text = "ВЫКЛ"
+	end
+end)
+
 toggleNameButton.MouseButton1Click:Connect(function()
 	if nameHighlightEnabled then
 		disableNameTags()
@@ -249,15 +317,14 @@ toggleNameButton.MouseButton1Click:Connect(function()
 	end
 end)
 
-toggleButton.MouseButton1Click:Connect(function()
-	if highlightEnabled then
-		disableHighlights()
-		toggleHighlightLabel.Text = "Обводка игроков: ВЫКЛ"
-		toggleButton.Text = "ВКЛ"
+toggleGENButton.MouseButton1Click:Connect(function()
+	espEnabled = not espEnabled
+	if espEnabled then
+		toggleGENButton.Text = "ВКЛ"
+		highlightInstances()
 	else
-		toggleHighlightLabel.Text = "Обводка игроков: ВКЛ"
-		enableHighlights()
-		toggleButton.Text = "ВЫКЛ"
+		toggleGENButton.Text = "ВЫКЛ"
+		clearHighlights1()
 	end
 end)
 
@@ -297,11 +364,7 @@ RunService.Heartbeat:Connect(function()
 	if highlightEnabled then
 		updateHighlights()
 	end
-end)
-
-RunService.Heartbeat:Connect(function()
 	if nameHighlightEnabled then
 		updateNameTags()
 	end
 end)
-
