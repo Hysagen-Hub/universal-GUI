@@ -435,6 +435,15 @@ toggleHighLightLabelMEDKIT.Font = Enum.Font.SourceSans
 toggleHighLightLabelMEDKIT.TextSize = 18
 toggleHighLightLabelMEDKIT.Text = "Обводка MEDKIT: ВЫКЛ"
 
+local closebutton = Instance.new("TextButton", frame)
+closebutton.Size = UDim2.new(0, 30, 0, 30)
+closebutton.Position = UDim2.new(0, 5, 0, 5)
+closebutton.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
+closebutton.TextColor3 = Color3.new(1,1,1)
+closebutton.Font = Enum.Font.SourceSansBold
+closebutton.TextSize = 18
+closebutton.Text = "❌"
+
 local toggleButtonMEDKIT = Instance.new("TextButton", frame)
 toggleButtonMEDKIT.Size = UDim2.new(0, 80, 0, 30)
 toggleButtonMEDKIT.Position = UDim2.new(0, 240, 0, 235)
@@ -446,12 +455,12 @@ toggleButtonMEDKIT.Text = "ВКЛ"
 
 local toggleButtonPAGE = Instance.new("TextButton", frame)
 toggleButtonPAGE.Size = UDim2.new(0, 30, 0, 30)
-toggleButtonPAGE.Position = UDim2.new(0, 5, 0, 5)
+toggleButtonPAGE.Position = UDim2.new(0, 40, 0, 5)
 toggleButtonPAGE.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
 toggleButtonPAGE.TextColor3 = Color3.new(1,1,1)
 toggleButtonPAGE.Font = Enum.Font.SourceSansBold
 toggleButtonPAGE.TextSize = 18
-toggleButtonPAGE.Text = "1"
+toggleButtonPAGE.Text = "1️⃣"
 
 local toggleHighlightLabel = Instance.new("TextLabel", frame)
 toggleHighlightLabel.Size = UDim2.new(0, 200, 0, 30)
@@ -538,8 +547,8 @@ toggleButton.MouseButton1Click:Connect(function()
 end)
 
 toggleButtonPAGE.MouseButton1Click:Connect(function()
-	if toggleButtonPAGE.Text == "1" then
-		toggleButtonPAGE.Text = "2"
+	if toggleButtonPAGE.Text == "1️⃣" then
+		toggleButtonPAGE.Text = "2️⃣"
 		toggleButtonMEDKIT.Transparency = 1
 		toggleHighLightLabelMEDKIT.Transparency = 1
 		toggleHighlightLabel.Transparency = 1
@@ -562,7 +571,7 @@ toggleButtonPAGE.MouseButton1Click:Connect(function()
 		toggleGENButton.Interactable = false
 		toggleNameButton.Interactable = false
 	else
-		toggleButtonPAGE.Text = "1"
+		toggleButtonPAGE.Text = "1️⃣"
 		toggleHighLightLabelMEDKIT.TextTransparency = 0
 		toggleButtonMEDKIT.Transparency = 0
 		toggleHighlightLabel.TextTransparency = 0
@@ -610,6 +619,22 @@ toggleNameButton.MouseButton1Click:Connect(function()
 	end
 end)
 
+closebuttonRE = nil
+
+closebutton. MouseButton1Click:Connect(function()
+	highlightEnabled = false
+	nameHighlightEnabled = false
+	espEnabled1 = false
+	espEnabled3 = false
+	espEnabled = false
+	closebuttonRE = true
+	clearHighlights2()
+	clearNameTags()
+	clearHighlights()
+	clearHighlights3()
+	screenGui:Destroy()
+end)
+
 toggleGENButton.MouseButton1Click:Connect(function()
 	espEnabled = not espEnabled
 	if espEnabled then
@@ -626,10 +651,10 @@ end)
 toggleButtonMEDKIT.MouseButton1Click:Connect(function()
 	espEnabled3 = not espEnabled3
 	toggleESP3(espEnabled3)
-	if toggleHighLightLabelMEDKIT.Text == "Обводка MEDKIT: ВКЛ" then
-		toggleHighLightLabelMEDKIT.Text = "Обводка MEDKIT: ВЫКЛ"
+	if toggleHighLightLabelMEDKIT.Text == "Обводка BloxyCola: ВКЛ" then
+		toggleHighLightLabelMEDKIT.Text = "Обводка BloxyCola: ВЫКЛ"
 	else
-		toggleHighLightLabelMEDKIT.Text = "Обводка MEDKIT: ВКЛ"
+		toggleHighLightLabelMEDKIT.Text = "Обводка BloxyCola: ВКЛ"
 	end
 	if toggleButtonMEDKIT.Text == "ВЫКЛ" then
 		toggleButtonMEDKIT.Text = "ВКЛ"
@@ -666,6 +691,16 @@ if player.Character then
 	setupCharacter(player.Character)
 end
 
+UserInputService.InputBegan:Connect(function(input, gameProcessed)
+	if input.KeyCode == Enum.KeyCode.Insert then
+		if screenGui.Enabled == true then
+			screenGui.Enabled = false
+		else
+			screenGui.Enabled = true
+		end
+	end
+end)
+
 player.CharacterAdded:Connect(function(char)
 	setupCharacter(char)
 end)
@@ -682,5 +717,8 @@ RunService.Heartbeat:Connect(function()
 	end
 	if espEnabled3 then
 		createHighlightsForAll3()
+	end
+	if espEnabled == false then
+		clearHighlights1()
 	end
 end)
