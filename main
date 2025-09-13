@@ -403,22 +403,28 @@ label.BackgroundTransparency = 1
 label.TextColor3 = Color3.new(1,1,1)
 label.Font = Enum.Font.SourceSansBold
 label.TextSize = 22
+label.Transparency = 1
 
 local bar = Instance.new("Frame", frame)
 bar.Size = UDim2.new(0, 290, 0, 20)
 bar.Position = UDim2.new(0, 30, 0, 60)
 bar.BackgroundColor3 = Color3.fromRGB(80,80,80)
+bar.Transparency = 1
 
 local fill = Instance.new("Frame", bar)
 fill.Size = UDim2.new(0, 0, 1, 0)
 fill.BackgroundColor3 = Color3.fromRGB(0,170,255)
+fill.Transparency = 1
 
 local knob = Instance.new("ImageButton", bar)
 knob.Size = UDim2.new(0, 30, 0, 30)
 knob.Position = UDim2.new(0, -15, 0, -5)
 knob.BackgroundTransparency = 1
+knob.ImageTransparency = 1
 knob.Image = "rbxassetid://3570695787"
 knob.Modal = true
+knob.Interactable = false
+knob.AutoButtonColor = false
 
 local toggleHighLightLabelMEDKIT = Instance.new("TextLabel", frame)
 toggleHighLightLabelMEDKIT.Size = UDim2.new(0, 200, 0, 30)
@@ -440,7 +446,7 @@ toggleButtonMEDKIT.Text = "ВКЛ"
 
 local toggleButtonPAGE = Instance.new("TextButton", frame)
 toggleButtonPAGE.Size = UDim2.new(0, 30, 0, 30)
-toggleButtonPAGE.Position = UDim2.new(0, 0, 0, 0)
+toggleButtonPAGE.Position = UDim2.new(0, 5, 0, 5)
 toggleButtonPAGE.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
 toggleButtonPAGE.TextColor3 = Color3.new(1,1,1)
 toggleButtonPAGE.Font = Enum.Font.SourceSansBold
@@ -528,6 +534,55 @@ toggleButton.MouseButton1Click:Connect(function()
 		toggleHighlightLabel.Text = "Обводка игроков: ВКЛ"
 		enableHighlights()
 		toggleButton.Text = "ВЫКЛ"
+	end
+end)
+
+toggleButtonPAGE.MouseButton1Click:Connect(function()
+	if toggleButtonPAGE.Text == "1" then
+		toggleButtonPAGE.Text = "2"
+		toggleButtonMEDKIT.Transparency = 1
+		toggleHighLightLabelMEDKIT.Transparency = 1
+		toggleHighlightLabel.Transparency = 1
+		toggleButton.TextTransparency = 1
+		toggleButtonCola.Transparency = 1
+		toggleHighlightCola.TextTransparency = 1
+		toggleNameLabel.Transparency = 1
+		toggleGENButton.Transparency = 1
+		toggleButton.Transparency = 1
+		toggleNameButton.Transparency = 1
+		toggleHighlightLabelGEN.Transparency = 1
+		label.TextTransparency = 0
+		bar.Transparency = 0
+		fill.Transparency = 0
+		knob.ImageTransparency = 0
+		knob.Interactable = true
+		toggleButtonCola.Interactable = false
+		toggleButton.Interactable = false
+		toggleButtonMEDKIT.Interactable = false
+		toggleGENButton.Interactable = false
+		toggleNameButton.Interactable = false
+	else
+		toggleButtonPAGE.Text = "1"
+		toggleHighLightLabelMEDKIT.TextTransparency = 0
+		toggleButtonMEDKIT.Transparency = 0
+		toggleHighlightLabel.TextTransparency = 0
+		toggleButton.Transparency = 0
+		toggleHighlightCola.TextTransparency = 0
+		toggleButtonCola.Transparency = 0
+		toggleNameLabel.TextTransparency = 0
+		toggleNameButton.Transparency = 0
+		toggleGENButton.Transparency = 0
+		toggleHighlightLabelGEN.TextTransparency = 0
+		knob.Interactable = false
+		label.TextTransparency = 1
+		bar.Transparency = 1
+		fill.Transparency = 1
+		knob.ImageTransparency = 1
+		toggleButtonCola.Interactable = true
+		toggleButton.Interactable = true
+		toggleButtonMEDKIT.Interactable = true
+		toggleGENButton.Interactable = true
+		toggleNameButton.Interactable = true
 	end
 end)
 
