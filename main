@@ -747,6 +747,15 @@ RunService.Heartbeat:Connect(function()
 	if highlightEnabled then
 		updateHighlights()
 	end
+	if isnfnow == true then
+		game.Lighting.FogEnd = 100000
+		game.Lighting.FogStart = 0
+		game.Lighting.GlobalShadows = false
+	else
+		game.Lighting.FogEnd = FogEnd
+		game.Lighting.FogStart = FogStart
+		game.Lighting.GlobalShadows = true
+	end
 	if nameHighlightEnabled then
 		updateNameTags()
 	end
