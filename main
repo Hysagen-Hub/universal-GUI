@@ -669,10 +669,10 @@ end)
 toggleButtonMEDKIT.MouseButton1Click:Connect(function()
 	espEnabled3 = not espEnabled3
 	toggleESP3(espEnabled3)
-	if toggleHighLightLabelMEDKIT.Text == "Обводка Medkit: ВКЛ" then
-		toggleHighLightLabelMEDKIT.Text = "Обводка Medkit: ВЫКЛ"
+	if toggleHighLightLabelMEDKIT.Text == "Обводка BloxyCola: ВКЛ" then
+		toggleHighLightLabelMEDKIT.Text = "Обводка BloxyCola: ВЫКЛ"
 	else
-		toggleHighLightLabelMEDKIT.Text = "Обводка Medkit: ВКЛ"
+		toggleHighLightLabelMEDKIT.Text = "Обводка BloxyCola: ВКЛ"
 	end
 	if toggleButtonMEDKIT.Text == "ВЫКЛ" then
 		toggleButtonMEDKIT.Text = "ВКЛ"
@@ -693,12 +693,14 @@ toggleNoFogButton.MouseButton1Click:Connect(function()
 		game.Lighting.FogEnd = 100000
 		game.Lighting.FogStart = 0
 		game.Lighting.GlobalShadows = false
+		isnfnow = true
 	else
 		toggleNoFogLabel.Text = "No Fog: ВКЛ"
 		toggleNoFogButton.Text = "ВКЛ"
 		game.Lighting.FogEnd = FogEnd
 		game.Lighting.FogStart = FogStart
 		game.Lighting.GlobalShadows = true
+		isnfnow = false
 	end
 end)
 
@@ -747,7 +749,7 @@ RunService.Heartbeat:Connect(function()
 	if highlightEnabled then
 		updateHighlights()
 	end
-	if isnfnow == false then
+	if isnfnow == true then
 		game.Lighting.FogEnd = 100000
 		game.Lighting.FogStart = 0
 		game.Lighting.GlobalShadows = false
