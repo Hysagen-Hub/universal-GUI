@@ -358,7 +358,7 @@ end
 local function enableHighlights()
 	highlightEnabled = true
 	updateHighlights()
-	
+
 end
 
 local function disableHighlights()
@@ -588,6 +588,9 @@ toggleButtonPAGE.MouseButton1Click:Connect(function()
 		toggleButtonMEDKIT.Interactable = false
 		toggleGENButton.Interactable = false
 		toggleNameButton.Interactable = false
+		toggleNoFogLabel.Transparency = 1
+		toggleNoFogButton.Transparency = 1
+		toggleNoFogButton.Interactable = false
 	else
 		toggleButtonPAGE.Text = "1️⃣"
 		toggleHighLightLabelMEDKIT.TextTransparency = 0
@@ -610,6 +613,9 @@ toggleButtonPAGE.MouseButton1Click:Connect(function()
 		toggleButtonMEDKIT.Interactable = true
 		toggleGENButton.Interactable = true
 		toggleNameButton.Interactable = true
+		toggleNoFogLabel.TextTransparency = 0
+		toggleNoFogButton.Transparency = 0
+		toggleNoFogButton.Interactable = true
 	end
 end)
 
@@ -699,7 +705,7 @@ toggleNoFogButton.MouseButton1Click:Connect(function()
 		game.Lighting.GlobalShadows = true
 		toggleNoFogButton.Text = "ВКЛ"
 	end
-	
+
 end)
 
 knob.InputBegan:Connect(function(input)
