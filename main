@@ -10,6 +10,11 @@ local highlightEnabled = false
 local nameHighlightEnabled = false
 local highlights = {}
 local nameTags = {}
+local highlights2 = {}
+local UserInputService = game:GetService("UserInputService")
+local RunService = game:GetService("RunService")
+local Workspace = game:GetService("Workspace")
+local espEnabled1 = false
 local highlights1 = {}
 
 local survivorsFolder
@@ -63,6 +68,90 @@ local function highlightInstances()
 				end
 			end
 		end
+	end
+end
+
+local function getAllBloxyColas()
+	local colas = {}
+	local success, map1 = pcall(function() return Workspace:WaitForChild("Map",5) end)
+	if not success or not map1 then return colas end
+	local success2, ingame = pcall(function() return map1:WaitForChild("Ingame",5) end)
+	if not success2 or not ingame then return colas end
+	local success3, map2 = pcall(function() return ingame:WaitForChild("Map",5) end)
+	if not success3 or not map2 then return colas end
+
+	for _, obj in pairs(map2:GetChildren()) do
+		if obj.Name == "BloxyCola" then
+			table.insert(colas, obj)
+		end
+	end
+
+	return colas
+end
+
+local function clearHighlights2()
+	for _, h in pairs(highlights2) do
+		if h and h.Parent then
+			h:Destroy()
+		end
+	end
+	highlights2 = {}
+end
+
+local function createHighlightsForWorkspaceColas()
+	for _, cola in pairs(Workspace:GetChildren()) do
+		if cola.Name == "BloxyCola" then
+			local function recurse(obj)
+				for _, child in pairs(obj:GetChildren()) do
+					if child:IsA("BasePart") then
+						local h = Instance.new("Highlight")
+						h.Adornee = child
+						h.FillColor = Color3.fromRGB(255, 255, 0)
+						h.OutlineColor = Color3.fromRGB(255, 255, 255)
+						h.Parent = child
+						table.insert(highlights2,  h)
+					else
+						recurse(child)
+					end
+				end
+			end
+			recurse(cola)
+		end
+	end
+end
+
+local function createHighlightsForAll()
+	clearHighlights2()
+
+	local colas = getAllBloxyColas()
+	for _, cola in ipairs(colas) do
+		local function recurse(obj)
+			for _, child in pairs(obj:GetChildren()) do
+				if child:IsA("BasePart") then
+					local h = Instance.new("Highlight")
+					h.Adornee = child
+					h.FillColor = Color3.fromRGB(255, 255, 0)
+					h.OutlineColor = Color3.fromRGB(255, 255, 255)
+					h.Parent = child
+					table.insert(highlights2, h)
+				else
+					recurse(child)
+				end
+			end
+		end
+		recurse(cola)
+	end
+
+	createHighlightsForWorkspaceColas()
+
+end
+
+local function toggleESP(state)
+	espEnabled1 = state
+	if espEnabled1 then
+		createHighlightsForAll()
+	else
+		clearHighlights2()
 	end
 end
 
@@ -165,11 +254,16 @@ local function updateHighlights()
 
 	-- Удаляем подсветку для тех моделей, которых уже нет в папках
 	for model, highlight in pairs(highlights) do
-		local inSurvivors = survivorsFolder and survivorsFolder:FindFirstChild(model.Name)
-		local inKillers = killersFolder and killersFolder:FindFirstChild(model.Name)
-		if not inSurvivors and not inKillers then
-			highlight:Destroy()
-			highlights[model] = nil
+		if typeof(model) == "Instance" then
+			local inSurvivors = survivorsFolder and survivorsFolder:FindFirstChild(model.Name)
+			local inKillers = killersFolder and killersFolder:FindFirstChild(model.Name)
+			if not inSurvivors and not inKillers then
+				highlight:Destroy()
+				highlights[model] = nil
+			end
+		else
+			warn("Ключ highlights не является Instance:", model)
+			highlights[model] = nil -- либо удалить неверный элемент
 		end
 	end
 end
@@ -209,7 +303,7 @@ screenGui.ResetOnSpawn = false
 screenGui.Parent = player:WaitForChild("PlayerGui")
 
 local frame = Instance.new("Frame", screenGui)
-frame.Size = UDim2.new(0, 350, 0, 200)
+frame.Size = UDim2.new(0, 350, 0, 250)
 frame.Position = UDim2.new(0.5, -175, 0.5, -90)
 frame.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
 frame.Active = true
@@ -247,6 +341,24 @@ toggleHighlightLabel.TextColor3 = Color3.new(1,1,1)
 toggleHighlightLabel.Font = Enum.Font.SourceSans
 toggleHighlightLabel.TextSize = 18
 toggleHighlightLabel.Text = "Обводка игроков: ВЫКЛ"
+
+local toggleHighlightCola = Instance.new("TextLabel", frame)
+toggleHighlightCola.Size = UDim2.new(0, 200, 0, 30)
+toggleHighlightCola.Position = UDim2.new(0, 30, 0, 200)
+toggleHighlightCola.BackgroundTransparency = 1
+toggleHighlightCola.TextColor3 = Color3.new(1,1,1)
+toggleHighlightCola.Font = Enum.Font.SourceSans
+toggleHighlightCola.TextSize = 18
+toggleHighlightCola.Text = "Обводка BloxyCola: ВЫКЛ"
+
+local toggleButtonCola = Instance.new("TextButton", frame)
+toggleButtonCola.Size = UDim2.new(0, 80, 0, 30)
+toggleButtonCola.Position = UDim2.new(0, 240, 0, 200)
+toggleButtonCola.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
+toggleButtonCola.TextColor3 = Color3.new(1,1,1)
+toggleButtonCola.Font = Enum.Font.SourceSansBold
+toggleButtonCola.TextSize = 18
+toggleButtonCola.Text = "ВКЛ"
 
 local toggleButton = Instance.new("TextButton", frame)
 toggleButton.Size = UDim2.new(0, 80, 0, 30)
@@ -305,6 +417,22 @@ toggleButton.MouseButton1Click:Connect(function()
 	end
 end)
 
+toggleButtonCola.MouseButton1Click:Connect(function()
+	espEnabled1 = not espEnabled1
+	toggleESP(espEnabled1)
+	if toggleHighlightCola.Text == "Обводка BloxyCola: ВЫКЛ" then
+		toggleHighlightCola.Text = "Обводка BloxyCola: ВКЛ"
+	else
+		toggleHighlightCola.Text = "Обводка BloxyCola: ВЫКЛ"
+	end
+	if toggleHighlightCola.Text == "ВКЛ" then
+		toggleButtonCola.Text = "ВЫКЛ"
+	else
+		toggleButtonCola.Text = "ВКЛ"
+	end
+	toggleButtonCola.Text = "ВКЛ" or "ВЫКЛ"
+end)
+
 toggleNameButton.MouseButton1Click:Connect(function()
 	if nameHighlightEnabled then
 		disableNameTags()
@@ -320,10 +448,12 @@ end)
 toggleGENButton.MouseButton1Click:Connect(function()
 	espEnabled = not espEnabled
 	if espEnabled then
-		toggleGENButton.Text = "ВКЛ"
+		toggleHighlightLabelGEN.Text = "генератор есп: ВКЛ"
+		toggleGENButton.Text = "ВЫКЛ"
 		highlightInstances()
 	else
-		toggleGENButton.Text = "ВЫКЛ"
+		toggleHighlightLabelGEN.Text = "генератор есп: ВЫКЛ"
+		toggleGENButton.Text = "ВКЛ"
 		clearHighlights1()
 	end
 end)
@@ -366,5 +496,8 @@ RunService.Heartbeat:Connect(function()
 	end
 	if nameHighlightEnabled then
 		updateNameTags()
+	end
+	if espEnabled1 then
+		createHighlightsForAll()
 	end
 end)
