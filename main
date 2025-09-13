@@ -177,8 +177,8 @@ local function createHighlightsForAll3()
 end
 
 local function toggleESP3(state)
-	espEnabled = state
-	if espEnabled then
+	espEnabled3 = state
+	if espEnabled3 then
 		createHighlightsForAll3()
 	else
 		clearHighlights3()
@@ -358,7 +358,7 @@ end
 local function enableHighlights()
 	highlightEnabled = true
 	updateHighlights()
-
+	
 end
 
 local function disableHighlights()
@@ -798,15 +798,60 @@ end)
 
 player.CharacterAdded:Connect(function(char)
 	setupCharacter(char)
+	-- ВОТ ЭТО ДОБАВИТЬ: пересоздаём ESP после смерти, если были включены
+	if highlightEnabled then
+		enableHighlights()
+	end
+	if nameHighlightEnabled then
+		enableNameTags()
+	end
+	if espEnabled1 then
+		toggleESP(espEnabled1)
+	end
+	if espEnabled3 then
+		toggleESP3(espEnabled3)
+	end
 end)
 
+local died = false
+local character = player.Character or player.CharacterAdded:Wait()
+local humanoid = character:WaitForChild("Humanoid")
+
 RunService.Heartbeat:Connect(function()
+	if not died and humanoid.Health <= 0 then
+		died = true
+		highlightEnabled = false
+		espEnabled = false
+		espEnabled1 = false
+		espEnabled3 = false
+		clearHighlights2()
+		clearNameTags()
+		clearHighlights()
+		clearHighlights3()
+		toggleFullBrightLabel.Text = "FULL BRIGHT ВЫКЛ"
+		toggleFullBrightButton.Text = "ВКЛ"
+		toggleNoFogLabel.Text = "NO FOG: ВЫКЛ"
+		toggleNoFogButton.Text = "ВКЛ"
+		toggleHighLightLabelMEDKIT.Text = "Обводка Medkit: ВЫКЛ"
+		toggleButtonMEDKIT.Text = "ВКЛ"
+		toggleHighlightLabelGEN.Text = "Генератор ESP: ВЫКЛ"
+		toggleGENButton.Text = "ВКЛ"
+		toggleHighlightCola.Text = "Обводка BloxyCola: ВЫКЛ"
+		toggleButtonCola.Text = "ВКЛ"
+		toggleNameLabel.Text = "Подсветка ников: ВЫКЛ"
+		toggleNameButton.Text = "ВКЛ"
+		toggleHighlightLabel.Text = "Обводка игроков: ВЫКЛ"
+		toggleButton.Text = "ВКЛ"
+	end
 	if bruh then
 		game.Lighting.FogEnd = 100000
 		game.Lighting.FogStart = 0
 		game.Lighting.GlobalShadows = false
 	end
 	if highlightEnabled then
+		if highlights == {} then
+			addHighlight()
+		end
 		updateHighlights()
 	end
 	if nameHighlightEnabled then
@@ -821,4 +866,10 @@ RunService.Heartbeat:Connect(function()
 	if espEnabled == false then
 		clearHighlights1()
 	end
+end)
+
+player.CharacterAdded:Connect(function(char)
+	character = char
+	humanoid = character:WaitForChild("Humanoid")
+	died = false
 end)
