@@ -435,6 +435,24 @@ toggleHighLightLabelMEDKIT.Font = Enum.Font.SourceSans
 toggleHighLightLabelMEDKIT.TextSize = 18
 toggleHighLightLabelMEDKIT.Text = "Обводка MEDKIT: ВЫКЛ"
 
+local toggleNoFogLabel = Instance.new("TextLabel", frame)
+toggleNoFogLabel.Size = UDim2.new(0, 200, 0, 30)
+toggleNoFogLabel.Position = UDim2.new(0, 30, 0, 60)
+toggleNoFogLabel.BackgroundTransparency = 1
+toggleNoFogLabel.TextColor3 = Color3.new(1,1,1)
+toggleNoFogLabel.Font = Enum.Font.SourceSans
+toggleNoFogLabel.TextSize = 18
+toggleNoFogLabel.Text = "NO FOG: ВЫКЛ"
+
+local toggleNoFogButton = Instance.new("TextButton", frame)
+toggleNoFogButton.Size = UDim2.new(0, 80, 0, 30)
+toggleNoFogButton.Position = UDim2.new(0, 240, 0, 60)
+toggleNoFogButton.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
+toggleNoFogButton.TextColor3 = Color3.new(1,1,1)
+toggleNoFogButton.Font = Enum.Font.SourceSansBold
+toggleNoFogButton.TextSize = 18
+toggleNoFogButton.Text = "ВКЛ"
+
 local closebutton = Instance.new("TextButton", frame)
 closebutton.Size = UDim2.new(0, 30, 0, 30)
 closebutton.Position = UDim2.new(0, 5, 0, 5)
@@ -663,6 +681,27 @@ toggleButtonMEDKIT.MouseButton1Click:Connect(function()
 	end
 end)
 
+local FogEnd = game.Lighting.FogEnd
+local FogStart = game.Lighting.FogStart
+local isnfnow = false
+
+
+toggleNoFogButton.MouseButton1Click:Connect(function()
+	if toggleNoFogButton.Text == "ВКЛ" then
+		toggleNoFogLabel.Text = "No Fog: ВЫКЛ"
+		toggleNoFogButton.Text = "ВЫКЛ"
+		game.Lighting.FogEnd = 100000
+		game.Lighting.FogStart = 0
+		game.Lighting.GlobalShadows = false
+	else
+		toggleNoFogLabel.Text = "No Fog: ВКЛ"
+		toggleNoFogButton.Text = "ВКЛ"
+		game.Lighting.FogEnd = FogEnd
+		game.Lighting.FogStart = FogStart
+		game.Lighting.GlobalShadows = true
+	end
+end)
+
 knob.InputBegan:Connect(function(input)
 	if input.UserInputType == Enum.UserInputType.MouseButton1 then
 		dragging = true
@@ -674,7 +713,6 @@ userInputService.InputChanged:Connect(function(input)
 		local relativeX = math.clamp(input.Position.X - bar.AbsolutePosition.X, 0, bar.AbsoluteSize.X)
 		local percent = relativeX / bar.AbsoluteSize.X
 		speed = math.floor(percent * 100 + 0.5)
-
 		fill.Size = UDim2.new(percent, 0, 1, 0)
 		knob.Position = UDim2.new(percent, -15, 0, -5)
 		label.Text = "Ускорение: "..speed
