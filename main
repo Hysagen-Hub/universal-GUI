@@ -669,10 +669,10 @@ end)
 toggleButtonMEDKIT.MouseButton1Click:Connect(function()
 	espEnabled3 = not espEnabled3
 	toggleESP3(espEnabled3)
-	if toggleHighLightLabelMEDKIT.Text == "Обводка BloxyCola: ВКЛ" then
-		toggleHighLightLabelMEDKIT.Text = "Обводка BloxyCola: ВЫКЛ"
+	if toggleHighLightLabelMEDKIT.Text == "Обводка Medkit: ВКЛ" then
+		toggleHighLightLabelMEDKIT.Text = "Обводка Medkit: ВЫКЛ"
 	else
-		toggleHighLightLabelMEDKIT.Text = "Обводка BloxyCola: ВКЛ"
+		toggleHighLightLabelMEDKIT.Text = "Обводка Medkit: ВКЛ"
 	end
 	if toggleButtonMEDKIT.Text == "ВЫКЛ" then
 		toggleButtonMEDKIT.Text = "ВКЛ"
