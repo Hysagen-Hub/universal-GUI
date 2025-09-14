@@ -321,6 +321,8 @@ local function addHighlight(model, color)
 	end
 end
 
+
+
 local function updateHighlights()
 	-- Добавляем подсветку для новых моделей выживших
 	survivorsFolder = workspace.Players.Survivors
@@ -405,7 +407,6 @@ function noclip()
 		end
 	end
 end
-
 
 local screenGui = Instance.new("ScreenGui")
 screenGui.Name = "SpeedControlGui"
@@ -615,6 +616,56 @@ toggleHighlightLabelGEN.Font = Enum.Font.SourceSans
 toggleHighlightLabelGEN.TextSize = 18
 toggleHighlightLabelGEN.Text = "Генератор ESP: ВЫКЛ"
 
+local sliderLabel = Instance.new("TextLabel", frame)
+sliderLabel.Size = UDim2.new(0.80, 0, 0.1, 0)
+sliderLabel.Position = UDim2.new(0, 30, 0, 180)
+sliderLabel.BackgroundTransparency = 1
+sliderLabel.TextColor3 = Color3.new(1, 1, 1)
+sliderLabel.Font = Enum.Font.SourceSansBold
+sliderLabel.TextSize = 18
+sliderLabel.Text = "Интервал: 1 сек"
+sliderLabel.Parent = frame
+sliderLabel.Transparency = 1
+
+local slider = Instance.new("TextButton", frame)
+slider.Size = UDim2.new(0.80, 0, 0.065, 0)
+slider.Position = UDim2.new(0, 30, 0, 160)
+slider.BackgroundColor3 = Color3.new(0.3, 0.3, 0.3)
+slider.Text = ""
+slider.Parent = frame
+slider.Transparency = 1
+slider.Interactable = false
+
+local sliderIndicator = Instance.new("Frame", frame)
+sliderIndicator.Size = UDim2.new(0.1, 0, 1, 0)
+sliderIndicator.BackgroundColor3 = Color3.new(0, 0.6, 1)
+sliderIndicator.Parent = slider
+sliderIndicator.Transparency = 1
+
+local toggleAGButton = Instance.new("TextButton", frame)
+toggleAGButton.Size = UDim2.new(0, 80, 0, 30)
+toggleAGButton.Position = UDim2.new(0, 240, 0, 125)
+toggleAGButton.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
+toggleAGButton.TextColor3 = Color3.new(1,1,1)
+toggleAGButton.Font = Enum.Font.SourceSansBold
+toggleAGButton.TextSize = 18
+toggleAGButton.Text = "ВКЛ"
+toggleAGButton.Interactable = false
+toggleAGButton.Transparency = 1
+
+local toggleAGlabel = Instance.new("TextLabel", frame)
+toggleAGlabel.Size = UDim2.new(0, 200, 0, 30)
+toggleAGlabel.Position = UDim2.new(0, 30, 0, 125)
+toggleAGlabel.BackgroundTransparency = 1
+toggleAGlabel.TextColor3 = Color3.new(1,1,1)
+toggleAGlabel.Font = Enum.Font.SourceSans
+toggleAGlabel.TextSize = 18
+toggleAGlabel.Text = "АВТО ГЕНЕРАТОР: ВЫКЛ"
+toggleAGlabel.Transparency = 1
+
+local isEnabledGEN = false
+local lastFireTime = 0
+
 toggleButton.MouseButton1Click:Connect(function()
 	if highlightEnabled then
 		disableHighlights()
@@ -624,6 +675,59 @@ toggleButton.MouseButton1Click:Connect(function()
 		toggleHighlightLabel.Text = "Обводка игроков: ВКЛ"
 		enableHighlights()
 		toggleButton.Text = "ВЫКЛ"
+	end
+end)
+
+local UserInputService = game:GetService("UserInputService")
+local dragging1 = false
+local interval = 1
+local function updateSlider(inputPosition)
+	local relativeX = math.clamp(inputPosition.X - slider.AbsolutePosition.X, 0, slider.AbsoluteSize.X)
+	local percent = relativeX / slider.AbsoluteSize.X
+	sliderIndicator.Size = UDim2.new(percent, 0, 1, 0)
+	interval = math.floor(1 + percent * 9) -- 1..10 секунд
+	sliderLabel.Text = "Интервал: " .. interval .. " сек"
+end
+
+slider.InputBegan:Connect(function(input)
+	if input.UserInputType == Enum.UserInputType.MouseButton1 then
+		dragging1 = true
+		updateSlider(input.Position)
+	end
+end)
+
+slider.InputChanged:Connect(function(input)
+	if dragging1 and input.UserInputType == Enum.UserInputType.MouseMovement then
+		updateSlider(input.Position)
+	end
+end)
+
+slider.InputEnded:Connect(function(input)
+	if input.UserInputType == Enum.UserInputType.MouseButton1 then
+		dragging1 = false
+	end
+end)
+
+local isEnabled = false
+local runService = game:GetService("RunService")
+local lastFireTime = 0
+
+toggleAGButton.MouseButton1Click:Connect(function()
+	
+	isEnabled = not isEnabled
+	if isEnabled then 
+		toggleAGButton.Text = "ВЫКЛ"
+		-- Можно добавить логику входа в каждый генератор (если она нужна)
+		for _, gen in pairs(generators) do
+			local remotes = gen:WaitForChild("Remotes")
+			local RF = remotes:WaitForChild("RF")
+		end
+	else
+		toggleAGButton.Text = "ВКЛ"
+		for _, gen in pairs(generators) do
+			local remotes = gen:WaitForChild("Remotes")
+			local RF = remotes:WaitForChild("RF")
+		end
 	end
 end)
 
@@ -660,6 +764,15 @@ toggleButtonPAGE.MouseButton1Click:Connect(function()
 		toggleNoClipButton.Transparency = 0
 		toggleNoClipButton.Interactable = true
 		toggleNoClipLabel.TextTransparency = 0
+		toggleAGButton.Interactable = true
+		toggleAGButton.Transparency = 0
+		toggleAGlabel.TextTransparency = 0
+		slider.Transparency = 0
+		slider.Interactable = true
+		sliderLabel.TextTransparency = 0
+		sliderIndicator.Transparency = 0
+		toggleAGButton.Interactable = true
+		toggleAGButton.Transparency = 0
 	else
 		toggleButtonPAGE.Text = "1️⃣"
 		toggleHighLightLabelMEDKIT.TextTransparency = 0
@@ -691,6 +804,15 @@ toggleButtonPAGE.MouseButton1Click:Connect(function()
 		toggleNoClipButton.Transparency = 1
 		toggleNoClipButton.Interactable = false
 		toggleNoClipLabel.TextTransparency = 1
+		toggleAGButton.Interactable = false
+		toggleAGButton.Transparency = 1
+		toggleAGlabel.Transparency = 1
+		slider.Transparency = 1
+		slider.Interactable = false
+		sliderLabel.Transparency = 1
+		sliderIndicator.Transparency = 1
+		toggleAGButton.Interactable = false
+		toggleAGButton.Transparency = 1
 	end
 end)
 
@@ -847,17 +969,21 @@ UserInputService.InputBegan:Connect(function(input, gameProcessed)
 	end
 end)
 
+local sigma = false
+
 player.CharacterAdded:Connect(function(char)
 	setupCharacter(char)
 	highlights = {}
 	nameTags = {}
+	generators = {}
+	sigma = true
 end)
 
 local died = false
 local character = player.Character or player.CharacterAdded:Wait()
 local humanoid = character:WaitForChild("Humanoid")
 
-RunService.Heartbeat:Connect(function()
+RunService.Heartbeat:Connect(function(deltaTime)
 	if bruh then
 		game.Lighting.FogEnd = 100000
 		game.Lighting.FogStart = 0
@@ -880,6 +1006,26 @@ RunService.Heartbeat:Connect(function()
 	end
 	if noclipEnabled then
 		noclip()
+	end
+	if not isEnabled then return end
+	local generatorsFolder = workspace.Map.Ingame.Map
+	local generators = {}
+
+	for _, gen in pairs(generatorsFolder:GetChildren()) do
+		if gen.Name == "Generator" then
+			table.insert(generators, gen)
+		end
+	end
+	
+	
+	lastFireTime = lastFireTime + deltaTime
+	if lastFireTime >= interval then
+		lastFireTime = 0
+		for _, gen in pairs(generators) do
+			local remotes = gen:WaitForChild("Remotes")
+			local RE = remotes:WaitForChild("RE")
+			RE:FireServer()
+		end
 	end
 end)
 
