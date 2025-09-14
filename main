@@ -620,12 +620,10 @@ toggleButton.MouseButton1Click:Connect(function()
 		disableHighlights()
 		toggleHighlightLabel.Text = "Обводка игроков: ВЫКЛ"
 		toggleButton.Text = "ВКЛ"
-		yesornoH1.Name = "no"
 	else
 		toggleHighlightLabel.Text = "Обводка игроков: ВКЛ"
 		enableHighlights()
 		toggleButton.Text = "ВЫКЛ"
-		yesornoH1.Name = "yes"
 	end
 end)
 
@@ -860,22 +858,6 @@ local character = player.Character or player.CharacterAdded:Wait()
 local humanoid = character:WaitForChild("Humanoid")
 
 RunService.Heartbeat:Connect(function()
-	if not died and humanoid.Health <= 0 then
-		died = true
-		toggleFullBrightLabel.Text = "FULL BRIGHT ВЫКЛ"
-		toggleFullBrightButton.Text = "ВКЛ"
-		toggleNoFogLabel.Text = "NO FOG: ВЫКЛ"
-		toggleNoFogButton.Text = "ВКЛ"
-		toggleHighLightLabelMEDKIT.Text = "Обводка Medkit: ВЫКЛ"
-		toggleButtonMEDKIT.Text = "ВКЛ"
-		toggleHighlightLabelGEN.Text = "Генератор ESP: ВЫКЛ"
-		toggleGENButton.Text = "ВКЛ"
-		toggleHighlightCola.Text = "Обводка BloxyCola: ВЫКЛ"
-		toggleButtonCola.Text = "ВКЛ"
-		toggleNameLabel.Text = "Подсветка ников: ВЫКЛ"
-		toggleNameButton.Text = "ВКЛ"
-		highlights = {}
-	end
 	if bruh then
 		game.Lighting.FogEnd = 100000
 		game.Lighting.FogStart = 0
