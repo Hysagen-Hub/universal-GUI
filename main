@@ -59,7 +59,7 @@ local function highlightInstances()
 							if lastgen and lastgen:IsA("Model") then
 								local highlight = Instance.new("Highlight")
 								highlight.Adornee = lastgen
-								highlight.FillColor = Color3.fromRGB(255, 0, 0) -- ярко красный
+								highlight.FillColor = Color3.fromRGB(255, 255, 0) -- ярко красный
 								highlight.OutlineColor = Color3.new(1, 1, 1)   -- белый контур
 								highlight.Parent = lastgen
 
@@ -83,7 +83,7 @@ local function createHighlightsForWorkspaceKits()
 					if child:IsA("BasePart") then
 						local h = Instance.new("Highlight")
 						h.Adornee = child
-						h.FillColor = Color3.fromRGB(255, 255, 0)
+						h.FillColor = Color3.fromRGB(163, 3, 255)
 						h.OutlineColor = Color3.fromRGB(255, 255, 255)
 						h.Parent = child
 						table.insert(highlights3, h)
@@ -161,7 +161,7 @@ local function createHighlightsForAll3()
 				if child:IsA("BasePart") then
 					local h = Instance.new("Highlight")
 					h.Adornee = child
-					h.FillColor = Color3.fromRGB(255, 255, 0)
+					h.FillColor = Color3.fromRGB(163, 3, 255)
 					h.OutlineColor = Color3.fromRGB(255, 255, 255)
 					h.Parent = child
 					table.insert(highlights3, h)
@@ -193,7 +193,7 @@ local function createHighlightsForWorkspaceColas()
 					if child:IsA("BasePart") then
 						local h = Instance.new("Highlight")
 						h.Adornee = child
-						h.FillColor = Color3.fromRGB(255, 255, 0)
+						h.FillColor = Color3.fromRGB(163, 3, 255)
 						h.OutlineColor = Color3.fromRGB(255, 255, 255)
 						h.Parent = child
 						table.insert(highlights2,  h)
@@ -217,7 +217,7 @@ local function createHighlightsForAll()
 				if child:IsA("BasePart") then
 					local h = Instance.new("Highlight")
 					h.Adornee = child
-					h.FillColor = Color3.fromRGB(255, 255, 0)
+					h.FillColor = Color3.fromRGB(163, 3, 255)
 					h.OutlineColor = Color3.fromRGB(255, 255, 255)
 					h.Parent = child
 					table.insert(highlights2, h)
@@ -275,7 +275,7 @@ local function updateNameTags()
 
 	if survivorsFolder then
 		for _, model in pairs(survivorsFolder:GetChildren()) do
-			createNameTag(model, Color3.fromRGB(0, 120, 255)) -- синий для survivors
+			createNameTag(model, Color3.fromRGB(0, 168, 0)) -- синий для survivors
 		end
 	end
 
@@ -329,7 +329,7 @@ local function updateHighlights()
 	killersFolder = workspace.Players.Killers
 	if survivorsFolder then
 		for _, model in pairs(survivorsFolder:GetChildren()) do
-			addHighlight(model, Color3.fromRGB(0, 170, 255))
+			addHighlight(model, Color3.fromRGB(0, 255, 0))
 		end
 	end
 
