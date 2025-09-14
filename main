@@ -414,11 +414,45 @@ screenGui.ResetOnSpawn = false
 screenGui.Parent = player:WaitForChild("PlayerGui")
 
 local frame = Instance.new("Frame", screenGui)
-frame.Size = UDim2.new(0, 360, 0, 280)
+frame.Size = UDim2.new(0, 400, 0, 280)
 frame.Position = UDim2.new(0.5, -175, 0.5, -90)
 frame.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
 frame.Active = true
 frame.Draggable = true
+local uiCorner = Instance.new("UICorner")
+uiCorner.CornerRadius = UDim.new(0, 15) -- радиус 15 пикселей
+uiCorner.Parent = frame
+frame.Transparency = 0.06
+local gradient = Instance.new("UIGradient")
+gradient.Color = ColorSequence.new{
+	ColorSequenceKeypoint.new(0, Color3.fromRGB(115, 0, 255)),   -- начало градиента (красный)
+	ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 80, 232))    -- конец градиента (синий)
+}
+
+-- пример изменения наклона градиента
+gradient.Rotation = 45 -- угол в градусах
+
+-- можно также менять Transparency (прозрачность) градиента
+gradient.Transparency = NumberSequence.new{
+	NumberSequenceKeypoint.new(0, 0),   -- непрозрачный в начале
+	NumberSequenceKeypoint.new(1, 0.3)  -- полупрозрачный в конце
+}
+
+gradient.Parent = frame
+gradientforALL = gradient:Clone()
+gradientforALL.Color = ColorSequence.new{
+	ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 255, 255)),   -- начало градиента (красный)
+	ColorSequenceKeypoint.new(1, Color3.fromRGB(134, 134, 134))    -- конец градиента (синий)
+}
+
+-- пример изменения наклона градиента
+gradientforALL.Rotation = 45 -- угол в градусах
+
+-- можно также менять Transparency (прозрачность) градиента
+gradientforALL.Transparency = NumberSequence.new{
+	NumberSequenceKeypoint.new(0, 0), 
+	NumberSequenceKeypoint.new(1, 0)
+}
 
 local label = Instance.new("TextLabel", frame)
 label.Text = "Ускорение: 0"
@@ -430,8 +464,8 @@ label.TextSize = 22
 label.Transparency = 1
 
 local bar = Instance.new("Frame", frame)
-bar.Size = UDim2.new(0, 290, 0, 20)
-bar.Position = UDim2.new(0, 30, 0, 60)
+bar.Size = UDim2.new(0, 240, 0, 20)
+bar.Position = UDim2.new(0, 130, 0, 60)
 bar.BackgroundColor3 = Color3.fromRGB(80,80,80)
 bar.Transparency = 1
 
@@ -452,7 +486,7 @@ knob.AutoButtonColor = false
 
 local toggleHighLightLabelMEDKIT = Instance.new("TextLabel", frame)
 toggleHighLightLabelMEDKIT.Size = UDim2.new(0, 200, 0, 30)
-toggleHighLightLabelMEDKIT.Position = UDim2.new(0, 30, 0, 240)
+toggleHighLightLabelMEDKIT.Position = UDim2.new(0, 80, 0, 240)
 toggleHighLightLabelMEDKIT.BackgroundTransparency = 1
 toggleHighLightLabelMEDKIT.TextColor3 = Color3.new(1,1,1)
 toggleHighLightLabelMEDKIT.Font = Enum.Font.SourceSans
@@ -461,7 +495,7 @@ toggleHighLightLabelMEDKIT.Text = "Обводка MEDKIT: ВЫКЛ"
 
 local toggleFullBrightLabel = Instance.new("TextLabel", frame)
 toggleFullBrightLabel.Size = UDim2.new(0, 200, 0, 30)
-toggleFullBrightLabel.Position = UDim2.new(0, 30, 0, 30)
+toggleFullBrightLabel.Position = UDim2.new(0, 80, 0, 30)
 toggleFullBrightLabel.BackgroundTransparency = 1
 toggleFullBrightLabel.TextColor3 = Color3.new(1,1,1)
 toggleFullBrightLabel.Font = Enum.Font.SourceSans
@@ -470,16 +504,20 @@ toggleFullBrightLabel.Text = "FULL BRIGHT: ВЫКЛ"
 
 local toggleFullBrightButton = Instance.new("TextButton", frame)
 toggleFullBrightButton.Size = UDim2.new(0, 80, 0, 30)
-toggleFullBrightButton.Position = UDim2.new(0, 240, 0, 30)
+toggleFullBrightButton.Position = UDim2.new(0, 290, 0, 30)
 toggleFullBrightButton.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
 toggleFullBrightButton.TextColor3 = Color3.new(1,1,1)
 toggleFullBrightButton.Font = Enum.Font.SourceSansBold
 toggleFullBrightButton.TextSize = 18
 toggleFullBrightButton.Text = "ВКЛ"
+gradientforALL:Clone().Parent = toggleFullBrightButton
+local uiCorner1 = Instance.new("UICorner")
+uiCorner1.CornerRadius = UDim.new(0, 15) -- радиус 15 пикселей
+uiCorner1.Parent = toggleFullBrightButton
 
 local toggleNoFogLabel = Instance.new("TextLabel", frame)
 toggleNoFogLabel.Size = UDim2.new(0, 200, 0, 30)
-toggleNoFogLabel.Position = UDim2.new(0, 30, 0, 65)
+toggleNoFogLabel.Position = UDim2.new(0, 80, 0, 65)
 toggleNoFogLabel.BackgroundTransparency = 1
 toggleNoFogLabel.TextColor3 = Color3.new(1,1,1)
 toggleNoFogLabel.Font = Enum.Font.SourceSans
@@ -488,43 +526,34 @@ toggleNoFogLabel.Text = "NO FOG: ВЫКЛ"
 
 local toggleNoFogButton = Instance.new("TextButton", frame)
 toggleNoFogButton.Size = UDim2.new(0, 80, 0, 30)
-toggleNoFogButton.Position = UDim2.new(0, 240, 0, 65)
+toggleNoFogButton.Position = UDim2.new(0, 290, 0, 65)
 toggleNoFogButton.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
 toggleNoFogButton.TextColor3 = Color3.new(1,1,1)
 toggleNoFogButton.Font = Enum.Font.SourceSansBold
 toggleNoFogButton.TextSize = 18
 toggleNoFogButton.Text = "ВКЛ"
-
-local closebutton = Instance.new("TextButton", frame)
-closebutton.Size = UDim2.new(0, 30, 0, 30)
-closebutton.Position = UDim2.new(0, 5, 0, 5)
-closebutton.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
-closebutton.TextColor3 = Color3.new(1,1,1)
-closebutton.Font = Enum.Font.SourceSansBold
-closebutton.TextSize = 18
-closebutton.Text = "❌"
+gradientforALL:Clone():clone().Parent = toggleNoFogButton
+local uiCorner2 = Instance.new("UICorner")
+uiCorner2.CornerRadius = UDim.new(0, 15) -- радиус 15 пикселей
+uiCorner2.Parent = toggleNoFogButton
 
 local toggleButtonMEDKIT = Instance.new("TextButton", frame)
 toggleButtonMEDKIT.Size = UDim2.new(0, 80, 0, 30)
-toggleButtonMEDKIT.Position = UDim2.new(0, 240, 0, 240)
+toggleButtonMEDKIT.Position = UDim2.new(0, 290, 0, 240)
 toggleButtonMEDKIT.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
 toggleButtonMEDKIT.TextColor3 = Color3.new(1,1,1)
 toggleButtonMEDKIT.Font = Enum.Font.SourceSansBold
 toggleButtonMEDKIT.TextSize = 18
 toggleButtonMEDKIT.Text = "ВКЛ"
-
-local toggleButtonPAGE = Instance.new("TextButton", frame)
-toggleButtonPAGE.Size = UDim2.new(0, 30, 0, 30)
-toggleButtonPAGE.Position = UDim2.new(0, 40, 0, 5)
-toggleButtonPAGE.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
-toggleButtonPAGE.TextColor3 = Color3.new(1,1,1)
-toggleButtonPAGE.Font = Enum.Font.SourceSansBold
-toggleButtonPAGE.TextSize = 18
-toggleButtonPAGE.Text = "1️⃣"
+local gradientforALL1 = gradientforALL:Clone():Clone():clone()
+local uiCorner3 = Instance.new("UICorner")
+uiCorner3.CornerRadius = UDim.new(0, 15) -- радиус 15 пикселей
+uiCorner3.Parent = toggleButtonMEDKIT
+gradientforALL1.Parent = toggleButtonMEDKIT
 
 local toggleHighlightLabel = Instance.new("TextLabel", frame)
 toggleHighlightLabel.Size = UDim2.new(0, 200, 0, 30)
-toggleHighlightLabel.Position = UDim2.new(0, 30, 0, 100)
+toggleHighlightLabel.Position = UDim2.new(0, 80, 0, 100)
 toggleHighlightLabel.BackgroundTransparency = 1
 toggleHighlightLabel.TextColor3 = Color3.new(1,1,1)
 toggleHighlightLabel.Font = Enum.Font.SourceSans
@@ -533,7 +562,7 @@ toggleHighlightLabel.Text = "Обводка игроков: ВЫКЛ"
 
 local toggleHighlightCola = Instance.new("TextLabel", frame)
 toggleHighlightCola.Size = UDim2.new(0, 200, 0, 30)
-toggleHighlightCola.Position = UDim2.new(0, 30, 0, 205)
+toggleHighlightCola.Position = UDim2.new(0, 80, 0, 205)
 toggleHighlightCola.BackgroundTransparency = 1
 toggleHighlightCola.TextColor3 = Color3.new(1,1,1)
 toggleHighlightCola.Font = Enum.Font.SourceSans
@@ -542,16 +571,20 @@ toggleHighlightCola.Text = "Обводка BloxyCola: ВЫКЛ"
 
 local toggleButtonCola = Instance.new("TextButton", frame)
 toggleButtonCola.Size = UDim2.new(0, 80, 0, 30)
-toggleButtonCola.Position = UDim2.new(0, 240, 0, 205)
+toggleButtonCola.Position = UDim2.new(0, 290, 0, 205)
 toggleButtonCola.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
 toggleButtonCola.TextColor3 = Color3.new(1,1,1)
 toggleButtonCola.Font = Enum.Font.SourceSansBold
 toggleButtonCola.TextSize = 18
 toggleButtonCola.Text = "ВКЛ"
+gradientforALL1:Clone().Parent = toggleButtonCola
+local uiCorner4 = Instance.new("UICorner")
+uiCorner4.CornerRadius = UDim.new(0, 15) -- радиус 15 пикселей
+uiCorner4.Parent = toggleButtonCola
 
 local toggleNoClipButton = Instance.new("TextButton", frame)
 toggleNoClipButton.Size = UDim2.new(0, 80, 0, 30)
-toggleNoClipButton.Position = UDim2.new(0, 240, 0, 90)
+toggleNoClipButton.Position = UDim2.new(0, 290, 0, 90)
 toggleNoClipButton.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
 toggleNoClipButton.TextColor3 = Color3.new(1,1,1)
 toggleNoClipButton.Font = Enum.Font.SourceSansBold
@@ -559,10 +592,14 @@ toggleNoClipButton.TextSize = 18
 toggleNoClipButton.Text = "ВКЛ"
 toggleNoClipButton.Interactable = false
 toggleNoClipButton.Transparency = 1
+local uiCorner5 = Instance.new("UICorner")
+uiCorner5.CornerRadius = UDim.new(0, 15) -- радиус 15 пикселей
+uiCorner5.Parent = toggleNoClipButton
+gradientforALL1:Clone():Clone().Parent = toggleNoClipButton
 
 local toggleNoClipLabel = Instance.new("TextLabel", frame)
 toggleNoClipLabel.Size = UDim2.new(0, 200, 0, 30)
-toggleNoClipLabel.Position = UDim2.new(0, 30, 0, 90)
+toggleNoClipLabel.Position = UDim2.new(0, 80, 0, 90)
 toggleNoClipLabel.BackgroundTransparency = 1
 toggleNoClipLabel.TextColor3 = Color3.new(1,1,1)
 toggleNoClipLabel.Font = Enum.Font.SourceSans
@@ -573,16 +610,20 @@ toggleNoClipLabel.Transparency = 1
 
 local toggleButton = Instance.new("TextButton", frame)
 toggleButton.Size = UDim2.new(0, 80, 0, 30)
-toggleButton.Position = UDim2.new(0, 240, 0, 100)
+toggleButton.Position = UDim2.new(0, 290, 0, 100)
 toggleButton.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
 toggleButton.TextColor3 = Color3.new(1,1,1)
 toggleButton.Font = Enum.Font.SourceSansBold
 toggleButton.TextSize = 18
 toggleButton.Text = "ВКЛ"
+local uiCorner6 = Instance.new("UICorner")
+uiCorner6.CornerRadius = UDim.new(0, 15) -- радиус 15 пикселей
+uiCorner6.Parent = toggleButton
+gradientforALL1:Clone():Clone():Clone().Parent = toggleButton
 
 local toggleNameLabel = Instance.new("TextLabel", frame)
 toggleNameLabel.Size = UDim2.new(0, 200, 0, 30)
-toggleNameLabel.Position = UDim2.new(0, 30, 0, 135)
+toggleNameLabel.Position = UDim2.new(0, 80, 0, 135)
 toggleNameLabel.BackgroundTransparency = 1
 toggleNameLabel.TextColor3 = Color3.new(1,1,1)
 toggleNameLabel.Font = Enum.Font.SourceSans
@@ -591,25 +632,33 @@ toggleNameLabel.Text = "Подсветка ников: ВЫКЛ"
 
 local toggleNameButton = Instance.new("TextButton", frame)
 toggleNameButton.Size = UDim2.new(0, 80, 0, 30)
-toggleNameButton.Position = UDim2.new(0, 240, 0, 135)
+toggleNameButton.Position = UDim2.new(0, 290, 0, 135)
 toggleNameButton.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
 toggleNameButton.TextColor3 = Color3.new(1,1,1)
 toggleNameButton.Font = Enum.Font.SourceSansBold
 toggleNameButton.TextSize = 18
 toggleNameButton.Text = "ВКЛ"
+local uiCorner7 = Instance.new("UICorner")
+uiCorner7.CornerRadius = UDim.new(0, 15) -- радиус 15 пикселей
+uiCorner7.Parent = toggleNameButton
+gradientforALL1:Clone():Clone():Clone():Clone().Parent = toggleNameButton
 
 local toggleGENButton = Instance.new("TextButton", frame)
 toggleGENButton.Size = UDim2.new(0, 80, 0, 30)
-toggleGENButton.Position = UDim2.new(0, 240, 0, 170)
+toggleGENButton.Position = UDim2.new(0, 290, 0, 170)
 toggleGENButton.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
 toggleGENButton.TextColor3 = Color3.new(1,1,1)
 toggleGENButton.Font = Enum.Font.SourceSansBold
 toggleGENButton.TextSize = 18
 toggleGENButton.Text = "ВКЛ"
+local uiCorner9 = Instance.new("UICorner")
+uiCorner9.CornerRadius = UDim.new(0, 15) -- радиус 15 пикселей
+uiCorner9.Parent = toggleGENButton
+gradientforALL1:Clone():Clone():Clone():Clone():Clone():Clone().Parent = toggleGENButton
 
 local toggleHighlightLabelGEN = Instance.new("TextLabel", frame)
 toggleHighlightLabelGEN.Size = UDim2.new(0, 200, 0, 30)
-toggleHighlightLabelGEN.Position = UDim2.new(0, 30, 0, 170)
+toggleHighlightLabelGEN.Position = UDim2.new(0, 80, 0, 170)
 toggleHighlightLabelGEN.BackgroundTransparency = 1
 toggleHighlightLabelGEN.TextColor3 = Color3.new(1,1,1)
 toggleHighlightLabelGEN.Font = Enum.Font.SourceSans
@@ -618,7 +667,7 @@ toggleHighlightLabelGEN.Text = "Генератор ESP: ВЫКЛ"
 
 local sliderLabel = Instance.new("TextLabel", frame)
 sliderLabel.Size = UDim2.new(0.80, 0, 0.1, 0)
-sliderLabel.Position = UDim2.new(0, 30, 0, 180)
+sliderLabel.Position = UDim2.new(0, 80, 0, 60)
 sliderLabel.BackgroundTransparency = 1
 sliderLabel.TextColor3 = Color3.new(1, 1, 1)
 sliderLabel.Font = Enum.Font.SourceSansBold
@@ -628,8 +677,8 @@ sliderLabel.Parent = frame
 sliderLabel.Transparency = 1
 
 local slider = Instance.new("TextButton", frame)
-slider.Size = UDim2.new(0.80, 0, 0.065, 0)
-slider.Position = UDim2.new(0, 30, 0, 160)
+slider.Size = UDim2.new(0.60, 0, 0.065, 0)
+slider.Position = UDim2.new(0, 127, 0, 40)
 slider.BackgroundColor3 = Color3.new(0.3, 0.3, 0.3)
 slider.Text = ""
 slider.Parent = frame
@@ -644,7 +693,7 @@ sliderIndicator.Transparency = 1
 
 local toggleAGButton = Instance.new("TextButton", frame)
 toggleAGButton.Size = UDim2.new(0, 80, 0, 30)
-toggleAGButton.Position = UDim2.new(0, 240, 0, 125)
+toggleAGButton.Position = UDim2.new(0, 290, 0, 90)
 toggleAGButton.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
 toggleAGButton.TextColor3 = Color3.new(1,1,1)
 toggleAGButton.Font = Enum.Font.SourceSansBold
@@ -652,10 +701,69 @@ toggleAGButton.TextSize = 18
 toggleAGButton.Text = "ВКЛ"
 toggleAGButton.Interactable = false
 toggleAGButton.Transparency = 1
+local uiCorner8 = Instance.new("UICorner")
+uiCorner8.CornerRadius = UDim.new(0, 15) -- радиус 15 пикселей
+uiCorner8.Parent = toggleAGButton
+gradientforALL1:Clone():Clone():Clone():Clone():Clone().Parent = toggleAGButton
+
+local gradientforALL2 = gradientforALL1:Clone():Clone():Clone():Clone():Clone():Clone():Clone()
+gradientforALL2.Color = ColorSequence.new{
+	ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 170, 255)),   -- начало градиента (красный)
+	ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 80, 232))    -- конец градиента (синий)
+}
+
+-- пример изменения наклона градиента
+gradientforALL2.Rotation = 45 -- угол в градусах
+
+-- можно также менять Transparency (прозрачность) градиента
+gradientforALL2.Transparency = NumberSequence.new{
+	NumberSequenceKeypoint.new(0, 0),   -- непрозрачный в начале
+	NumberSequenceKeypoint.new(1, 0.3)  -- полупрозрачный в конце
+}
+
+
+local togglePage1button = Instance.new("TextButton", frame)
+togglePage1button.Size = UDim2.new(0, 80, 0, 30)
+togglePage1button.Position = UDim2.new(0, 5, 0, 35)
+togglePage1button.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
+togglePage1button.TextColor3 = Color3.new(1,1,1)
+togglePage1button.Font = Enum.Font.SourceSansBold
+togglePage1button.TextSize = 18
+togglePage1button.Text = "Visuals"
+local uiCorner9 = Instance.new("UICorner")
+uiCorner9.CornerRadius = UDim.new(0, 15) -- радиус 15 пикселей
+uiCorner9.Parent = togglePage1button
+gradientforALL2.Parent = togglePage1button
+
+local togglePage2button = Instance.new("TextButton", frame)
+togglePage2button.Size = UDim2.new(0, 80, 0, 30)
+togglePage2button.Position = UDim2.new(0, 5, 0, 75)
+togglePage2button.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
+togglePage2button.TextColor3 = Color3.new(1,1,1)
+togglePage2button.Font = Enum.Font.SourceSansBold
+togglePage2button.TextSize = 18
+togglePage2button.Text = "Misc"
+local uiCorner10 = Instance.new("UICorner")
+uiCorner10.CornerRadius = UDim.new(0, 15) -- радиус 15 пикселей
+uiCorner10.Parent = togglePage2button
+gradientforALL2:Clone().Parent = togglePage2button
+
+local togglePage3button = Instance.new("TextButton", frame)
+togglePage3button.Size = UDim2.new(0, 80, 0, 30)
+togglePage3button.Position = UDim2.new(0, 5, 0, 115)
+togglePage3button.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
+togglePage3button.TextColor3 = Color3.new(1,1,1)
+togglePage3button.Font = Enum.Font.SourceSansBold
+togglePage3button.TextSize = 18
+togglePage3button.Text = "Generator"
+local uiCorner11 = Instance.new("UICorner")
+uiCorner11.CornerRadius = UDim.new(0, 15) -- радиус 15 пикселей
+uiCorner11.Parent = togglePage3button
+gradientforALL2:Clone():Clone().Parent = togglePage3button
 
 local toggleAGlabel = Instance.new("TextLabel", frame)
 toggleAGlabel.Size = UDim2.new(0, 200, 0, 30)
-toggleAGlabel.Position = UDim2.new(0, 30, 0, 125)
+toggleAGlabel.Position = UDim2.new(0, 100, 0, 90)
 toggleAGlabel.BackgroundTransparency = 1
 toggleAGlabel.TextColor3 = Color3.new(1,1,1)
 toggleAGlabel.Font = Enum.Font.SourceSans
@@ -731,89 +839,125 @@ toggleAGButton.MouseButton1Click:Connect(function()
 	end
 end)
 
-toggleButtonPAGE.MouseButton1Click:Connect(function()
-	if toggleButtonPAGE.Text == "1️⃣" then
-		toggleButtonPAGE.Text = "2️⃣"
-		toggleButtonMEDKIT.Transparency = 1
-		toggleHighLightLabelMEDKIT.Transparency = 1
-		toggleHighlightLabel.Transparency = 1
-		toggleButton.TextTransparency = 1
-		toggleButtonCola.Transparency = 1
-		toggleHighlightCola.TextTransparency = 1
-		toggleNameLabel.Transparency = 1
-		toggleGENButton.Transparency = 1
-		toggleButton.Transparency = 1
-		toggleNameButton.Transparency = 1
-		toggleHighlightLabelGEN.Transparency = 1
-		label.TextTransparency = 0
-		bar.Transparency = 0
-		fill.Transparency = 0
-		knob.ImageTransparency = 0
-		knob.Interactable = true
-		toggleButtonCola.Interactable = false
-		toggleButton.Interactable = false
-		toggleButtonMEDKIT.Interactable = false
-		toggleGENButton.Interactable = false
-		toggleNameButton.Interactable = false
-		toggleNoFogLabel.Transparency = 1
-		toggleNoFogButton.Transparency = 1
-		toggleNoFogButton.Interactable = false
-		toggleFullBrightButton.Transparency = 1
-		toggleFullBrightLabel.Transparency = 1
-		toggleFullBrightButton.Interactable = false
-		toggleNoClipButton.Transparency = 0
-		toggleNoClipButton.Interactable = true
-		toggleNoClipLabel.TextTransparency = 0
-		toggleAGButton.Interactable = true
-		toggleAGButton.Transparency = 0
-		toggleAGlabel.TextTransparency = 0
-		slider.Transparency = 0
-		slider.Interactable = true
-		sliderLabel.TextTransparency = 0
-		sliderIndicator.Transparency = 0
-		toggleAGButton.Interactable = true
-		toggleAGButton.Transparency = 0
-	else
-		toggleButtonPAGE.Text = "1️⃣"
-		toggleHighLightLabelMEDKIT.TextTransparency = 0
-		toggleButtonMEDKIT.Transparency = 0
-		toggleHighlightLabel.TextTransparency = 0
-		toggleButton.Transparency = 0
-		toggleHighlightCola.TextTransparency = 0
-		toggleButtonCola.Transparency = 0
-		toggleNameLabel.TextTransparency = 0
-		toggleNameButton.Transparency = 0
-		toggleGENButton.Transparency = 0
-		toggleHighlightLabelGEN.TextTransparency = 0
-		knob.Interactable = false
-		label.TextTransparency = 1
-		bar.Transparency = 1
-		fill.Transparency = 1
-		knob.ImageTransparency = 1
-		toggleButtonCola.Interactable = true
-		toggleButton.Interactable = true
-		toggleButtonMEDKIT.Interactable = true
-		toggleGENButton.Interactable = true
-		toggleNameButton.Interactable = true
-		toggleNoFogLabel.TextTransparency = 0
-		toggleNoFogButton.Transparency = 0
-		toggleNoFogButton.Interactable = true
-		toggleFullBrightButton.Transparency = 0
-		toggleFullBrightLabel.TextTransparency = 0
-		toggleFullBrightButton.Interactable = true
-		toggleNoClipButton.Transparency = 1
-		toggleNoClipButton.Interactable = false
-		toggleNoClipLabel.TextTransparency = 1
-		toggleAGButton.Interactable = false
-		toggleAGButton.Transparency = 1
-		toggleAGlabel.Transparency = 1
-		slider.Transparency = 1
-		slider.Interactable = false
-		sliderLabel.Transparency = 1
-		sliderIndicator.Transparency = 1
-		toggleAGButton.Interactable = false
-		toggleAGButton.Transparency = 1
-	end
+togglePage1button.MouseButton1Click:Connect(function()
+	toggleHighLightLabelMEDKIT.TextTransparency = 0
+	toggleButtonMEDKIT.Transparency = 0
+	toggleHighlightLabel.TextTransparency = 0
+	toggleButton.Transparency = 0
+	toggleHighlightCola.TextTransparency = 0
+	toggleButtonCola.Transparency = 0
+	toggleNameLabel.TextTransparency = 0
+	toggleNameButton.Transparency = 0
+	toggleGENButton.Transparency = 0
+	toggleHighlightLabelGEN.TextTransparency = 0
+	knob.Interactable = false
+	label.TextTransparency = 1
+	bar.Transparency = 1
+	fill.Transparency = 1
+	knob.ImageTransparency = 1
+	toggleButtonCola.Interactable = true
+	toggleButton.Interactable = true
+	toggleButtonMEDKIT.Interactable = true
+	toggleGENButton.Interactable = true
+	toggleNameButton.Interactable = true
+	toggleNoFogLabel.TextTransparency = 0
+	toggleNoFogButton.Transparency = 0
+	toggleNoFogButton.Interactable = true
+	toggleFullBrightButton.Transparency = 0
+	toggleFullBrightLabel.TextTransparency = 0
+	toggleFullBrightButton.Interactable = true
+	toggleNoClipButton.Transparency = 1
+	toggleNoClipButton.Interactable = false
+	toggleNoClipLabel.TextTransparency = 1
+	toggleAGButton.Interactable = false
+	toggleAGButton.Transparency = 1
+	toggleAGlabel.Transparency = 1
+	slider.Transparency = 1
+	slider.Interactable = false
+	sliderLabel.Transparency = 1
+	sliderIndicator.Transparency = 1
+	toggleAGButton.Interactable = false
+	toggleAGButton.Transparency = 1
+end)
+
+togglePage2button.MouseButton1Click:Connect(function()
+	toggleButtonMEDKIT.Transparency = 1
+	toggleHighLightLabelMEDKIT.Transparency = 1
+	toggleHighlightLabel.Transparency = 1
+	toggleButton.TextTransparency = 1
+	toggleButtonCola.Transparency = 1
+	toggleHighlightCola.TextTransparency = 1
+	toggleNameLabel.Transparency = 1
+	toggleGENButton.Transparency = 1
+	toggleButton.Transparency = 1
+	toggleNameButton.Transparency = 1
+	toggleHighlightLabelGEN.Transparency = 1
+	label.TextTransparency = 0
+	bar.Transparency = 0
+	fill.Transparency = 0
+	knob.ImageTransparency = 0
+	knob.Interactable = true
+	toggleButtonCola.Interactable = false
+	toggleButton.Interactable = false
+	toggleButtonMEDKIT.Interactable = false
+	toggleGENButton.Interactable = false
+	toggleNameButton.Interactable = false
+	toggleNoFogLabel.Transparency = 1
+	toggleNoFogButton.Transparency = 1
+	toggleNoFogButton.Interactable = false
+	toggleFullBrightButton.Transparency = 1
+	toggleFullBrightLabel.Transparency = 1
+	toggleFullBrightButton.Interactable = false
+	toggleNoClipButton.Transparency = 0
+	toggleNoClipButton.Interactable = true
+	toggleNoClipLabel.TextTransparency = 0
+	toggleAGButton.Interactable = false
+	toggleAGButton.Transparency = 1
+	toggleAGlabel.Transparency = 1
+	slider.Transparency = 1
+	slider.Interactable = false
+	sliderLabel.Transparency = 1
+	sliderIndicator.Transparency = 1
+	toggleAGButton.Interactable = false
+	toggleAGButton.Transparency = 1
+end)
+
+togglePage3button.MouseButton1Click:Connect(function()
+	toggleButtonMEDKIT.Transparency = 1
+	toggleHighLightLabelMEDKIT.Transparency = 1
+	toggleHighlightLabel.Transparency = 1
+	toggleButtonCola.Transparency = 1
+	toggleHighlightCola.TextTransparency = 1
+	toggleNameLabel.Transparency = 1
+	toggleGENButton.Transparency = 1
+	toggleNameButton.Transparency = 1
+	toggleHighlightLabelGEN.Transparency = 1
+	toggleAGButton.Interactable = true
+	toggleAGButton.Transparency = 0
+	toggleAGlabel.TextTransparency = 0
+	slider.Transparency = 0
+	slider.Interactable = true
+	sliderLabel.TextTransparency = 0
+	sliderIndicator.Transparency = 0
+	toggleAGButton.Interactable = true
+	toggleAGButton.Transparency = 0
+	toggleButton.Interactable = false
+	toggleButton.Transparency = 1
+	toggleButton.TextTransparency = 1
+	toggleNoFogLabel.Transparency = 1
+	toggleNoFogButton.Transparency = 1
+	toggleNoFogButton.Interactable = false
+	toggleFullBrightButton.Transparency = 1
+	toggleFullBrightLabel.Transparency = 1
+	toggleFullBrightButton.Interactable = false
+	toggleNoClipButton.Transparency = 1
+	toggleNoClipButton.Interactable = false
+	toggleNoClipLabel.TextTransparency = 1
+	knob.Interactable = false
+	label.TextTransparency = 1
+	bar.Transparency = 1
+	fill.Transparency = 1
+	knob.ImageTransparency = 1
 end)
 
 toggleButtonCola.MouseButton1Click:Connect(function()
@@ -842,19 +986,19 @@ end)
 
 closebuttonRE = nil
 
-closebutton. MouseButton1Click:Connect(function()
-	highlightEnabled = false
-	nameHighlightEnabled = false
-	espEnabled1 = false
-	espEnabled3 = false
-	espEnabled = false
-	closebuttonRE = true
-	clearHighlights2()
-	clearNameTags()
-	clearHighlights()
-	clearHighlights3()
-	screenGui:Destroy()
-end)
+--closebutton. MouseButton1Click:Connect(function()
+--	highlightEnabled = false
+--	nameHighlightEnabled = false
+--	espEnabled1 = false
+--	espEnabled3 = false
+--	espEnabled = false
+--	closebuttonRE = true
+--	clearHighlights2()
+--	clearNameTags()
+--	clearHighlights()
+--	clearHighlights3()
+--	screenGui:Destroy()
+--end)
 
 toggleGENButton.MouseButton1Click:Connect(function()
 	espEnabled = not espEnabled
