@@ -395,6 +395,27 @@ local function setupCharacter(character)
 	end)
 end
 
+local noclipEnabled = false
+
+local character = player.Character or player.CharacterAdded:Wait()
+local humanoid = character:WaitForChild("Humanoid")
+
+function noclip()
+	if noclipEnabled then
+		for _, part in pairs(character:GetChildren()) do
+			if part:IsA("BasePart") then
+				part.CanCollide = false
+			end
+		end
+	else
+		for _, part in pairs(character:GetChildren()) do
+			if part:IsA("BasePart") then
+				part.CanCollide = true
+			end
+		end
+	end
+end
+
 
 local screenGui = Instance.new("ScreenGui")
 screenGui.Name = "SpeedControlGui"
@@ -537,6 +558,28 @@ toggleButtonCola.Font = Enum.Font.SourceSansBold
 toggleButtonCola.TextSize = 18
 toggleButtonCola.Text = "ВКЛ"
 
+local toggleNoClipButton = Instance.new("TextButton", frame)
+toggleNoClipButton.Size = UDim2.new(0, 80, 0, 30)
+toggleNoClipButton.Position = UDim2.new(0, 240, 0, 90)
+toggleNoClipButton.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
+toggleNoClipButton.TextColor3 = Color3.new(1,1,1)
+toggleNoClipButton.Font = Enum.Font.SourceSansBold
+toggleNoClipButton.TextSize = 18
+toggleNoClipButton.Text = "ВКЛ"
+toggleNoClipButton.Interactable = false
+toggleNoClipButton.Transparency = 1
+
+local toggleNoClipLabel = Instance.new("TextLabel", frame)
+toggleNoClipLabel.Size = UDim2.new(0, 200, 0, 30)
+toggleNoClipLabel.Position = UDim2.new(0, 30, 0, 90)
+toggleNoClipLabel.BackgroundTransparency = 1
+toggleNoClipLabel.TextColor3 = Color3.new(1,1,1)
+toggleNoClipLabel.Font = Enum.Font.SourceSans
+toggleNoClipLabel.TextSize = 18
+toggleNoClipLabel.Text = "NO CLIP: ВЫКЛ"
+toggleNoClipLabel.Transparency = 1
+
+
 local toggleButton = Instance.new("TextButton", frame)
 toggleButton.Size = UDim2.new(0, 80, 0, 30)
 toggleButton.Position = UDim2.new(0, 240, 0, 100)
@@ -624,6 +667,9 @@ toggleButtonPAGE.MouseButton1Click:Connect(function()
 		toggleFullBrightButton.Transparency = 1
 		toggleFullBrightLabel.Transparency = 1
 		toggleFullBrightButton.Interactable = false
+		toggleNoClipButton.Transparency = 0
+		toggleNoClipButton.Interactable = true
+		toggleNoClipLabel.TextTransparency = 0
 	else
 		toggleButtonPAGE.Text = "1️⃣"
 		toggleHighLightLabelMEDKIT.TextTransparency = 0
@@ -652,6 +698,9 @@ toggleButtonPAGE.MouseButton1Click:Connect(function()
 		toggleFullBrightButton.Transparency = 0
 		toggleFullBrightLabel.TextTransparency = 0
 		toggleFullBrightButton.Interactable = true
+		toggleNoClipButton.Transparency = 1
+		toggleNoClipButton.Interactable = false
+		toggleNoClipLabel.TextTransparency = 1
 	end
 end)
 
@@ -744,6 +793,18 @@ toggleNoFogButton.MouseButton1Click:Connect(function()
 		toggleNoFogButton.Text = "ВКЛ"
 	end
 
+end)
+
+toggleNoClipButton.MouseButton1Click:Connect(function()
+	noclipEnabled = not noclipEnabled
+	noclip()
+	if toggleNoClipButton.Text == "ВКЛ" then
+		toggleNoClipButton.Text = "ВЫКЛ"
+		toggleNoClipLabel.Text = "NO CLIP: ВКЛ"
+	else
+		toggleNoClipButton.Text = "ВКЛ"
+		toggleNoClipLabel.Text = "NO CLIP: ВЫКЛ"
+	end
 end)
 
 toggleFullBrightButton.MouseButton1Click:Connect(function()
@@ -865,6 +926,9 @@ RunService.Heartbeat:Connect(function()
 	end
 	if espEnabled == false then
 		clearHighlights1()
+	end
+	if noclipEnabled then
+		noclip()
 	end
 end)
 
