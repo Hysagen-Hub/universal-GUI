@@ -400,6 +400,12 @@ local noclipEnabled = false
 local character = player.Character or player.CharacterAdded:Wait()
 local humanoid = character:WaitForChild("Humanoid")
 
+RunService.Heartbeat:Connect(function()
+	if noclipEnabled then
+		character = player.Character or player.CharacterAdded:Wait()
+	end
+end)
+
 function noclip()
 	if noclipEnabled then
 		for _, part in pairs(character:GetChildren()) do
