@@ -322,7 +322,6 @@ local function addHighlight(model, color)
 end
 
 local function updateHighlights()
-	if not highlightEnabled then return end
 	-- Добавляем подсветку для новых моделей выживших
 	survivorsFolder = workspace.Players.Survivors
 	killersFolder = workspace.Players.Killers
@@ -336,21 +335,6 @@ local function updateHighlights()
 	if killersFolder then
 		for _, model in pairs(killersFolder:GetChildren()) do
 			addHighlight(model, Color3.fromRGB(255, 0, 0))
-		end
-	end
-
-	-- Удаляем подсветку для тех моделей, которых уже нет в папках
-	for model, highlight in pairs(highlights) do
-		if typeof(model) == "Instance" then
-			local inSurvivors = survivorsFolder and survivorsFolder:FindFirstChild(model.Name)
-			local inKillers = killersFolder and killersFolder:FindFirstChild(model.Name)
-			if not inSurvivors and not inKillers then
-				highlight:Destroy()
-				highlights[model] = nil
-			end
-		else
-			warn("Ключ highlights не является Instance:", model)
-			highlights[model] = nil -- либо удалить неверный элемент
 		end
 	end
 end
@@ -636,10 +620,12 @@ toggleButton.MouseButton1Click:Connect(function()
 		disableHighlights()
 		toggleHighlightLabel.Text = "Обводка игроков: ВЫКЛ"
 		toggleButton.Text = "ВКЛ"
+		yesornoH1.Name = "no"
 	else
 		toggleHighlightLabel.Text = "Обводка игроков: ВКЛ"
 		enableHighlights()
 		toggleButton.Text = "ВЫКЛ"
+		yesornoH1.Name = "yes"
 	end
 end)
 
@@ -865,19 +851,8 @@ end)
 
 player.CharacterAdded:Connect(function(char)
 	setupCharacter(char)
-	-- ВОТ ЭТО ДОБАВИТЬ: пересоздаём ESP после смерти, если были включены
-	if highlightEnabled then
-		enableHighlights()
-	end
-	if nameHighlightEnabled then
-		enableNameTags()
-	end
-	if espEnabled1 then
-		toggleESP(espEnabled1)
-	end
-	if espEnabled3 then
-		toggleESP3(espEnabled3)
-	end
+	highlights = {}
+	nameTags = {}
 end)
 
 local died = false
@@ -887,14 +862,6 @@ local humanoid = character:WaitForChild("Humanoid")
 RunService.Heartbeat:Connect(function()
 	if not died and humanoid.Health <= 0 then
 		died = true
-		highlightEnabled = false
-		espEnabled = false
-		espEnabled1 = false
-		espEnabled3 = false
-		clearHighlights2()
-		clearNameTags()
-		clearHighlights()
-		clearHighlights3()
 		toggleFullBrightLabel.Text = "FULL BRIGHT ВЫКЛ"
 		toggleFullBrightButton.Text = "ВКЛ"
 		toggleNoFogLabel.Text = "NO FOG: ВЫКЛ"
@@ -907,8 +874,7 @@ RunService.Heartbeat:Connect(function()
 		toggleButtonCola.Text = "ВКЛ"
 		toggleNameLabel.Text = "Подсветка ников: ВЫКЛ"
 		toggleNameButton.Text = "ВКЛ"
-		toggleHighlightLabel.Text = "Обводка игроков: ВЫКЛ"
-		toggleButton.Text = "ВКЛ"
+		highlights = {}
 	end
 	if bruh then
 		game.Lighting.FogEnd = 100000
@@ -916,9 +882,6 @@ RunService.Heartbeat:Connect(function()
 		game.Lighting.GlobalShadows = false
 	end
 	if highlightEnabled then
-		if highlights == {} then
-			addHighlight()
-		end
 		updateHighlights()
 	end
 	if nameHighlightEnabled then
