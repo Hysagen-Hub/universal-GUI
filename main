@@ -408,6 +408,15 @@ function noclip()
 	end
 end
 
+speeds = 1
+tpwalking = nil
+nowe = false
+
+local speaker = game:GetService("Players").LocalPlayer
+
+local chr = game.Players.LocalPlayer.Character
+local hum = chr and chr:FindFirstChildWhichIsA("Humanoid")
+
 local screenGui = Instance.new("ScreenGui")
 screenGui.Name = "SpeedControlGui"
 screenGui.ResetOnSpawn = false
@@ -721,6 +730,317 @@ gradientforALL2.Transparency = NumberSequence.new{
 	NumberSequenceKeypoint.new(1, 0.3)  -- полупрозрачный в конце
 }
 
+local toggleLabelFLY = Instance.new("TextLabel", frame)
+toggleLabelFLY.Size = UDim2.new(0, 200, 0, 30)
+toggleLabelFLY.Position = UDim2.new(0, 80, 0, 125)
+toggleLabelFLY.BackgroundTransparency = 1
+toggleLabelFLY.TextColor3 = Color3.new(1,1,1)
+toggleLabelFLY.Font = Enum.Font.SourceSans
+toggleLabelFLY.TextSize = 18
+toggleLabelFLY.Text = "полет: ВЫКЛ"
+toggleLabelFLY.TextTransparency = 1
+
+local toggleflybutton = Instance.new("TextButton", frame)
+toggleflybutton.Size = UDim2.new(0, 80, 0, 30)
+toggleflybutton.Position = UDim2.new(0, 290, 0, 125)
+toggleflybutton.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
+toggleflybutton.TextColor3 = Color3.new(1,1,1)
+toggleflybutton.Font = Enum.Font.SourceSansBold
+toggleflybutton.TextSize = 18
+toggleflybutton.Text = "ВКЛ"
+toggleflybutton.Interactable = false
+toggleflybutton.Transparency = 1
+local uiCorner123 = Instance.new("UICorner")
+uiCorner123.CornerRadius = UDim.new(0, 15) -- радиус 15 пикселей
+uiCorner123.Parent = toggleflybutton
+local grad = Instance.new("UIGradient")
+grad.Color = ColorSequence.new{
+	ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 255, 255)),   -- начало градиента (красный)
+	ColorSequenceKeypoint.new(1, Color3.fromRGB(134, 134, 134))    -- конец градиента (синий)
+}
+
+-- пример изменения наклона градиента
+grad.Rotation = 45 -- угол в градусах
+
+-- можно также менять Transparency (прозрачность) градиента
+grad.Transparency = NumberSequence.new{
+	NumberSequenceKeypoint.new(0, 0), 
+	NumberSequenceKeypoint.new(1, 0)
+}
+grad.Parent = toggleflybutton
+
+local sliderFrame = Instance.new("Frame")
+sliderFrame.Name = "SliderFrame"
+sliderFrame.Size = UDim2.new(0, 240, 0, 10)
+sliderFrame.Position = UDim2.new(0.5, -68, 0.5, 25)
+sliderFrame.BackgroundColor3 = Color3.fromRGB(220, 220, 220)
+sliderFrame.BorderSizePixel = 2
+sliderFrame.Parent = frame
+sliderFrame.Transparency = 1
+
+local progressBar = Instance.new("Frame", frame)
+progressBar.Name = "ProgressBar"
+progressBar.Size = UDim2.new(0, 0, 1, 0)
+progressBar.BackgroundColor3 = Color3.fromRGB(100, 200, 255)
+progressBar.BorderSizePixel = 0
+progressBar.Parent = sliderFrame
+progressBar.Transparency = 1
+
+local sliderButton = Instance.new("ImageButton")
+sliderButton.Name = "SliderButton"
+sliderButton.Size = UDim2.new(0, 20, 1, 0)
+sliderButton.Position = UDim2.new(0, 0, 0, 0)
+sliderButton.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+sliderButton.AutoButtonColor = false
+sliderButton.Parent = sliderFrame
+sliderButton.Transparency = 1
+sliderButton.Interactable = false
+
+local valueLabel = Instance.new("TextLabel")
+valueLabel.Name = "ValueLabel"
+valueLabel.Size = UDim2.new(0, 60, 0, 30)
+valueLabel.Position = UDim2.new(0, 230, 0, 125)
+valueLabel.BackgroundTransparency = 1
+valueLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+valueLabel.Font = Enum.Font.SourceSansBold
+valueLabel.TextSize = 20
+valueLabel.Text = 1
+valueLabel.Parent = frame
+valueLabel.Transparency = 1
+
+local minValue = 1
+local maxValue = 20
+
+local UserInputService = game:GetService("UserInputService")
+local sliding = false
+
+local function updateSlider(inputPosX)
+	local relativeX = math.clamp(inputPosX - sliderFrame.AbsolutePosition.X, 0, sliderFrame.AbsoluteSize.X)
+	local percent = relativeX / sliderFrame.AbsoluteSize.X
+	local value = math.floor(minValue + (maxValue - minValue) * percent + 0.5)
+
+	progressBar.Size = UDim2.new(percent, 0, 1, 0)
+	sliderButton.Position = UDim2.new(percent, -sliderButton.AbsoluteSize.X/2, 0, 0)
+	valueLabel.Text = tostring(value)
+	speeds = math.floor(minValue + (maxValue - minValue) * percent + 0.5)
+end
+
+sliderButton.InputBegan:Connect(function(input)
+	if input.UserInputType == Enum.UserInputType.MouseButton1 then
+		sliding = true
+	end
+end)
+
+UserInputService.InputChanged:Connect(function(input)
+	if sliding and input.UserInputType == Enum.UserInputType.MouseMovement then
+		updateSlider(input.Position.X)
+	end
+end)
+
+UserInputService.InputEnded:Connect(function(input)
+	if sliding and input.UserInputType == Enum.UserInputType.MouseButton1 then
+		sliding = false
+	end
+end)
+
+sliderFrame.InputBegan:Connect(function(input)
+	if input.UserInputType == Enum.UserInputType.MouseButton1 then
+		updateSlider(input.Position.X)
+		sliding = true
+	end
+end)
+
+sliderFrame.InputEnded:Connect(function(input)
+	if input.UserInputType == Enum.UserInputType.MouseButton1 then
+		sliding = false
+	end
+end)
+
+toggleflybutton.MouseButton1Click:Connect(function()
+	if toggleflybutton.Text == "ВКЛ" then
+		toggleflybutton.Text = "ВЫКЛ"
+		toggleLabelFLY.Text = "полет: ВКЛ"
+	else
+		toggleflybutton.Text = "ВКЛ"
+		toggleLabelFLY.Text = "полет: ВЫКЛ"
+	end
+end)
+
+toggleflybutton.MouseButton1Click:Connect(function()
+	if nowe == true then
+		nowe = false
+		speaker.Character.Humanoid:SetStateEnabled(Enum.HumanoidStateType.Climbing,true)
+		speaker.Character.Humanoid:SetStateEnabled(Enum.HumanoidStateType.FallingDown,true)
+		speaker.Character.Humanoid:SetStateEnabled(Enum.HumanoidStateType.Flying,true)
+		speaker.Character.Humanoid:SetStateEnabled(Enum.HumanoidStateType.Freefall,true)
+		speaker.Character.Humanoid:SetStateEnabled(Enum.HumanoidStateType.GettingUp,true)
+		speaker.Character.Humanoid:SetStateEnabled(Enum.HumanoidStateType.Jumping,true)
+		speaker.Character.Humanoid:SetStateEnabled(Enum.HumanoidStateType.Landed,true)
+		speaker.Character.Humanoid:SetStateEnabled(Enum.HumanoidStateType.Physics,true)
+		speaker.Character.Humanoid:SetStateEnabled(Enum.HumanoidStateType.PlatformStanding,true)
+		speaker.Character.Humanoid:SetStateEnabled(Enum.HumanoidStateType.Ragdoll,true)
+		speaker.Character.Humanoid:SetStateEnabled(Enum.HumanoidStateType.Running,true)
+		speaker.Character.Humanoid:SetStateEnabled(Enum.HumanoidStateType.RunningNoPhysics,true)
+		speaker.Character.Humanoid:SetStateEnabled(Enum.HumanoidStateType.Seated,true)
+		speaker.Character.Humanoid:SetStateEnabled(Enum.HumanoidStateType.StrafingNoPhysics,true)
+		speaker.Character.Humanoid:SetStateEnabled(Enum.HumanoidStateType.Swimming,true)
+		speaker.Character.Humanoid:ChangeState(Enum.HumanoidStateType.RunningNoPhysics)
+	else 
+		nowe = true
+
+		for i = 1, speeds do
+			spawn(function()
+
+				local hb = game:GetService("RunService").Heartbeat	
+
+
+				tpwalking = true
+				local chr = game.Players.LocalPlayer.Character
+				local hum = chr and chr:FindFirstChildWhichIsA("Humanoid")
+				while tpwalking and hb:Wait() and chr and hum and hum.Parent do
+					if hum.MoveDirection.Magnitude > 0 then
+						chr:TranslateBy(hum.MoveDirection)
+					end
+				end
+
+			end)
+		end
+		game.Players.LocalPlayer.Character.Animate.Disabled = true
+		local Char = game.Players.LocalPlayer.Character
+		local Hum = Char:FindFirstChildOfClass("Humanoid") or Char:FindFirstChildOfClass("AnimationController")
+
+		for i,v in next, Hum:GetPlayingAnimationTracks() do
+			v:AdjustSpeed(0)
+		end
+		speaker.Character.Humanoid:SetStateEnabled(Enum.HumanoidStateType.Climbing,false)
+		speaker.Character.Humanoid:SetStateEnabled(Enum.HumanoidStateType.FallingDown,false)
+		speaker.Character.Humanoid:SetStateEnabled(Enum.HumanoidStateType.Flying,false)
+		speaker.Character.Humanoid:SetStateEnabled(Enum.HumanoidStateType.Freefall,false)
+		speaker.Character.Humanoid:SetStateEnabled(Enum.HumanoidStateType.GettingUp,false)
+		speaker.Character.Humanoid:SetStateEnabled(Enum.HumanoidStateType.Jumping,false)
+		speaker.Character.Humanoid:SetStateEnabled(Enum.HumanoidStateType.Landed,false)
+		speaker.Character.Humanoid:SetStateEnabled(Enum.HumanoidStateType.Physics,false)
+		speaker.Character.Humanoid:SetStateEnabled(Enum.HumanoidStateType.PlatformStanding,false)
+		speaker.Character.Humanoid:SetStateEnabled(Enum.HumanoidStateType.Ragdoll,false)
+		speaker.Character.Humanoid:SetStateEnabled(Enum.HumanoidStateType.Running,false)
+		speaker.Character.Humanoid:SetStateEnabled(Enum.HumanoidStateType.RunningNoPhysics,false)
+		speaker.Character.Humanoid:SetStateEnabled(Enum.HumanoidStateType.Seated,false)
+		speaker.Character.Humanoid:SetStateEnabled(Enum.HumanoidStateType.StrafingNoPhysics,false)
+		speaker.Character.Humanoid:SetStateEnabled(Enum.HumanoidStateType.Swimming,false)
+		speaker.Character.Humanoid:ChangeState(Enum.HumanoidStateType.Swimming)
+	end
+
+	if game:GetService("Players").LocalPlayer.Character:FindFirstChildOfClass("Humanoid").RigType == Enum.HumanoidRigType.R6 then
+		local plr = game.Players.LocalPlayer
+		local torso = plr.Character.Torso
+		local flying = true
+		local deb = true
+		local ctrl = {f = 0, b = 0, l = 0, r = 0}
+		local lastctrl = {f = 0, b = 0, l = 0, r = 0}
+		local maxspeed = 50
+		local speed = 0
+
+
+		local bg = Instance.new("BodyGyro", torso)
+		bg.P = 9e4
+		bg.maxTorque = Vector3.new(9e9, 9e9, 9e9)
+		bg.cframe = torso.CFrame
+		local bv = Instance.new("BodyVelocity", torso)
+		bv.velocity = Vector3.new(0,0.1,0)
+		bv.maxForce = Vector3.new(9e9, 9e9, 9e9)
+		if nowe == true then
+			plr.Character.Humanoid.PlatformStand = true
+		end
+		while nowe == true or game:GetService("Players").LocalPlayer.Character.Humanoid.Health == 0 do
+			game:GetService("RunService").RenderStepped:Wait()
+
+			if ctrl.l + ctrl.r ~= 0 or ctrl.f + ctrl.b ~= 0 then
+				speed = speed+.5+(speed/maxspeed)
+				if speed > maxspeed then
+					speed = maxspeed
+				end
+			elseif not (ctrl.l + ctrl.r ~= 0 or ctrl.f + ctrl.b ~= 0) and speed ~= 0 then
+				speed = speed-1
+				if speed < 0 then
+					speed = 0
+				end
+			end
+			if (ctrl.l + ctrl.r) ~= 0 or (ctrl.f + ctrl.b) ~= 0 then
+				bv.velocity = ((game.Workspace.CurrentCamera.CoordinateFrame.lookVector * (ctrl.f+ctrl.b)) + ((game.Workspace.CurrentCamera.CoordinateFrame * CFrame.new(ctrl.l+ctrl.r,(ctrl.f+ctrl.b)*.2,0).p) - game.Workspace.CurrentCamera.CoordinateFrame.p))*speed
+				lastctrl = {f = ctrl.f, b = ctrl.b, l = ctrl.l, r = ctrl.r}
+			elseif (ctrl.l + ctrl.r) == 0 and (ctrl.f + ctrl.b) == 0 and speed ~= 0 then
+				bv.velocity = ((game.Workspace.CurrentCamera.CoordinateFrame.lookVector * (lastctrl.f+lastctrl.b)) + ((game.Workspace.CurrentCamera.CoordinateFrame * CFrame.new(lastctrl.l+lastctrl.r,(lastctrl.f+lastctrl.b)*.2,0).p) - game.Workspace.CurrentCamera.CoordinateFrame.p))*speed
+			else
+				bv.velocity = Vector3.new(0,0,0)
+			end
+			--	game.Players.LocalPlayer.Character.Animate.Disabled = true
+			bg.cframe = game.Workspace.CurrentCamera.CoordinateFrame * CFrame.Angles(-math.rad((ctrl.f+ctrl.b)*50*speed/maxspeed),0,0)
+		end
+		ctrl = {f = 0, b = 0, l = 0, r = 0}
+		lastctrl = {f = 0, b = 0, l = 0, r = 0}
+		speed = 0
+		bg:Destroy()
+		bv:Destroy()
+		plr.Character.Humanoid.PlatformStand = false
+		game.Players.LocalPlayer.Character.Animate.Disabled = false
+		tpwalking = false
+
+	else
+		local plr = game.Players.LocalPlayer
+		local UpperTorso = plr.Character.UpperTorso
+		local flying = true
+		local deb = true
+		local ctrl = {f = 0, b = 0, l = 0, r = 0}
+		local lastctrl = {f = 0, b = 0, l = 0, r = 0}
+		local maxspeed = 50
+		local speed = 0
+
+
+		local bg = Instance.new("BodyGyro", UpperTorso)
+		bg.P = 9e4
+		bg.maxTorque = Vector3.new(9e9, 9e9, 9e9)
+		bg.cframe = UpperTorso.CFrame
+		local bv = Instance.new("BodyVelocity", UpperTorso)
+		bv.velocity = Vector3.new(0,0.1,0)
+		bv.maxForce = Vector3.new(9e9, 9e9, 9e9)
+		if nowe == true then
+			plr.Character.Humanoid.PlatformStand = true
+		end
+		while nowe == true or game:GetService("Players").LocalPlayer.Character.Humanoid.Health == 0 do
+			wait()
+
+			if ctrl.l + ctrl.r ~= 0 or ctrl.f + ctrl.b ~= 0 then
+				speed = speed+.5+(speed/maxspeed)
+				if speed > maxspeed then
+					speed = maxspeed
+				end
+			elseif not (ctrl.l + ctrl.r ~= 0 or ctrl.f + ctrl.b ~= 0) and speed ~= 0 then
+				speed = speed-1
+				if speed < 0 then
+					speed = 0
+				end
+			end
+			if (ctrl.l + ctrl.r) ~= 0 or (ctrl.f + ctrl.b) ~= 0 then
+				bv.velocity = ((game.Workspace.CurrentCamera.CoordinateFrame.lookVector * (ctrl.f+ctrl.b)) + ((game.Workspace.CurrentCamera.CoordinateFrame * CFrame.new(ctrl.l+ctrl.r,(ctrl.f+ctrl.b)*.2,0).p) - game.Workspace.CurrentCamera.CoordinateFrame.p))*speed
+				lastctrl = {f = ctrl.f, b = ctrl.b, l = ctrl.l, r = ctrl.r}
+			elseif (ctrl.l + ctrl.r) == 0 and (ctrl.f + ctrl.b) == 0 and speed ~= 0 then
+				bv.velocity = ((game.Workspace.CurrentCamera.CoordinateFrame.lookVector * (lastctrl.f+lastctrl.b)) + ((game.Workspace.CurrentCamera.CoordinateFrame * CFrame.new(lastctrl.l+lastctrl.r,(lastctrl.f+lastctrl.b)*.2,0).p) - game.Workspace.CurrentCamera.CoordinateFrame.p))*speed
+			else
+				bv.velocity = Vector3.new(0,0,0)
+			end
+
+			bg.cframe = game.Workspace.CurrentCamera.CoordinateFrame * CFrame.Angles(-math.rad((ctrl.f+ctrl.b)*50*speed/maxspeed),0,0)
+		end
+		ctrl = {f = 0, b = 0, l = 0, r = 0}
+		lastctrl = {f = 0, b = 0, l = 0, r = 0}
+		speed = 0
+		bg:Destroy()
+		bv:Destroy()
+		plr.Character.Humanoid.PlatformStand = false
+		game.Players.LocalPlayer.Character.Animate.Disabled = false
+		tpwalking = false
+	end
+end)
 
 local togglePage1button = Instance.new("TextButton", frame)
 togglePage1button.Size = UDim2.new(0, 80, 0, 30)
@@ -771,6 +1091,21 @@ toggleAGlabel.TextSize = 18
 toggleAGlabel.Text = "АВТО ГЕНЕРАТОР: ВЫКЛ"
 toggleAGlabel.Transparency = 1
 
+local toggleclosebutton = Instance.new("TextButton", frame)
+toggleclosebutton.Size = UDim2.new(0, 280, 0, 30)
+toggleclosebutton.Position = UDim2.new(0, 100, 0, 240)
+toggleclosebutton.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
+toggleclosebutton.TextColor3 = Color3.new(1,1,1)
+toggleclosebutton.Font = Enum.Font.SourceSansBold
+toggleclosebutton.TextSize = 18
+toggleclosebutton.Text = "закрыть скрипт(script unload)"
+toggleclosebutton.Transparency = 1
+toggleclosebutton.Interactable = false
+local uiCorner11 = Instance.new("UICorner")
+uiCorner11.CornerRadius = UDim.new(0, 15) -- радиус 15 пикселей
+uiCorner11.Parent = toggleclosebutton
+gradientforALL2:Clone():Clone():Clone().Parent = toggleclosebutton
+
 local isEnabledGEN = false
 local lastFireTime = 0
 
@@ -789,7 +1124,7 @@ end)
 local UserInputService = game:GetService("UserInputService")
 local dragging1 = false
 local interval = 1
-local function updateSlider(inputPosition)
+local function updateSlider1(inputPosition)
 	local relativeX = math.clamp(inputPosition.X - slider.AbsolutePosition.X, 0, slider.AbsoluteSize.X)
 	local percent = relativeX / slider.AbsoluteSize.X
 	sliderIndicator.Size = UDim2.new(percent, 0, 1, 0)
@@ -800,13 +1135,13 @@ end
 slider.InputBegan:Connect(function(input)
 	if input.UserInputType == Enum.UserInputType.MouseButton1 then
 		dragging1 = true
-		updateSlider(input.Position)
+		updateSlider1(input.Position)
 	end
 end)
 
 slider.InputChanged:Connect(function(input)
 	if dragging1 and input.UserInputType == Enum.UserInputType.MouseMovement then
-		updateSlider(input.Position)
+		updateSlider1(input.Position)
 	end
 end)
 
@@ -878,6 +1213,16 @@ togglePage1button.MouseButton1Click:Connect(function()
 	sliderIndicator.Transparency = 1
 	toggleAGButton.Interactable = false
 	toggleAGButton.Transparency = 1
+	toggleclosebutton.Transparency = 1
+	toggleclosebutton.Interactable = false
+	toggleflybutton.Transparency = 1
+	toggleflybutton.Interactable = false
+	toggleLabelFLY.TextTransparency = 1
+	sliderFrame.Transparency = 1
+	progressBar.Transparency = 1
+	sliderButton.Transparency = 1
+	sliderButton.Interactable = false
+	valueLabel.Transparency = 1
 end)
 
 togglePage2button.MouseButton1Click:Connect(function()
@@ -920,6 +1265,16 @@ togglePage2button.MouseButton1Click:Connect(function()
 	sliderIndicator.Transparency = 1
 	toggleAGButton.Interactable = false
 	toggleAGButton.Transparency = 1
+	toggleclosebutton.Transparency = 0
+	toggleclosebutton.Interactable = true
+	toggleflybutton.Transparency = 0
+	toggleflybutton.Interactable = true
+	toggleLabelFLY.TextTransparency = 0
+	sliderFrame.Transparency = 0
+	progressBar.Transparency = 0
+	sliderButton.Transparency = 0
+	sliderButton.Interactable = true
+	valueLabel.TextTransparency = 0
 end)
 
 togglePage3button.MouseButton1Click:Connect(function()
@@ -958,6 +1313,16 @@ togglePage3button.MouseButton1Click:Connect(function()
 	bar.Transparency = 1
 	fill.Transparency = 1
 	knob.ImageTransparency = 1
+	toggleclosebutton.Transparency = 1
+	toggleclosebutton.Interactable = false
+	toggleflybutton.Transparency = 1
+	toggleflybutton.Interactable = false
+	toggleLabelFLY.TextTransparency = 1
+	sliderFrame.Transparency = 1
+	progressBar.Transparency = 1
+	sliderButton.Transparency = 1
+	sliderButton.Interactable = false
+	valueLabel.Transparency = 1
 end)
 
 toggleButtonCola.MouseButton1Click:Connect(function()
@@ -986,19 +1351,19 @@ end)
 
 closebuttonRE = nil
 
---closebutton. MouseButton1Click:Connect(function()
---	highlightEnabled = false
---	nameHighlightEnabled = false
---	espEnabled1 = false
---	espEnabled3 = false
---	espEnabled = false
---	closebuttonRE = true
---	clearHighlights2()
---	clearNameTags()
---	clearHighlights()
---	clearHighlights3()
---	screenGui:Destroy()
---end)
+toggleclosebutton. MouseButton1Click:Connect(function()
+	highlightEnabled = false
+	nameHighlightEnabled = false
+	espEnabled1 = false
+	espEnabled3 = false
+	espEnabled = false
+	closebuttonRE = true
+	clearHighlights2()
+	clearNameTags()
+	clearHighlights()
+	clearHighlights3()
+	screenGui:Destroy()
+end)
 
 toggleGENButton.MouseButton1Click:Connect(function()
 	espEnabled = not espEnabled
