@@ -1491,6 +1491,9 @@ player.CharacterAdded:Connect(function(char)
 	nameTags = {}
 	generators = {}
 	sigma = true
+	if game.Players.LocalPlayer.Character:FindFirstChild("Animate") then
+		game.Players.LocalPlayer.Character.Animate.Disabled = false
+	end
 end)
 
 local died = false
