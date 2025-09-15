@@ -1525,7 +1525,7 @@ RunService.Heartbeat:Connect(function(deltaTime)
 		noclip()
 	end
 	if not isEnabled then return end
-	local generatorsFolder = workspace.Map.Ingame.Map
+	local generatorsFolder = workspace.Map.Ingame:FindFirstChild("Map")
 	local generators = {}
 
 	for _, gen in pairs(generatorsFolder:GetChildren()) do
