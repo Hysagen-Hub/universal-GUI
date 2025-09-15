@@ -893,7 +893,6 @@ toggleflybutton.MouseButton1Click:Connect(function()
 
 			end)
 		end
-		game.Players.LocalPlayer.Character.Animate.Disabled = true
 		local Char = game.Players.LocalPlayer.Character
 		local Hum = Char:FindFirstChildOfClass("Humanoid") or Char:FindFirstChildOfClass("AnimationController")
 
@@ -958,7 +957,6 @@ toggleflybutton.MouseButton1Click:Connect(function()
 		bg:Destroy()
 		bv:Destroy()
 		plr.Character.Humanoid.PlatformStand = false
-		game.Players.LocalPlayer.Character.Animate.Disabled = false
 		tpwalking = false
 
 	else
@@ -1013,7 +1011,6 @@ toggleflybutton.MouseButton1Click:Connect(function()
 		bg:Destroy()
 		bv:Destroy()
 		plr.Character.Humanoid.PlatformStand = false
-		game.Players.LocalPlayer.Character.Animate.Disabled = false
 		tpwalking = false
 	end
 end)
