@@ -355,15 +355,14 @@ end
 -- Настройка персонажа для движения
 
 local brightness = game.Lighting.Brightness
-local clocktime = game.Lighting.ClockTime
 
 local function FB()
+	game.Lighting.GlobalShadows = false
 	game:GetService("Lighting").Brightness = 1
-	game:GetService("Lighting").ClockTime = 14
 end
 local function UNFB()
+	game.Lighting.GlobalShadows = true
 	game:GetService("Lighting").Brightness = brightness
-	game:GetService("Lighting").ClockTime = clocktime
 end
 
 local function setupCharacter(character)
@@ -1408,14 +1407,12 @@ toggleNoFogButton.MouseButton1Click:Connect(function()
 		bruh = true
 		game.Lighting.FogEnd = 100000
 		game.Lighting.FogStart = 0
-		game.Lighting.GlobalShadows = false
 		toggleNoFogButton.Text = "ВЫКЛ"
 	else
 		toggleNoFogLabel.Text = "NO FOG: ВЫКЛ"
 		bruh = false
 		game.Lighting.FogEnd = FogEnd
 		game.Lighting.FogStart = FogStart
-		game.Lighting.GlobalShadows = true
 		toggleNoFogButton.Text = "ВКЛ"
 	end
 
