@@ -1163,10 +1163,10 @@ local runService = game:GetService("RunService")
 local lastFireTime = 0
 
 toggleAGButton.MouseButton1Click:Connect(function()
-	
 	isEnabled = not isEnabled
 	if isEnabled then 
 		toggleAGButton.Text = "ВЫКЛ"
+		toggleAGlabel.Text = "АВТО ГЕНЕРАТОР: ВКЛ"
 		-- Можно добавить логику входа в каждый генератор (если она нужна)
 		for _, gen in pairs(generators) do
 			local remotes = gen:WaitForChild("Remotes")
@@ -1174,6 +1174,7 @@ toggleAGButton.MouseButton1Click:Connect(function()
 		end
 	else
 		toggleAGButton.Text = "ВКЛ"
+		toggleAGlabel.Text = "АВТО ГЕНЕРАТОР: ВЫКЛ"
 		for _, gen in pairs(generators) do
 			local remotes = gen:WaitForChild("Remotes")
 			local RF = remotes:WaitForChild("RF")
@@ -1496,6 +1497,11 @@ player.CharacterAdded:Connect(function(char)
 	if game.Players.LocalPlayer.Character:FindFirstChild("Animate") then
 		game.Players.LocalPlayer.Character.Animate.Disabled = false
 	end
+	wait(0.7)
+	game.Players.LocalPlayer.Character.Humanoid.PlatformStand = false
+	game.Players.LocalPlayer.Character.Animate.Disabled = false
+	toggleflybutton.Text = "ВКЛ"
+	toggleLabelFLY.Text = "FLY: ВЫКЛ"
 end)
 
 local died = false
