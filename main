@@ -18,7 +18,7 @@ local espEnabled1 = false
 local highlights1 = {}
 local espEnabled3 = false
 local highlights3 = {}
-
+local density = game.Lighting.Atmosphere.Density
 local survivorsFolder
 local killersFolder
 
@@ -1407,8 +1407,10 @@ toggleNoFogButton.MouseButton1Click:Connect(function()
 		bruh = true
 		game.Lighting.FogEnd = 100000
 		game.Lighting.FogStart = 0
+		game.Lighting.Atmosphere.Density = 0
 		toggleNoFogButton.Text = "ВЫКЛ"
 	else
+		game.Lighting.Atmosphere.Density = density
 		toggleNoFogLabel.Text = "NO FOG: ВЫКЛ"
 		bruh = false
 		game.Lighting.FogEnd = FogEnd
