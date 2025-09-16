@@ -1425,6 +1425,8 @@ knob1.InputBegan:Connect(function(input2)
 	end
 end)
 
+local generators = {}
+
 userInputService.InputChanged:Connect(function(input2)
 	if dragging2 and input2.UserInputType == Enum.UserInputType.MouseMovement then
 		local relativeX1 = math.clamp(input2.Position.X - bar1.AbsolutePosition.X, 0, bar1.AbsoluteSize.X)
