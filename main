@@ -6,6 +6,7 @@ local players = game:GetService("Players")
 local espEnabled = false
 local speed = 0
 local dragging = false
+local dragging2 = false
 local highlightEnabled = false
 local nameHighlightEnabled = false
 local highlights = {}
@@ -345,7 +346,7 @@ end
 local function enableHighlights()
 	highlightEnabled = true
 	updateHighlights()
-	
+
 end
 
 local function disableHighlights()
@@ -464,6 +465,27 @@ gradientforALL.Transparency = NumberSequence.new{
 	NumberSequenceKeypoint.new(0, 0), 
 	NumberSequenceKeypoint.new(1, 0)
 }
+
+local bar1 = Instance.new("Frame", frame)
+bar1.Size = UDim2.new(0, 240, 0, 20)
+bar1.Position = UDim2.new(0, 130, 0, 165)
+bar1.BackgroundColor3 = Color3.fromRGB(80,80,80)
+
+local fill1 = Instance.new("Frame", bar1)
+fill1.Size = UDim2.new(0, 0, 1, 0)
+fill1.BackgroundColor3 = Color3.fromRGB(0,170,255)
+
+local knob1 = Instance.new("ImageButton", bar1)
+knob1.Size = UDim2.new(0, 30, 0, 30)
+knob1.Position = UDim2.new(0, -15, 0, -5)
+knob1.BackgroundTransparency = 1
+knob1.Image = "rbxassetid://3570695787"
+knob1.Modal = true
+
+bar1.Transparency = 1
+fill1.Transparency = 1
+knob1.ImageTransparency = 1
+knob1.Interactable = false
 
 local label = Instance.new("TextLabel", frame)
 label.Text = "Ускорение: 0"
@@ -771,33 +793,6 @@ grad.Transparency = NumberSequence.new{
 }
 grad.Parent = toggleflybutton
 
-local sliderFrame = Instance.new("Frame")
-sliderFrame.Name = "SliderFrame"
-sliderFrame.Size = UDim2.new(0, 240, 0, 10)
-sliderFrame.Position = UDim2.new(0.5, -68, 0.5, 25)
-sliderFrame.BackgroundColor3 = Color3.fromRGB(220, 220, 220)
-sliderFrame.BorderSizePixel = 2
-sliderFrame.Parent = frame
-sliderFrame.Transparency = 1
-
-local progressBar = Instance.new("Frame", frame)
-progressBar.Name = "ProgressBar"
-progressBar.Size = UDim2.new(0, 0, 1, 0)
-progressBar.BackgroundColor3 = Color3.fromRGB(100, 200, 255)
-progressBar.BorderSizePixel = 0
-progressBar.Parent = sliderFrame
-progressBar.Transparency = 1
-
-local sliderButton = Instance.new("ImageButton")
-sliderButton.Name = "SliderButton"
-sliderButton.Size = UDim2.new(0, 20, 1, 0)
-sliderButton.Position = UDim2.new(0, 0, 0, 0)
-sliderButton.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-sliderButton.AutoButtonColor = false
-sliderButton.Parent = sliderFrame
-sliderButton.Transparency = 1
-sliderButton.Interactable = false
-
 local valueLabel = Instance.new("TextLabel")
 valueLabel.Name = "ValueLabel"
 valueLabel.Size = UDim2.new(0, 60, 0, 30)
@@ -816,44 +811,8 @@ local maxValue = 20
 local UserInputService = game:GetService("UserInputService")
 local sliding = false
 
-local function updateSlider(inputPosX)
-	local relativeX = math.clamp(inputPosX - sliderFrame.AbsolutePosition.X, 0, sliderFrame.AbsoluteSize.X)
-	local percent = relativeX / sliderFrame.AbsoluteSize.X
-	local value = math.floor(minValue + (maxValue - minValue) * percent + 0.5)
-
-	progressBar.Size = UDim2.new(percent, 0, 1, 0)
-	sliderButton.Position = UDim2.new(percent, -sliderButton.AbsoluteSize.X/2, 0, 0)
-	valueLabel.Text = tostring(value)
-	speeds = math.floor(minValue + (maxValue - minValue) * percent + 0.5)
-end
-
-sliderButton.InputBegan:Connect(function(input)
-	if input.UserInputType == Enum.UserInputType.MouseButton1 then
-		sliding = true
-	end
-end)
-
-UserInputService.InputChanged:Connect(function(input)
-	if sliding and input.UserInputType == Enum.UserInputType.MouseMovement then
-		updateSlider(input.Position.X)
-	end
-end)
-
 UserInputService.InputEnded:Connect(function(input)
 	if sliding and input.UserInputType == Enum.UserInputType.MouseButton1 then
-		sliding = false
-	end
-end)
-
-sliderFrame.InputBegan:Connect(function(input)
-	if input.UserInputType == Enum.UserInputType.MouseButton1 then
-		updateSlider(input.Position.X)
-		sliding = true
-	end
-end)
-
-sliderFrame.InputEnded:Connect(function(input)
-	if input.UserInputType == Enum.UserInputType.MouseButton1 then
 		sliding = false
 	end
 end)
@@ -1226,11 +1185,11 @@ togglePage1button.MouseButton1Click:Connect(function()
 	toggleflybutton.Transparency = 1
 	toggleflybutton.Interactable = false
 	toggleLabelFLY.TextTransparency = 1
-	sliderFrame.Transparency = 1
-	progressBar.Transparency = 1
-	sliderButton.Transparency = 1
-	sliderButton.Interactable = false
 	valueLabel.Transparency = 1
+	bar1.Transparency = 1
+	fill1.Transparency = 1
+	knob1.ImageTransparency = 1
+	knob1.Interactable = false
 end)
 
 togglePage2button.MouseButton1Click:Connect(function()
@@ -1278,11 +1237,11 @@ togglePage2button.MouseButton1Click:Connect(function()
 	toggleflybutton.Transparency = 0
 	toggleflybutton.Interactable = true
 	toggleLabelFLY.TextTransparency = 0
-	sliderFrame.Transparency = 0
-	progressBar.Transparency = 0
-	sliderButton.Transparency = 0
-	sliderButton.Interactable = true
 	valueLabel.TextTransparency = 0
+	bar1.Transparency = 0
+	fill1.Transparency = 0
+	knob1.ImageTransparency = 0
+	knob1.Interactable = true
 end)
 
 togglePage3button.MouseButton1Click:Connect(function()
@@ -1326,11 +1285,11 @@ togglePage3button.MouseButton1Click:Connect(function()
 	toggleflybutton.Transparency = 1
 	toggleflybutton.Interactable = false
 	toggleLabelFLY.TextTransparency = 1
-	sliderFrame.Transparency = 1
-	progressBar.Transparency = 1
-	sliderButton.Transparency = 1
-	sliderButton.Interactable = false
 	valueLabel.Transparency = 1
+	bar1.Transparency = 1
+	fill1.Transparency = 1
+	knob1.ImageTransparency = 1
+	knob1.Interactable = false
 end)
 
 toggleButtonCola.MouseButton1Click:Connect(function()
@@ -1466,6 +1425,33 @@ userInputService.InputChanged:Connect(function(input)
 	end
 end)
 
+knob1.InputBegan:Connect(function(input2)
+	if input2.UserInputType == Enum.UserInputType.MouseButton1 then
+		dragging2 = true
+	end
+end)
+
+userInputService.InputChanged:Connect(function(input2)
+	if dragging2 and input2.UserInputType == Enum.UserInputType.MouseMovement then
+		local relativeX1 = math.clamp(input2.Position.X - bar1.AbsolutePosition.X, 0, bar1.AbsoluteSize.X)
+		local percent1 = relativeX1 / bar1.AbsoluteSize.X
+		fill1.Size = UDim2.new(percent1, 0, 1, 0)
+		knob1.Position = UDim2.new(percent1, -15, 0, -5)
+		speeds = math.floor(percent1 * 20 + 0.5)
+		valueLabel.Text = speeds
+		if speeds == 0 then
+			speeds = 1
+			valueLabel.Text = speeds
+		end
+	end
+end)
+
+userInputService.InputEnded:Connect(function(input2)
+	if input2.UserInputType == Enum.UserInputType.MouseButton1 then
+		dragging2 = false
+	end
+end)
+
 userInputService.InputEnded:Connect(function(input)
 	if input.UserInputType == Enum.UserInputType.MouseButton1 then
 		dragging = false
@@ -1541,8 +1527,8 @@ RunService.Heartbeat:Connect(function(deltaTime)
 			table.insert(generators, gen)
 		end
 	end
-	
-	
+
+
 	lastFireTime = lastFireTime + deltaTime
 	if lastFireTime >= interval then
 		lastFireTime = 0
