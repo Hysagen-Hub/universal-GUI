@@ -21,6 +21,7 @@ local highlights3 = {}
 local density = game.Lighting.Atmosphere.Density
 local survivorsFolder
 local killersFolder
+local shsoftness = game.Lighting.ShadowSoftness
 
 local function clearNameTags()
 	for _, tag in pairs(nameTags) do
@@ -359,10 +360,12 @@ local brightness = game.Lighting.Brightness
 local function FB()
 	game.Lighting.GlobalShadows = false
 	game:GetService("Lighting").Brightness = 1
+	game.Lighting.ShadowSoftness = 0
 end
 local function UNFB()
 	game.Lighting.GlobalShadows = true
 	game:GetService("Lighting").Brightness = brightness
+	game.Lighting.ShadowSoftness = shsoftness
 end
 
 local function setupCharacter(character)
