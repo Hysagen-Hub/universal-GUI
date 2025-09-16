@@ -19,7 +19,7 @@ local espEnabled1 = false
 local highlights1 = {}
 local espEnabled3 = false
 local highlights3 = {}
-local density = game.Lighting:FindFirstChild("Atmosphere").Density
+local density = game.Lighting:FindFirstChild("Atmosphere"):FindFirstChild("Density")
 local survivorsFolder
 local killersFolder
 local shsoftness = game.Lighting.ShadowSoftness
@@ -1120,24 +1120,18 @@ end)
 local isEnabled = false
 local runService = game:GetService("RunService")
 local lastFireTime = 0
+local proverochka = false
 
 toggleAGButton.MouseButton1Click:Connect(function()
 	isEnabled = not isEnabled
 	if isEnabled then 
 		toggleAGButton.Text = "ВЫКЛ"
 		toggleAGlabel.Text = "АВТО ГЕНЕРАТОР: ВКЛ"
-		-- Можно добавить логику входа в каждый генератор (если она нужна)
-		for _, gen in pairs(generators) do
-			local remotes = gen:WaitForChild("Remotes")
-			local RF = remotes:WaitForChild("RF")
-		end
+		proverochka = true
 	else
+		proverochka = false
 		toggleAGButton.Text = "ВКЛ"
 		toggleAGlabel.Text = "АВТО ГЕНЕРАТОР: ВЫКЛ"
-		for _, gen in pairs(generators) do
-			local remotes = gen:WaitForChild("Remotes")
-			local RF = remotes:WaitForChild("RF")
-		end
 	end
 end)
 
@@ -1527,17 +1521,6 @@ RunService.Heartbeat:Connect(function(deltaTime)
 			table.insert(generators, gen)
 		end
 	end
-
-
-	lastFireTime = lastFireTime + deltaTime
-	if lastFireTime >= interval then
-		lastFireTime = 0
-		for _, gen in pairs(generators) do
-			local remotes = gen:WaitForChild("Remotes")
-			local RE = remotes:WaitForChild("RE")
-			RE:FireServer()
-		end
-	end
 end)
 
 player.CharacterAdded:Connect(function(char)
@@ -1545,3 +1528,30 @@ player.CharacterAdded:Connect(function(char)
 	humanoid = character:WaitForChild("Humanoid")
 	died = false
 end)
+
+local generatorsFolder = workspace.Map.Ingame:FindFirstChild("Map")
+local generators = {}
+
+for _, gen in pairs(generatorsFolder:GetChildren()) do
+	if gen.Name == "Generator" then
+		table.insert(generators, gen)
+	end
+end
+
+for _, gen in pairs(generators) do
+	local remotes = gen:FindFirstChild("Remotes")
+	local RE = remotes:FindFirstChild("RE")
+	local proxy = gen.Main:FindFirstChild("Prompt")
+	proxy.Triggered:Connect(function(triggeringPlayer)
+		if proverochka == true then
+			if triggeringPlayer == player then
+				for i = 1, 4 do
+					wait(interval)
+					RE:FireServer()
+				end
+			end
+		else
+			return
+		end
+	end)
+end
