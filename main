@@ -466,6 +466,43 @@ gradientforALL.Transparency = NumberSequence.new{
 	NumberSequenceKeypoint.new(1, 0)
 }
 
+local lineframe = Instance.new("Frame", frame)
+lineframe.Size = UDim2.new(0, 0.01, 0, 245)
+lineframe.Position = UDim2.new(0, 90, 0, 30)
+lineframe.BackgroundColor3 = Color3.fromRGB(182, 64, 255)
+lineframe.BorderColor3 = Color3.fromRGB(182, 64, 255)
+lineframe.Transparency = 0.7
+
+local lineframe1 = Instance.new("Frame", frame)
+lineframe1.Size = UDim2.new(0, 398, 0, 0.01)
+lineframe1.Position = UDim2.new(0, 0, 0, 28)
+lineframe1.BackgroundColor3 = Color3.fromRGB(182, 64, 255)
+lineframe1.BorderColor3 = Color3.fromRGB(182, 64, 255)
+lineframe1.Transparency = 0.7
+
+local labelFORSACKEN = Instance.new("TextLabel", frame)
+labelFORSACKEN.Size = UDim2.new(0, 200, 0, 25)
+labelFORSACKEN.Position = UDim2.new(0, 10, 0, 1)
+labelFORSACKEN.Text = "forsacken script by Hysagen Hub"
+labelFORSACKEN.TextColor3 = Color3.fromRGB(255, 255, 255)
+labelFORSACKEN.BackgroundTransparency = 1
+labelFORSACKEN.TextSize = 10
+local gradientLABEL = Instance.new("UIGradient")
+gradientLABEL.Color = ColorSequence.new{
+	ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 170, 255)),   -- начало градиента (красный)
+	ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 80, 232))    -- конец градиента (синий)
+}
+
+-- пример изменения наклона градиента
+gradientLABEL.Rotation = 45 -- угол в градусах
+
+-- можно также менять Transparency (прозрачность) градиента
+gradientLABEL.Transparency = NumberSequence.new{
+	NumberSequenceKeypoint.new(0, 0),   -- непрозрачный в начале
+	NumberSequenceKeypoint.new(1, 0.3)  -- полупрозрачный в конце
+}
+gradientLABEL.Parent = labelFORSACKEN
+
 local bar1 = Instance.new("Frame", frame)
 bar1.Size = UDim2.new(0, 240, 0, 20)
 bar1.Position = UDim2.new(0, 130, 0, 165)
@@ -490,6 +527,7 @@ knob1.Interactable = false
 local label = Instance.new("TextLabel", frame)
 label.Text = "Ускорение: 0"
 label.Size = UDim2.new(1, 0, 0, 30)
+label.Position = UDim2.new(0, 40, 0, 25)
 label.BackgroundTransparency = 1
 label.TextColor3 = Color3.new(1,1,1)
 label.Font = Enum.Font.SourceSansBold
