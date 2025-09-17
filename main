@@ -1090,7 +1090,7 @@ end)
 local UserInputService = game:GetService("UserInputService")
 local dragging1 = false
 local interval = 1.3
-local delayBetweenCalls = 1 -- секунды
+local delayBetweenCalls = 1.3 -- секунды
 local function updateSlider1(inputPosition)
 	local relativeX = math.clamp(inputPosition.X - slider.AbsolutePosition.X, 0, slider.AbsoluteSize.X)
 	local percent = relativeX / slider.AbsoluteSize.X
