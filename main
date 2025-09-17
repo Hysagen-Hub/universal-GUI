@@ -626,6 +626,47 @@ local uiCorner1 = Instance.new("UICorner")
 uiCorner1.CornerRadius = UDim.new(0, 15) -- радиус 15 пикселей
 uiCorner1.Parent = toggleFullBrightButton
 
+local toggleNOFESNAKELabel = Instance.new("TextLabel", frame)
+toggleNOFESNAKELabel.Size = UDim2.new(0, 200, 0, 30)
+toggleNOFESNAKELabel.Position = UDim2.new(0, 80, 0, 30)
+toggleNOFESNAKELabel.BackgroundTransparency = 1
+toggleNOFESNAKELabel.TextColor3 = Color3.new(1,1,1)
+toggleNOFESNAKELabel.Font = Enum.Font.SourceSans
+toggleNOFESNAKELabel.TextSize = 18
+toggleNOFESNAKELabel.Text = "NO FE SNAKE: ВЫКЛ"
+
+local toggleNOFESNAKEButton = Instance.new("TextButton", frame)
+toggleNOFESNAKEButton.Size = UDim2.new(0, 80, 0, 30)
+toggleNOFESNAKEButton.Position = UDim2.new(0, 290, 0, 30)
+toggleNOFESNAKEButton.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
+toggleNOFESNAKEButton.TextColor3 = Color3.new(1,1,1)
+toggleNOFESNAKEButton.Font = Enum.Font.SourceSansBold
+toggleNOFESNAKEButton.TextSize = 18
+toggleNOFESNAKEButton.Text = "Загрузить"
+gradientforALL:Clone().Parent = toggleFullBrightButton
+local uiCorner12 = Instance.new("UICorner")
+uiCorner12.CornerRadius = UDim.new(0, 15) -- радиус 15 пикселей
+uiCorner12.Parent = toggleNOFESNAKEButton
+local gradient12 = Instance.new("UIGradient")
+gradient12.Color = ColorSequence.new{
+	ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 255, 255)),   -- начало градиента (красный)
+	ColorSequenceKeypoint.new(1, Color3.fromRGB(134, 134, 134))    -- конец градиента (синий)
+}
+
+toggleNOFESNAKEButton.Transparency = 1
+toggleNOFESNAKEButton.Interactable = false
+toggleNOFESNAKELabel.Transparency = 1
+
+-- пример изменения наклона градиента
+gradient12.Rotation = 45 -- угол в градусах
+
+-- можно также менять Transparency (прозрачность) градиента
+gradient12.Transparency = NumberSequence.new{
+	NumberSequenceKeypoint.new(0, 0),   -- непрозрачный в начале
+	NumberSequenceKeypoint.new(1, 0.3)  -- полупрозрачный в конце
+}
+gradient12.Parent = toggleNOFESNAKEButton
+
 local toggleNoFogLabel = Instance.new("TextLabel", frame)
 toggleNoFogLabel.Size = UDim2.new(0, 200, 0, 30)
 toggleNoFogLabel.Position = UDim2.new(0, 80, 0, 65)
@@ -895,6 +936,13 @@ UserInputService.InputEnded:Connect(function(input)
 	end
 end)
 
+toggleNOFESNAKEButton.MouseButton1Click:Connect(function()
+	loadstring(game:HttpGet('https://raw.githubusercontent.com/Avtor1zaTion/NO-FE-SNAKE/refs/heads/main/NO-FE-Snake.txt'))()
+	toggleNOFESNAKEButton.Text = "Загружено!"
+	wait(0.4)
+	toggleNOFESNAKEButton.Text = "Загрузить"
+end)
+
 toggleflybutton.MouseButton1Click:Connect(function()
 	if toggleflybutton.Text == "ВКЛ" then
 		toggleflybutton.Text = "ВЫКЛ"
@@ -904,6 +952,7 @@ toggleflybutton.MouseButton1Click:Connect(function()
 		toggleLabelFLY.Text = "полет: ВЫКЛ"
 	end
 end)
+
 toggleflybutton.MouseButton1Click:Connect(function()
 	if nowe == true then
 		nowe = false
@@ -1125,6 +1174,19 @@ uiCorner11.CornerRadius = UDim.new(0, 15) -- радиус 15 пикселей
 uiCorner11.Parent = togglePage3button
 gradientforALL2:Clone():Clone().Parent = togglePage3button
 
+local togglePage4button = Instance.new("TextButton", frame)
+togglePage4button.Size = UDim2.new(0, 80, 0, 30)
+togglePage4button.Position = UDim2.new(0, 5, 0, 155)
+togglePage4button.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
+togglePage4button.TextColor3 = Color3.new(1,1,1)
+togglePage4button.Font = Enum.Font.SourceSansBold
+togglePage4button.TextSize = 18
+togglePage4button.Text = "Fun"
+local uiCorner12 = Instance.new("UICorner")
+uiCorner12.CornerRadius = UDim.new(0, 15) -- радиус 15 пикселей
+uiCorner12.Parent = togglePage4button
+gradientforALL2:Clone():Clone():Clone().Parent = togglePage4button
+
 local toggleAGlabel = Instance.new("TextLabel", frame)
 toggleAGlabel.Size = UDim2.new(0, 200, 0, 30)
 toggleAGlabel.Position = UDim2.new(0, 100, 0, 90)
@@ -1265,6 +1327,9 @@ togglePage1button.MouseButton1Click:Connect(function()
 	fill1.Transparency = 1
 	knob1.ImageTransparency = 1
 	knob1.Interactable = false
+	toggleNOFESNAKEButton.Transparency = 1
+	toggleNOFESNAKEButton.Interactable = false
+	toggleNOFESNAKELabel.Transparency = 1
 end)
 
 togglePage2button.MouseButton1Click:Connect(function()
@@ -1317,6 +1382,9 @@ togglePage2button.MouseButton1Click:Connect(function()
 	fill1.Transparency = 0
 	knob1.ImageTransparency = 0
 	knob1.Interactable = true
+	toggleNOFESNAKEButton.Transparency = 1
+	toggleNOFESNAKEButton.Interactable = false
+	toggleNOFESNAKELabel.Transparency = 1
 end)
 
 togglePage3button.MouseButton1Click:Connect(function()
@@ -1365,6 +1433,63 @@ togglePage3button.MouseButton1Click:Connect(function()
 	fill1.Transparency = 1
 	knob1.ImageTransparency = 1
 	knob1.Interactable = false
+	toggleNOFESNAKEButton.Transparency = 1
+	toggleNOFESNAKEButton.Interactable = false
+	toggleNOFESNAKELabel.Transparency = 1
+end)
+
+togglePage4button.MouseButton1Click:Connect(function()
+	toggleHighLightLabelMEDKIT.TextTransparency = 1
+	toggleButtonMEDKIT.Transparency = 1
+	toggleHighlightLabel.TextTransparency = 1
+	toggleButton.Transparency = 1
+	toggleHighlightCola.TextTransparency = 1
+	toggleButtonCola.Transparency = 1
+	toggleNameLabel.TextTransparency = 1
+	toggleNameButton.Transparency = 1
+	toggleGENButton.Transparency = 1
+	toggleHighlightLabelGEN.TextTransparency = 1
+	knob.Interactable = false
+	label.TextTransparency = 1
+	bar.Transparency = 1
+	fill.Transparency = 1
+	knob.ImageTransparency = 1
+	toggleButtonCola.Interactable = false
+	toggleButton.Interactable = false
+	toggleButtonMEDKIT.Interactable = false
+	toggleGENButton.Interactable = false
+	toggleNameButton.Interactable = false
+	toggleNoFogLabel.TextTransparency = 1
+	toggleNoFogButton.Transparency = 1
+	toggleNoFogButton.Interactable = false
+	toggleFullBrightButton.Transparency = 1
+	toggleFullBrightLabel.TextTransparency = 1
+	toggleFullBrightButton.Interactable = false
+	toggleNoClipButton.Transparency = 1
+	toggleNoClipButton.Interactable = false
+	toggleNoClipLabel.TextTransparency = 1
+	toggleAGButton.Interactable = false
+	toggleAGButton.Transparency = 1
+	toggleAGlabel.Transparency = 1
+	slider.Transparency = 1
+	slider.Interactable = false
+	sliderLabel.Transparency = 1
+	sliderIndicator.Transparency = 1
+	toggleAGButton.Interactable = false
+	toggleAGButton.Transparency = 1
+	toggleclosebutton.Transparency = 1
+	toggleclosebutton.Interactable = false
+	toggleflybutton.Transparency = 1
+	toggleflybutton.Interactable = false
+	toggleLabelFLY.TextTransparency = 1
+	valueLabel.Transparency = 1
+	bar1.Transparency = 1
+	fill1.Transparency = 1
+	knob1.ImageTransparency = 1
+	knob1.Interactable = false
+	toggleNOFESNAKEButton.Transparency = 0
+	toggleNOFESNAKEButton.Interactable = true
+	toggleNOFESNAKELabel.TextTransparency = 0
 end)
 
 toggleButtonCola.MouseButton1Click:Connect(function()
@@ -1607,6 +1732,7 @@ local function setupListeners()
 								if  isEnabled and triggeringPlayer == player then
 									spawn(function()
 										for i = 1, fixedRepeats do
+											if gen.Progress.Value >= 100 then break end
 											wait(delayBetweenCalls)
 											remote:FireServer()
 										end
