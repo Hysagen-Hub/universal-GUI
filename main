@@ -502,6 +502,46 @@ gradientLABEL.Transparency = NumberSequence.new{
 	NumberSequenceKeypoint.new(1, 0.3)  -- полупрозрачный в конце
 }
 gradientLABEL.Parent = labelFORSACKEN
+local Players = game:GetService("Players")
+local avatarImageBACKGROUND = Instance.new("ImageButton", frame)
+avatarImageBACKGROUND.Size = UDim2.new(0, 40, 0, 40)
+avatarImageBACKGROUND.Position = UDim2.new(0, 2, 0, 200)
+avatarImageBACKGROUND.BackgroundTransparency = 1
+avatarImageBACKGROUND.Image = "rbxassetid://3570695787"
+local avatarImage = Instance.new("ImageLabel", avatarImageBACKGROUND)
+avatarImage.Size = UDim2.new(0, 40, 0, 40)
+avatarImage.Position = UDim2.new(0, 0, 0, 0)
+avatarImage.Image = Players:GetUserThumbnailAsync(player.UserId, Enum.ThumbnailType.HeadShot, Enum.ThumbnailSize.Size100x100)
+avatarImage.BackgroundTransparency = 1
+local avatarImagegreen = Instance.new("ImageLabel", avatarImage)
+avatarImagegreen.Size = UDim2.new(0, 10, 0, 10)
+avatarImagegreen.Position = UDim2.new(0, 30, 0, 30)
+avatarImagegreen.Image = "rbxassetid://3570695787"
+avatarImagegreen.BackgroundTransparency = 1
+avatarImagegreen.ImageColor3 = Color3.fromRGB(0, 255, 0)
+
+local firstNickname = player.Name
+local secondNickname = player.DisplayName
+local laba = Instance.new("TextLabel", frame)
+laba.Size = UDim2.new(1, -20, 0, 30)
+laba.Position = UDim2.new(0, 2, 0, 245)
+laba.BackgroundTransparency = 1
+laba.TextColor3 = Color3.new(1, 1, 1)
+laba.Font = Enum.Font.SourceSansBold
+laba.TextSize = 15
+laba.TextXAlignment = Enum.TextXAlignment.Left
+laba.Text = firstNickname
+laba.TextColor3 = Color3.fromRGB(124, 124, 124)
+
+local laba2 = Instance.new("TextLabel", frame)
+laba2.Size = UDim2.new(1, -20, 0, 30)
+laba2.Position = UDim2.new(0, 2, 0, 230)
+laba2.BackgroundTransparency = 1
+laba2.TextColor3 = Color3.new(1, 1, 1)
+laba2.Font = Enum.Font.SourceSansBold
+laba2.TextSize = 15
+laba2.TextXAlignment = Enum.TextXAlignment.Left
+laba2.Text = secondNickname
 
 local bar1 = Instance.new("Frame", frame)
 bar1.Size = UDim2.new(0, 240, 0, 20)
