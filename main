@@ -1089,12 +1089,14 @@ end)
 
 local UserInputService = game:GetService("UserInputService")
 local dragging1 = false
-local interval = 1
+local interval = 1.25
+local delayBetweenCalls = 1 -- секунды
 local function updateSlider1(inputPosition)
 	local relativeX = math.clamp(inputPosition.X - slider.AbsolutePosition.X, 0, slider.AbsoluteSize.X)
 	local percent = relativeX / slider.AbsoluteSize.X
 	sliderIndicator.Size = UDim2.new(percent, 0, 1, 0)
 	interval = math.floor(1 + percent * 9) -- 1..10 секунд
+	delayBetweenCalls = interval
 	sliderLabel.Text = "Интервал: " .. interval .. " сек"
 end
 
@@ -1117,19 +1119,17 @@ slider.InputEnded:Connect(function(input)
 	end
 end)
 
+local fixedRepeats = 4
+
 local isEnabled = false
 local runService = game:GetService("RunService")
-local lastFireTime = 0
-local proverochka = false
 
 toggleAGButton.MouseButton1Click:Connect(function()
 	isEnabled = not isEnabled
 	if isEnabled then 
 		toggleAGButton.Text = "ВЫКЛ"
 		toggleAGlabel.Text = "АВТО ГЕНЕРАТОР: ВКЛ"
-		proverochka = true
 	else
-		proverochka = false
 		toggleAGButton.Text = "ВКЛ"
 		toggleAGlabel.Text = "АВТО ГЕНЕРАТОР: ВЫКЛ"
 	end
@@ -1474,7 +1474,6 @@ player.CharacterAdded:Connect(function(char)
 	setupCharacter(char)
 	highlights = {}
 	nameTags = {}
-	generators = {}
 	sigma = true
 	if game.Players.LocalPlayer.Character:FindFirstChild("Animate") then
 		game.Players.LocalPlayer.Character.Animate.Disabled = false
@@ -1489,6 +1488,60 @@ end)
 local died = false
 local character = player.Character or player.CharacterAdded:Wait()
 local humanoid = character:WaitForChild("Humanoid")
+
+local function getCurrentMapFolder()
+	local mapFolder = nil
+	if workspace:FindFirstChild("Map") then
+		local ingame = workspace.Map:FindFirstChild("Ingame")
+		if ingame then
+			mapFolder = ingame:FindFirstChild("Map")
+		end
+	end
+	return mapFolder
+end
+
+local connections = {}
+
+local function clearConnections()
+	for _, conn in ipairs(connections) do
+		conn:Disconnect()
+	end
+	connections = {}
+end
+
+local function setupListeners()
+	clearConnections()
+	local currentMap = getCurrentMapFolder()
+	if not currentMap then return end
+
+	for _, gen in ipairs(currentMap:GetChildren()) do
+		if gen:IsA("Model") then
+			local prompt = gen:FindFirstChildWhichIsA("ProximityPrompt", true)
+			if prompt and prompt.Name == "Prompt" then
+				local remotesFolder = gen:FindFirstChild("Remotes")
+				if remotesFolder then
+					for _, remote in ipairs(remotesFolder:GetChildren()) do
+						if remote:IsA("RemoteEvent") then
+							local conn = prompt.Triggered:Connect(function(triggeringPlayer)
+								if  isEnabled and triggeringPlayer == player then
+									spawn(function()
+										for i = 1, fixedRepeats do
+											wait(delayBetweenCalls)
+											remote:FireServer()
+										end
+									end)
+								end
+							end)
+							table.insert(connections, conn)
+						end
+					end
+				end
+			end
+		end
+	end
+end
+
+local timer = 0
 
 RunService.Heartbeat:Connect(function(deltaTime)
 	if bruh then
@@ -1515,15 +1568,8 @@ RunService.Heartbeat:Connect(function(deltaTime)
 		noclip()
 	end
 	if not isEnabled then return end
-	local generatorsFolder = workspace.Map.Ingame:FindFirstChild("Map")
-	local generators = {}
-
-	for _, gen in pairs(generatorsFolder:GetChildren()) do
-		if gen.Name == "Generator" then
-			table.insert(generators, gen)
-		end
-	end
 end)
+
 
 player.CharacterAdded:Connect(function(char)
 	character = char
@@ -1531,29 +1577,14 @@ player.CharacterAdded:Connect(function(char)
 	died = false
 end)
 
-local generatorsFolder = workspace.Map.Ingame:FindFirstChild("Map")
-local generators = {}
+player.CharacterAdded:Connect(function()
+	setupListeners()
+end)
 
-for _, gen in pairs(generatorsFolder:GetChildren()) do
-	if gen.Name == "Generator" then
-		table.insert(generators, gen)
+RunService.Heartbeat:Connect(function(dt)
+	timer = timer + dt
+	if timer >= 1 then
+		setupListeners()
+		timer = 0
 	end
-end
-
-for _, gen in pairs(generators) do
-	local remotes = gen:FindFirstChild("Remotes")
-	local RE = remotes:FindFirstChild("RE")
-	local proxy = gen.Main:FindFirstChild("Prompt")
-	proxy.Triggered:Connect(function(triggeringPlayer)
-		if proverochka == true then
-			if triggeringPlayer == player then
-				for i = 1, 4 do
-					wait(interval)
-					RE:FireServer()
-				end
-			end
-		else
-			return
-		end
-	end)
-end
+end)
