@@ -1089,13 +1089,16 @@ end)
 
 local UserInputService = game:GetService("UserInputService")
 local dragging1 = false
-local interval = 1.25
+local interval = 1.3
 local delayBetweenCalls = 1 -- секунды
 local function updateSlider1(inputPosition)
 	local relativeX = math.clamp(inputPosition.X - slider.AbsolutePosition.X, 0, slider.AbsoluteSize.X)
 	local percent = relativeX / slider.AbsoluteSize.X
 	sliderIndicator.Size = UDim2.new(percent, 0, 1, 0)
 	interval = math.floor(1 + percent * 9) -- 1..10 секунд
+	if interval == 1 then
+		interval =1.3
+	end
 	delayBetweenCalls = interval
 	sliderLabel.Text = "Интервал: " .. interval .. " сек"
 end
