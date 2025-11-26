@@ -209,13 +209,13 @@ lineframe1.BackgroundColor3 = Color3.fromRGB(182, 64, 255)
 lineframe1.BorderColor3 = Color3.fromRGB(182, 64, 255)
 lineframe1.Transparency = 0.7
 
-local labelFORSACKEN = Instance.new("TextLabel", frame)
-labelFORSACKEN.Size = UDim2.new(0, 200, 0, 25)
-labelFORSACKEN.Position = UDim2.new(0, 10, 0, 1)
-labelFORSACKEN.Text = "script by Hysagen Hub"
-labelFORSACKEN.TextColor3 = Color3.fromRGB(255, 255, 255)
-labelFORSACKEN.BackgroundTransparency = 1
-labelFORSACKEN.TextSize = 10
+local labelMADEBY = Instance.new("TextLabel", frame)
+labelMADEBY.Size = UDim2.new(0, 200, 0, 25)
+labelMADEBY.Position = UDim2.new(0, -15, 0, 1)
+labelMADEBY.Text = "script by Hysagen Hub"
+labelMADEBY.TextColor3 = Color3.fromRGB(255, 255, 255)
+labelMADEBY.BackgroundTransparency = 1
+labelMADEBY.TextSize = 10
 local gradientLABEL = Instance.new("UIGradient")
 gradientLABEL.Color = ColorSequence.new{
 	ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 170, 255)),
@@ -230,7 +230,7 @@ gradientLABEL.Transparency = NumberSequence.new{
 	NumberSequenceKeypoint.new(0, 0),
 	NumberSequenceKeypoint.new(1, 0.3)
 }
-gradientLABEL.Parent = labelFORSACKEN
+gradientLABEL.Parent = labelMADEBY
 local Players = game:GetService("Players")
 local avatarImageBACKGROUND = Instance.new("ImageButton", frame)
 avatarImageBACKGROUND.Size = UDim2.new(0, 40, 0, 40)
@@ -398,6 +398,30 @@ gradient12.Transparency = NumberSequence.new{
 }
 gradient12.Parent = toggleNOFESNAKEButton
 
+local toggleAUTOBLOCKLabel = Instance.new("TextLabel", frame)
+toggleAUTOBLOCKLabel.Size = UDim2.new(0, 200, 0, 30)
+toggleAUTOBLOCKLabel.Position = UDim2.new(0, 80, 0, 65)
+toggleAUTOBLOCKLabel.BackgroundTransparency = 1
+toggleAUTOBLOCKLabel.TextColor3 = Color3.new(1,1,1)
+toggleAUTOBLOCKLabel.Font = Enum.Font.SourceSans
+toggleAUTOBLOCKLabel.TextSize = 18
+toggleAUTOBLOCKLabel.Text = "auto block hub"
+
+local toggleAUTOBLOCKButton = Instance.new("TextButton", frame)
+toggleAUTOBLOCKButton.Size = UDim2.new(0, 80, 0, 30)
+toggleAUTOBLOCKButton.Position = UDim2.new(0, 290, 0, 65)
+toggleAUTOBLOCKButton.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
+toggleAUTOBLOCKButton.TextColor3 = Color3.new(1,1,1)
+toggleAUTOBLOCKButton.Font = Enum.Font.SourceSansBold
+toggleAUTOBLOCKButton.TextSize = 18
+toggleAUTOBLOCKButton.Text = "Загрузить"
+gradientforALL:Clone():clone():Clone().Parent = toggleAUTOBLOCKButton
+local uiCorner3 = Instance.new("UICorner")
+uiCorner3.CornerRadius = UDim.new(0, 15) -- радиус 15 пикселей
+uiCorner3.Parent = toggleAUTOBLOCKButton
+toggleAUTOBLOCKLabel.TextTransparency = 1
+toggleAUTOBLOCKButton.Transparency = 1
+
 local toggleNoFogLabel = Instance.new("TextLabel", frame)
 toggleNoFogLabel.Size = UDim2.new(0, 200, 0, 30)
 toggleNoFogLabel.Position = UDim2.new(0, 80, 0, 65)
@@ -419,13 +443,7 @@ gradientforALL:Clone():clone().Parent = toggleNoFogButton
 local uiCorner2 = Instance.new("UICorner")
 uiCorner2.CornerRadius = UDim.new(0, 15) -- радиус 15 пикселей
 uiCorner2.Parent = toggleNoFogButton
-
 local gradientforALL1 = gradientforALL:Clone():Clone():clone()
-local uiCorner3 = Instance.new("UICorner")
-uiCorner3.CornerRadius = UDim.new(0, 15)
-
-local uiCorner4 = Instance.new("UICorner")
-uiCorner4.CornerRadius = UDim.new(0, 15)
 
 local toggleNoClipButton = Instance.new("TextButton", frame)
 toggleNoClipButton.Size = UDim2.new(0, 80, 0, 30)
@@ -452,9 +470,6 @@ toggleNoClipLabel.TextSize = 18
 toggleNoClipLabel.Text = "NO CLIP: ВЫКЛ"
 toggleNoClipLabel.Transparency = 1
 
-local uiCorner6 = Instance.new("UICorner")
-uiCorner6.CornerRadius = UDim.new(0, 15)
-
 local toggleNameLabel = Instance.new("TextLabel", frame)
 toggleNameLabel.Size = UDim2.new(0, 200, 0, 30)
 toggleNameLabel.Position = UDim2.new(0, 80, 0, 30)
@@ -478,10 +493,6 @@ local uiCorner7 = Instance.new("UICorner")
 uiCorner7.CornerRadius = UDim.new(0, 15) -- радиус 15 пикселей
 uiCorner7.Parent = toggleNameButton
 gradientforALL1:Clone():Clone():Clone():Clone().Parent = toggleNameButton
-
-
-local uiCorner8 = Instance.new("UICorner")
-uiCorner8.CornerRadius = UDim.new(0, 15)
 
 local gradientforALL2 = gradientforALL1:Clone():Clone():Clone():Clone():Clone():Clone():Clone()
 gradientforALL2.Color = ColorSequence.new{
@@ -564,6 +575,13 @@ toggleNOFESNAKEButton.MouseButton1Click:Connect(function()
 	toggleNOFESNAKEButton.Text = "Загружено!"
 	wait(0.4)
 	toggleNOFESNAKEButton.Text = "Загрузить"
+end)
+
+toggleAUTOBLOCKButton.MouseButton1Click:Connect(function()
+	loadstring(game:HttpGetAsync('https://raw.githubusercontent.com/ivannetta/ShitScripts/refs/heads/main/forsaken.lua'))()
+	toggleAUTOBLOCKButton.Text = "Загружено!"
+	wait(0.4)
+	toggleAUTOBLOCKButton.Text = "Загрузить"
 end)
 
 toggleflybutton.MouseButton1Click:Connect(function()
@@ -861,6 +879,8 @@ togglePage1button.MouseButton1Click:Connect(function()
 	toggleNOFESNAKEButton.Interactable = false
 	toggleNOFESNAKELabel.Transparency = 1
 	CreditsLabel.Transparency = 1
+	toggleAUTOBLOCKLabel.TextTransparency = 1
+	toggleAUTOBLOCKButton.Transparency = 1
 end)
 
 togglePage2button.MouseButton1Click:Connect(function()
@@ -895,6 +915,8 @@ togglePage2button.MouseButton1Click:Connect(function()
 	toggleNOFESNAKEButton.Interactable = false
 	toggleNOFESNAKELabel.Transparency = 1
 	CreditsLabel.Transparency = 1
+	toggleAUTOBLOCKLabel.TextTransparency = 1
+	toggleAUTOBLOCKButton.Transparency = 1
 end)
 
 togglePage3button.MouseButton1Click:Connect(function()
@@ -928,6 +950,8 @@ togglePage3button.MouseButton1Click:Connect(function()
 	toggleNOFESNAKEButton.Interactable = false
 	toggleNOFESNAKELabel.Transparency = 1
 	CreditsLabel.Transparency = 1
+	toggleAUTOBLOCKLabel.TextTransparency = 0
+	toggleAUTOBLOCKButton.Transparency = 0
 end)
 
 togglePage4button.MouseButton1Click:Connect(function()
@@ -962,6 +986,8 @@ togglePage4button.MouseButton1Click:Connect(function()
 	toggleNOFESNAKEButton.Interactable = true
 	toggleNOFESNAKELabel.TextTransparency = 0
 	CreditsLabel.TextTransparency = 0
+	toggleAUTOBLOCKLabel.TextTransparency = 1
+	toggleAUTOBLOCKButton.Transparency = 1
 end)
 
 toggleNameButton.MouseButton1Click:Connect(function()
