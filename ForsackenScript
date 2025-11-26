@@ -7,18 +7,11 @@ local espEnabled = false
 local speed = 0
 local dragging = false
 local dragging2 = false
-local highlightEnabled = false
 local nameHighlightEnabled = false
-local highlights = {}
 local nameTags = {}
-local highlights2 = {}
 local UserInputService = game:GetService("UserInputService")
 local RunService = game:GetService("RunService")
 local Workspace = game:GetService("Workspace")
-local espEnabled1 = false
-local highlights1 = {}
-local espEnabled3 = false
-local highlights3 = {}
 local density = game.Lighting:FindFirstChild("Atmosphere"):FindFirstChild("Density")
 local survivorsFolder
 local killersFolder
@@ -29,219 +22,6 @@ local function clearNameTags()
 		if tag then tag:Destroy() end
 	end
 	nameTags = {}
-end
-
-local function clearHighlights()
-	for _, highlight in pairs(highlights) do
-		if highlight then highlight:Destroy() end
-	end
-	highlights = {}
-end
-
-local function clearHighlights1()
-	for _, highlight in pairs(highlights1) do
-		if highlight then highlight:Destroy() end
-	end
-	highlights1 = {}
-end
-
-local function highlightInstances()
-	clearHighlights1()
-	local mapRoot = game.Workspace:FindFirstChild("Map")
-	if mapRoot then
-		local ingame = mapRoot:FindFirstChild("Ingame")
-		if ingame then
-			local map = ingame:FindFirstChild("Map")
-			if map then
-				for _, obj in pairs(map:GetChildren()) do
-					if obj.Name == "Generator" then
-						local instances = obj:FindFirstChild("Instances")
-						if instances then
-							local lastgen = instances:FindFirstChild("Generator")
-							if lastgen and lastgen:IsA("Model") then
-								local highlight = Instance.new("Highlight")
-								highlight.Adornee = lastgen
-								highlight.FillColor = Color3.fromRGB(255, 255, 0) -- ярко красный
-								highlight.OutlineColor = Color3.new(1, 1, 1)   -- белый контур
-								highlight.Parent = lastgen
-
-								highlights1[lastgen] = highlight
-							end
-						end
-					end
-				end
-			end
-		end
-	end
-end
-
-local function createHighlightsForWorkspaceKits()
-	-- не вызываем clearHighlights здесь, вызывается снаружи
-
-	for _, kit in pairs(Workspace:GetChildren()) do
-		if kit.Name == "Medkit" then
-			local function recurse(obj)
-				for _, child in pairs(obj:GetChildren()) do
-					if child:IsA("BasePart") then
-						local h = Instance.new("Highlight")
-						h.Adornee = child
-						h.FillColor = Color3.fromRGB(163, 3, 255)
-						h.OutlineColor = Color3.fromRGB(255, 255, 255)
-						h.Parent = child
-						table.insert(highlights3, h)
-					else
-						recurse(child)
-					end
-				end
-			end
-			recurse(kit)
-		end
-	end
-end
-
-local function getAllMedKits()
-	local kits = {}
-	local success, map1 = pcall(function() return Workspace:WaitForChild("Map",5) end)
-	if not success or not map1 then return kits end
-	local success2, ingame = pcall(function() return map1:WaitForChild("Ingame",5) end)
-	if not success2 or not ingame then return kits end
-	local success3, map2 = pcall(function() return ingame:WaitForChild("Map",5) end)
-	if not success3 or not map2 then return kits end
-
-	for _, obj in pairs(map2:GetChildren()) do
-		if obj.Name == "Medkit" then
-			table.insert(kits, obj)
-		end
-	end
-
-	return kits
-end
-
-local function getAllBloxyColas()
-	local colas = {}
-	local success, map1 = pcall(function() return Workspace:WaitForChild("Map",5) end)
-	if not success or not map1 then return colas end
-	local success2, ingame = pcall(function() return map1:WaitForChild("Ingame",5) end)
-	if not success2 or not ingame then return colas end
-	local success3, map2 = pcall(function() return ingame:WaitForChild("Map",5) end)
-	if not success3 or not map2 then return colas end
-
-	for _, obj in pairs(map2:GetChildren()) do
-		if obj.Name == "BloxyCola" then
-			table.insert(colas, obj)
-		end
-	end
-
-	return colas
-end
-
-local function clearHighlights2()
-	for _, h in pairs(highlights2) do
-		if h and h.Parent then
-			h:Destroy()
-		end
-	end
-	highlights2 = {}
-end
-
-local function clearHighlights3()
-	for _, h in pairs(highlights3) do
-		if h and h.Parent then
-			h:Destroy()
-		end
-	end
-	highlights3 = {}
-end
-
-local function createHighlightsForAll3()
-	clearHighlights3()
-
-	local kits = getAllMedKits()
-	for _, kit in ipairs(kits) do
-		local function recurse(obj)
-			for _, child in pairs(obj:GetChildren()) do
-				if child:IsA("BasePart") then
-					local h = Instance.new("Highlight")
-					h.Adornee = child
-					h.FillColor = Color3.fromRGB(163, 3, 255)
-					h.OutlineColor = Color3.fromRGB(255, 255, 255)
-					h.Parent = child
-					table.insert(highlights3, h)
-				else
-					recurse(child)
-				end
-			end
-		end
-		recurse(kit)
-	end
-
-	createHighlightsForWorkspaceKits()
-end
-
-local function toggleESP3(state)
-	espEnabled3 = state
-	if espEnabled3 then
-		createHighlightsForAll3()
-	else
-		clearHighlights3()
-	end
-end
-
-local function createHighlightsForWorkspaceColas()
-	for _, cola in pairs(Workspace:GetChildren()) do
-		if cola.Name == "BloxyCola" then
-			local function recurse(obj)
-				for _, child in pairs(obj:GetChildren()) do
-					if child:IsA("BasePart") then
-						local h = Instance.new("Highlight")
-						h.Adornee = child
-						h.FillColor = Color3.fromRGB(163, 3, 255)
-						h.OutlineColor = Color3.fromRGB(255, 255, 255)
-						h.Parent = child
-						table.insert(highlights2,  h)
-					else
-						recurse(child)
-					end
-				end
-			end
-			recurse(cola)
-		end
-	end
-end
-
-local function createHighlightsForAll()
-	clearHighlights2()
-
-	local colas = getAllBloxyColas()
-	for _, cola in ipairs(colas) do
-		local function recurse(obj)
-			for _, child in pairs(obj:GetChildren()) do
-				if child:IsA("BasePart") then
-					local h = Instance.new("Highlight")
-					h.Adornee = child
-					h.FillColor = Color3.fromRGB(163, 3, 255)
-					h.OutlineColor = Color3.fromRGB(255, 255, 255)
-					h.Parent = child
-					table.insert(highlights2, h)
-				else
-					recurse(child)
-				end
-			end
-		end
-		recurse(cola)
-	end
-
-	createHighlightsForWorkspaceColas()
-
-end
-
-local function toggleESP(state)
-	espEnabled1 = state
-	if espEnabled1 then
-		createHighlightsForAll()
-	else
-		clearHighlights2()
-	end
 end
 
 local function createNameTag(model, color)
@@ -308,53 +88,6 @@ local function disableNameTags()
 	nameHighlightEnabled = false
 	clearNameTags()
 end
-
-local function addHighlight(model, color)
-	if highlights[model] then return end -- уже подсвечено
-	if model:IsA("Model") and model:FindFirstChild("HumanoidRootPart") then
-		local highlight = Instance.new("Highlight")
-		highlight.Adornee = model
-		highlight.FillColor = color
-		highlight.FillTransparency = 0.5
-		highlight.OutlineColor = color
-		highlight.OutlineTransparency = 0
-		highlight.Parent = player:WaitForChild("PlayerGui")
-		highlights[model] = highlight
-	end
-end
-
-
-
-local function updateHighlights()
-	-- Добавляем подсветку для новых моделей выживших
-	survivorsFolder = workspace.Players.Survivors
-	killersFolder = workspace.Players.Killers
-	if survivorsFolder then
-		for _, model in pairs(survivorsFolder:GetChildren()) do
-			addHighlight(model, Color3.fromRGB(0, 255, 0))
-		end
-	end
-
-	-- Добавляем подсветку для новых моделей киллеров
-	if killersFolder then
-		for _, model in pairs(killersFolder:GetChildren()) do
-			addHighlight(model, Color3.fromRGB(255, 0, 0))
-		end
-	end
-end
-
-local function enableHighlights()
-	highlightEnabled = true
-	updateHighlights()
-
-end
-
-local function disableHighlights()
-	highlightEnabled = false
-	clearHighlights()
-end
-
--- Настройка персонажа для движения
 
 local brightness = game.Lighting.Brightness
 
@@ -432,29 +165,25 @@ frame.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
 frame.Active = true
 frame.Draggable = true
 local uiCorner = Instance.new("UICorner")
-uiCorner.CornerRadius = UDim.new(0, 15) -- радиус 15 пикселей
+uiCorner.CornerRadius = UDim.new(0, 15)
 uiCorner.Parent = frame
 frame.Transparency = 0.06
 local gradient = Instance.new("UIGradient")
 gradient.Color = ColorSequence.new{
-	ColorSequenceKeypoint.new(0, Color3.fromRGB(115, 0, 255)),   -- начало градиента (красный)
-	ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 80, 232))    -- конец градиента (синий)
+	ColorSequenceKeypoint.new(0, Color3.fromRGB(115, 0, 255)),
+	ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 80, 232))
 }
-
--- пример изменения наклона градиента
-gradient.Rotation = 45 -- угол в градусах
-
--- можно также менять Transparency (прозрачность) градиента
+gradient.Rotation = 45
 gradient.Transparency = NumberSequence.new{
-	NumberSequenceKeypoint.new(0, 0),   -- непрозрачный в начале
-	NumberSequenceKeypoint.new(1, 0.3)  -- полупрозрачный в конце
+	NumberSequenceKeypoint.new(0, 0),
+	NumberSequenceKeypoint.new(1, 0.3)
 }
 
 gradient.Parent = frame
 gradientforALL = gradient:Clone()
 gradientforALL.Color = ColorSequence.new{
-	ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 255, 255)),   -- начало градиента (красный)
-	ColorSequenceKeypoint.new(1, Color3.fromRGB(134, 134, 134))    -- конец градиента (синий)
+	ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 255, 255)),
+	ColorSequenceKeypoint.new(1, Color3.fromRGB(134, 134, 134))
 }
 
 -- пример изменения наклона градиента
@@ -483,14 +212,14 @@ lineframe1.Transparency = 0.7
 local labelFORSACKEN = Instance.new("TextLabel", frame)
 labelFORSACKEN.Size = UDim2.new(0, 200, 0, 25)
 labelFORSACKEN.Position = UDim2.new(0, 10, 0, 1)
-labelFORSACKEN.Text = "forsaken script by Hysagen Hub"
+labelFORSACKEN.Text = "script by Hysagen Hub"
 labelFORSACKEN.TextColor3 = Color3.fromRGB(255, 255, 255)
 labelFORSACKEN.BackgroundTransparency = 1
 labelFORSACKEN.TextSize = 10
 local gradientLABEL = Instance.new("UIGradient")
 gradientLABEL.Color = ColorSequence.new{
-	ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 170, 255)),   -- начало градиента (красный)
-	ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 80, 232))    -- конец градиента (синий)
+	ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 170, 255)),
+	ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 80, 232))
 }
 
 -- пример изменения наклона градиента
@@ -498,8 +227,8 @@ gradientLABEL.Rotation = 45 -- угол в градусах
 
 -- можно также менять Transparency (прозрачность) градиента
 gradientLABEL.Transparency = NumberSequence.new{
-	NumberSequenceKeypoint.new(0, 0),   -- непрозрачный в начале
-	NumberSequenceKeypoint.new(1, 0.3)  -- полупрозрачный в конце
+	NumberSequenceKeypoint.new(0, 0),
+	NumberSequenceKeypoint.new(1, 0.3)
 }
 gradientLABEL.Parent = labelFORSACKEN
 local Players = game:GetService("Players")
@@ -513,6 +242,8 @@ avatarImage.Size = UDim2.new(0, 40, 0, 40)
 avatarImage.Position = UDim2.new(0, 0, 0, 0)
 avatarImage.Image = Players:GetUserThumbnailAsync(player.UserId, Enum.ThumbnailType.HeadShot, Enum.ThumbnailSize.Size100x100)
 avatarImage.BackgroundTransparency = 1
+local avacorner = Instance.new('UICorner', avatarImage)
+avacorner.CornerRadius = UDim.new(1, 0)
 local avatarImagegreen = Instance.new("ImageLabel", avatarImage)
 avatarImagegreen.Size = UDim2.new(0, 10, 0, 10)
 avatarImagegreen.Position = UDim2.new(0, 30, 0, 30)
@@ -595,15 +326,6 @@ knob.Modal = true
 knob.Interactable = false
 knob.AutoButtonColor = false
 
-local toggleHighLightLabelMEDKIT = Instance.new("TextLabel", frame)
-toggleHighLightLabelMEDKIT.Size = UDim2.new(0, 200, 0, 30)
-toggleHighLightLabelMEDKIT.Position = UDim2.new(0, 80, 0, 240)
-toggleHighLightLabelMEDKIT.BackgroundTransparency = 1
-toggleHighLightLabelMEDKIT.TextColor3 = Color3.new(1,1,1)
-toggleHighLightLabelMEDKIT.Font = Enum.Font.SourceSans
-toggleHighLightLabelMEDKIT.TextSize = 18
-toggleHighLightLabelMEDKIT.Text = "Обводка MEDKIT: ВЫКЛ"
-
 local toggleFullBrightLabel = Instance.new("TextLabel", frame)
 toggleFullBrightLabel.Size = UDim2.new(0, 200, 0, 30)
 toggleFullBrightLabel.Position = UDim2.new(0, 80, 0, 30)
@@ -657,25 +379,22 @@ toggleNOFESNAKEButton.TextSize = 18
 toggleNOFESNAKEButton.Text = "Загрузить"
 gradientforALL:Clone().Parent = toggleFullBrightButton
 local uiCorner12 = Instance.new("UICorner")
-uiCorner12.CornerRadius = UDim.new(0, 15) -- радиус 15 пикселей
+uiCorner12.CornerRadius = UDim.new(0, 15)
 uiCorner12.Parent = toggleNOFESNAKEButton
 local gradient12 = Instance.new("UIGradient")
 gradient12.Color = ColorSequence.new{
-	ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 255, 255)),   -- начало градиента (красный)
-	ColorSequenceKeypoint.new(1, Color3.fromRGB(134, 134, 134))    -- конец градиента (синий)
+	ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 255, 255)),
+	ColorSequenceKeypoint.new(1, Color3.fromRGB(134, 134, 134))
 }
 
 toggleNOFESNAKEButton.Transparency = 1
 toggleNOFESNAKEButton.Interactable = false
 toggleNOFESNAKELabel.Transparency = 1
+gradient12.Rotation = 45
 
--- пример изменения наклона градиента
-gradient12.Rotation = 45 -- угол в градусах
-
--- можно также менять Transparency (прозрачность) градиента
 gradient12.Transparency = NumberSequence.new{
-	NumberSequenceKeypoint.new(0, 0),   -- непрозрачный в начале
-	NumberSequenceKeypoint.new(1, 0.3)  -- полупрозрачный в конце
+	NumberSequenceKeypoint.new(0, 0),
+	NumberSequenceKeypoint.new(1, 0.3)
 }
 gradient12.Parent = toggleNOFESNAKEButton
 
@@ -701,50 +420,12 @@ local uiCorner2 = Instance.new("UICorner")
 uiCorner2.CornerRadius = UDim.new(0, 15) -- радиус 15 пикселей
 uiCorner2.Parent = toggleNoFogButton
 
-local toggleButtonMEDKIT = Instance.new("TextButton", frame)
-toggleButtonMEDKIT.Size = UDim2.new(0, 80, 0, 30)
-toggleButtonMEDKIT.Position = UDim2.new(0, 290, 0, 240)
-toggleButtonMEDKIT.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
-toggleButtonMEDKIT.TextColor3 = Color3.new(1,1,1)
-toggleButtonMEDKIT.Font = Enum.Font.SourceSansBold
-toggleButtonMEDKIT.TextSize = 18
-toggleButtonMEDKIT.Text = "ВКЛ"
 local gradientforALL1 = gradientforALL:Clone():Clone():clone()
 local uiCorner3 = Instance.new("UICorner")
-uiCorner3.CornerRadius = UDim.new(0, 15) -- радиус 15 пикселей
-uiCorner3.Parent = toggleButtonMEDKIT
-gradientforALL1.Parent = toggleButtonMEDKIT
+uiCorner3.CornerRadius = UDim.new(0, 15)
 
-local toggleHighlightLabel = Instance.new("TextLabel", frame)
-toggleHighlightLabel.Size = UDim2.new(0, 200, 0, 30)
-toggleHighlightLabel.Position = UDim2.new(0, 80, 0, 100)
-toggleHighlightLabel.BackgroundTransparency = 1
-toggleHighlightLabel.TextColor3 = Color3.new(1,1,1)
-toggleHighlightLabel.Font = Enum.Font.SourceSans
-toggleHighlightLabel.TextSize = 18
-toggleHighlightLabel.Text = "Обводка игроков: ВЫКЛ"
-
-local toggleHighlightCola = Instance.new("TextLabel", frame)
-toggleHighlightCola.Size = UDim2.new(0, 200, 0, 30)
-toggleHighlightCola.Position = UDim2.new(0, 80, 0, 205)
-toggleHighlightCola.BackgroundTransparency = 1
-toggleHighlightCola.TextColor3 = Color3.new(1,1,1)
-toggleHighlightCola.Font = Enum.Font.SourceSans
-toggleHighlightCola.TextSize = 18
-toggleHighlightCola.Text = "Обводка BloxyCola: ВЫКЛ"
-
-local toggleButtonCola = Instance.new("TextButton", frame)
-toggleButtonCola.Size = UDim2.new(0, 80, 0, 30)
-toggleButtonCola.Position = UDim2.new(0, 290, 0, 205)
-toggleButtonCola.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
-toggleButtonCola.TextColor3 = Color3.new(1,1,1)
-toggleButtonCola.Font = Enum.Font.SourceSansBold
-toggleButtonCola.TextSize = 18
-toggleButtonCola.Text = "ВКЛ"
-gradientforALL1:Clone().Parent = toggleButtonCola
 local uiCorner4 = Instance.new("UICorner")
-uiCorner4.CornerRadius = UDim.new(0, 15) -- радиус 15 пикселей
-uiCorner4.Parent = toggleButtonCola
+uiCorner4.CornerRadius = UDim.new(0, 15)
 
 local toggleNoClipButton = Instance.new("TextButton", frame)
 toggleNoClipButton.Size = UDim2.new(0, 80, 0, 30)
@@ -757,7 +438,7 @@ toggleNoClipButton.Text = "ВКЛ"
 toggleNoClipButton.Interactable = false
 toggleNoClipButton.Transparency = 1
 local uiCorner5 = Instance.new("UICorner")
-uiCorner5.CornerRadius = UDim.new(0, 15) -- радиус 15 пикселей
+uiCorner5.CornerRadius = UDim.new(0, 15)
 uiCorner5.Parent = toggleNoClipButton
 gradientforALL1:Clone():Clone().Parent = toggleNoClipButton
 
@@ -771,118 +452,48 @@ toggleNoClipLabel.TextSize = 18
 toggleNoClipLabel.Text = "NO CLIP: ВЫКЛ"
 toggleNoClipLabel.Transparency = 1
 
-
-local toggleButton = Instance.new("TextButton", frame)
-toggleButton.Size = UDim2.new(0, 80, 0, 30)
-toggleButton.Position = UDim2.new(0, 290, 0, 100)
-toggleButton.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
-toggleButton.TextColor3 = Color3.new(1,1,1)
-toggleButton.Font = Enum.Font.SourceSansBold
-toggleButton.TextSize = 18
-toggleButton.Text = "ВКЛ"
 local uiCorner6 = Instance.new("UICorner")
-uiCorner6.CornerRadius = UDim.new(0, 15) -- радиус 15 пикселей
-uiCorner6.Parent = toggleButton
-gradientforALL1:Clone():Clone():Clone().Parent = toggleButton
+uiCorner6.CornerRadius = UDim.new(0, 15)
 
 local toggleNameLabel = Instance.new("TextLabel", frame)
 toggleNameLabel.Size = UDim2.new(0, 200, 0, 30)
-toggleNameLabel.Position = UDim2.new(0, 80, 0, 135)
+toggleNameLabel.Position = UDim2.new(0, 80, 0, 30)
 toggleNameLabel.BackgroundTransparency = 1
 toggleNameLabel.TextColor3 = Color3.new(1,1,1)
 toggleNameLabel.Font = Enum.Font.SourceSans
 toggleNameLabel.TextSize = 18
 toggleNameLabel.Text = "Подсветка ников: ВЫКЛ"
+toggleNameLabel.Transparency = 1
 
 local toggleNameButton = Instance.new("TextButton", frame)
 toggleNameButton.Size = UDim2.new(0, 80, 0, 30)
-toggleNameButton.Position = UDim2.new(0, 290, 0, 135)
+toggleNameButton.Position = UDim2.new(0, 290, 0, 30)
 toggleNameButton.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
 toggleNameButton.TextColor3 = Color3.new(1,1,1)
 toggleNameButton.Font = Enum.Font.SourceSansBold
 toggleNameButton.TextSize = 18
 toggleNameButton.Text = "ВКЛ"
+toggleNameButton.Transparency = 1
 local uiCorner7 = Instance.new("UICorner")
 uiCorner7.CornerRadius = UDim.new(0, 15) -- радиус 15 пикселей
 uiCorner7.Parent = toggleNameButton
 gradientforALL1:Clone():Clone():Clone():Clone().Parent = toggleNameButton
 
-local toggleGENButton = Instance.new("TextButton", frame)
-toggleGENButton.Size = UDim2.new(0, 80, 0, 30)
-toggleGENButton.Position = UDim2.new(0, 290, 0, 170)
-toggleGENButton.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
-toggleGENButton.TextColor3 = Color3.new(1,1,1)
-toggleGENButton.Font = Enum.Font.SourceSansBold
-toggleGENButton.TextSize = 18
-toggleGENButton.Text = "ВКЛ"
-local uiCorner9 = Instance.new("UICorner")
-uiCorner9.CornerRadius = UDim.new(0, 15) -- радиус 15 пикселей
-uiCorner9.Parent = toggleGENButton
-gradientforALL1:Clone():Clone():Clone():Clone():Clone():Clone().Parent = toggleGENButton
 
-local toggleHighlightLabelGEN = Instance.new("TextLabel", frame)
-toggleHighlightLabelGEN.Size = UDim2.new(0, 200, 0, 30)
-toggleHighlightLabelGEN.Position = UDim2.new(0, 80, 0, 170)
-toggleHighlightLabelGEN.BackgroundTransparency = 1
-toggleHighlightLabelGEN.TextColor3 = Color3.new(1,1,1)
-toggleHighlightLabelGEN.Font = Enum.Font.SourceSans
-toggleHighlightLabelGEN.TextSize = 18
-toggleHighlightLabelGEN.Text = "Генератор ESP: ВЫКЛ"
-
-local sliderLabel = Instance.new("TextLabel", frame)
-sliderLabel.Size = UDim2.new(0.80, 0, 0.1, 0)
-sliderLabel.Position = UDim2.new(0, 80, 0, 60)
-sliderLabel.BackgroundTransparency = 1
-sliderLabel.TextColor3 = Color3.new(1, 1, 1)
-sliderLabel.Font = Enum.Font.SourceSansBold
-sliderLabel.TextSize = 18
-sliderLabel.Text = "Интервал: 1 сек"
-sliderLabel.Parent = frame
-sliderLabel.Transparency = 1
-
-local slider = Instance.new("TextButton", frame)
-slider.Size = UDim2.new(0.60, 0, 0.065, 0)
-slider.Position = UDim2.new(0, 127, 0, 40)
-slider.BackgroundColor3 = Color3.new(0.3, 0.3, 0.3)
-slider.Text = ""
-slider.Parent = frame
-slider.Transparency = 1
-slider.Interactable = false
-
-local sliderIndicator = Instance.new("Frame", frame)
-sliderIndicator.Size = UDim2.new(0.1, 0, 1, 0)
-sliderIndicator.BackgroundColor3 = Color3.new(0, 0.6, 1)
-sliderIndicator.Parent = slider
-sliderIndicator.Transparency = 1
-
-local toggleAGButton = Instance.new("TextButton", frame)
-toggleAGButton.Size = UDim2.new(0, 80, 0, 30)
-toggleAGButton.Position = UDim2.new(0, 290, 0, 90)
-toggleAGButton.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
-toggleAGButton.TextColor3 = Color3.new(1,1,1)
-toggleAGButton.Font = Enum.Font.SourceSansBold
-toggleAGButton.TextSize = 18
-toggleAGButton.Text = "ВКЛ"
-toggleAGButton.Interactable = false
-toggleAGButton.Transparency = 1
 local uiCorner8 = Instance.new("UICorner")
-uiCorner8.CornerRadius = UDim.new(0, 15) -- радиус 15 пикселей
-uiCorner8.Parent = toggleAGButton
-gradientforALL1:Clone():Clone():Clone():Clone():Clone().Parent = toggleAGButton
+uiCorner8.CornerRadius = UDim.new(0, 15)
 
 local gradientforALL2 = gradientforALL1:Clone():Clone():Clone():Clone():Clone():Clone():Clone()
 gradientforALL2.Color = ColorSequence.new{
-	ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 170, 255)),   -- начало градиента (красный)
-	ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 80, 232))    -- конец градиента (синий)
+	ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 170, 255)),
+	ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 80, 232))
 }
 
--- пример изменения наклона градиента
-gradientforALL2.Rotation = 45 -- угол в градусах
+gradientforALL2.Rotation = 45
 
--- можно также менять Transparency (прозрачность) градиента
 gradientforALL2.Transparency = NumberSequence.new{
-	NumberSequenceKeypoint.new(0, 0),   -- непрозрачный в начале
-	NumberSequenceKeypoint.new(1, 0.3)  -- полупрозрачный в конце
+	NumberSequenceKeypoint.new(0, 0),
+	NumberSequenceKeypoint.new(1, 0.3)
 }
 
 local toggleLabelFLY = Instance.new("TextLabel", frame)
@@ -910,8 +521,8 @@ uiCorner123.CornerRadius = UDim.new(0, 15) -- радиус 15 пикселей
 uiCorner123.Parent = toggleflybutton
 local grad = Instance.new("UIGradient")
 grad.Color = ColorSequence.new{
-	ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 255, 255)),   -- начало градиента (красный)
-	ColorSequenceKeypoint.new(1, Color3.fromRGB(134, 134, 134))    -- конец градиента (синий)
+	ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 255, 255)),
+	ColorSequenceKeypoint.new(1, Color3.fromRGB(134, 134, 134))
 }
 
 -- пример изменения наклона градиента
@@ -949,7 +560,7 @@ UserInputService.InputEnded:Connect(function(input)
 end)
 
 toggleNOFESNAKEButton.MouseButton1Click:Connect(function()
-	loadstring(game:HttpGet('https://raw.githubusercontent.com/Avtor1zaTion/NO-FE-SNAKE/refs/heads/main/NO-FE-Snake.txt'))()
+	loadstring(game:HttpGet("https://pastebin.com/raw/gYM0ejM2"))("T.me/AvtorScripts")
 	toggleNOFESNAKEButton.Text = "Загружено!"
 	wait(0.4)
 	toggleNOFESNAKEButton.Text = "Загрузить"
@@ -1180,7 +791,7 @@ togglePage3button.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
 togglePage3button.TextColor3 = Color3.new(1,1,1)
 togglePage3button.Font = Enum.Font.SourceSansBold
 togglePage3button.TextSize = 18
-togglePage3button.Text = "Generator"
+togglePage3button.Text = "Forsaken"
 local uiCorner11 = Instance.new("UICorner")
 uiCorner11.CornerRadius = UDim.new(0, 15) -- радиус 15 пикселей
 uiCorner11.Parent = togglePage3button
@@ -1199,16 +810,6 @@ uiCorner12.CornerRadius = UDim.new(0, 15) -- радиус 15 пикселей
 uiCorner12.Parent = togglePage4button
 gradientforALL2:Clone():Clone():Clone().Parent = togglePage4button
 
-local toggleAGlabel = Instance.new("TextLabel", frame)
-toggleAGlabel.Size = UDim2.new(0, 200, 0, 30)
-toggleAGlabel.Position = UDim2.new(0, 100, 0, 90)
-toggleAGlabel.BackgroundTransparency = 1
-toggleAGlabel.TextColor3 = Color3.new(1,1,1)
-toggleAGlabel.Font = Enum.Font.SourceSans
-toggleAGlabel.TextSize = 18
-toggleAGlabel.Text = "АВТО ГЕНЕРАТОР: ВЫКЛ"
-toggleAGlabel.Transparency = 1
-
 local toggleclosebutton = Instance.new("TextButton", frame)
 toggleclosebutton.Size = UDim2.new(0, 280, 0, 30)
 toggleclosebutton.Position = UDim2.new(0, 100, 0, 240)
@@ -1224,92 +825,18 @@ uiCorner11.CornerRadius = UDim.new(0, 15) -- радиус 15 пикселей
 uiCorner11.Parent = toggleclosebutton
 gradientforALL2:Clone():Clone():Clone().Parent = toggleclosebutton
 
-local isEnabledGEN = false
-local lastFireTime = 0
-
-toggleButton.MouseButton1Click:Connect(function()
-	if highlightEnabled then
-		disableHighlights()
-		toggleHighlightLabel.Text = "Обводка игроков: ВЫКЛ"
-		toggleButton.Text = "ВКЛ"
-	else
-		toggleHighlightLabel.Text = "Обводка игроков: ВКЛ"
-		enableHighlights()
-		toggleButton.Text = "ВЫКЛ"
-	end
-end)
-
 local UserInputService = game:GetService("UserInputService")
 local dragging1 = false
-local interval = 1.3
-local delayBetweenCalls = 1.3 -- секунды
-local function updateSlider1(inputPosition)
-	local relativeX = math.clamp(inputPosition.X - slider.AbsolutePosition.X, 0, slider.AbsoluteSize.X)
-	local percent = relativeX / slider.AbsoluteSize.X
-	sliderIndicator.Size = UDim2.new(percent, 0, 1, 0)
-	interval = math.floor(1 + percent * 9) -- 1..10 секунд
-	if interval == 1 then
-		interval =1.3
-	end
-	delayBetweenCalls = interval
-	sliderLabel.Text = "Интервал: " .. interval .. " сек"
-end
-
-slider.InputBegan:Connect(function(input)
-	if input.UserInputType == Enum.UserInputType.MouseButton1 then
-		dragging1 = true
-		updateSlider1(input.Position)
-	end
-end)
-
-slider.InputChanged:Connect(function(input)
-	if dragging1 and input.UserInputType == Enum.UserInputType.MouseMovement then
-		updateSlider1(input.Position)
-	end
-end)
-
-slider.InputEnded:Connect(function(input)
-	if input.UserInputType == Enum.UserInputType.MouseButton1 then
-		dragging1 = false
-	end
-end)
-
-local fixedRepeats = 4
-
 local isEnabled = false
-local runService = game:GetService("RunService")
-
-toggleAGButton.MouseButton1Click:Connect(function()
-	isEnabled = not isEnabled
-	if isEnabled then 
-		toggleAGButton.Text = "ВЫКЛ"
-		toggleAGlabel.Text = "АВТО ГЕНЕРАТОР: ВКЛ"
-	else
-		toggleAGButton.Text = "ВКЛ"
-		toggleAGlabel.Text = "АВТО ГЕНЕРАТОР: ВЫКЛ"
-	end
-end)
 
 togglePage1button.MouseButton1Click:Connect(function()
-	toggleHighLightLabelMEDKIT.TextTransparency = 0
-	toggleButtonMEDKIT.Transparency = 0
-	toggleHighlightLabel.TextTransparency = 0
-	toggleButton.Transparency = 0
-	toggleHighlightCola.TextTransparency = 0
-	toggleButtonCola.Transparency = 0
-	toggleNameLabel.TextTransparency = 0
-	toggleNameButton.Transparency = 0
-	toggleGENButton.Transparency = 0
-	toggleHighlightLabelGEN.TextTransparency = 0
+	toggleNameLabel.TextTransparency = 1
+	toggleNameButton.Transparency = 1
 	knob.Interactable = false
 	label.TextTransparency = 1
 	bar.Transparency = 1
 	fill.Transparency = 1
 	knob.ImageTransparency = 1
-	toggleButtonCola.Interactable = true
-	toggleButton.Interactable = true
-	toggleButtonMEDKIT.Interactable = true
-	toggleGENButton.Interactable = true
 	toggleNameButton.Interactable = true
 	toggleNoFogLabel.TextTransparency = 0
 	toggleNoFogButton.Transparency = 0
@@ -1320,15 +847,6 @@ togglePage1button.MouseButton1Click:Connect(function()
 	toggleNoClipButton.Transparency = 1
 	toggleNoClipButton.Interactable = false
 	toggleNoClipLabel.TextTransparency = 1
-	toggleAGButton.Interactable = false
-	toggleAGButton.Transparency = 1
-	toggleAGlabel.Transparency = 1
-	slider.Transparency = 1
-	slider.Interactable = false
-	sliderLabel.Transparency = 1
-	sliderIndicator.Transparency = 1
-	toggleAGButton.Interactable = false
-	toggleAGButton.Transparency = 1
 	toggleclosebutton.Transparency = 1
 	toggleclosebutton.Interactable = false
 	toggleflybutton.Transparency = 1
@@ -1346,26 +864,13 @@ togglePage1button.MouseButton1Click:Connect(function()
 end)
 
 togglePage2button.MouseButton1Click:Connect(function()
-	toggleButtonMEDKIT.Transparency = 1
-	toggleHighLightLabelMEDKIT.Transparency = 1
-	toggleHighlightLabel.Transparency = 1
-	toggleButton.TextTransparency = 1
-	toggleButtonCola.Transparency = 1
-	toggleHighlightCola.TextTransparency = 1
 	toggleNameLabel.Transparency = 1
-	toggleGENButton.Transparency = 1
-	toggleButton.Transparency = 1
 	toggleNameButton.Transparency = 1
-	toggleHighlightLabelGEN.Transparency = 1
 	label.TextTransparency = 0
 	bar.Transparency = 0
 	fill.Transparency = 0
 	knob.ImageTransparency = 0
 	knob.Interactable = true
-	toggleButtonCola.Interactable = false
-	toggleButton.Interactable = false
-	toggleButtonMEDKIT.Interactable = false
-	toggleGENButton.Interactable = false
 	toggleNameButton.Interactable = false
 	toggleNoFogLabel.Transparency = 1
 	toggleNoFogButton.Transparency = 1
@@ -1376,15 +881,6 @@ togglePage2button.MouseButton1Click:Connect(function()
 	toggleNoClipButton.Transparency = 0
 	toggleNoClipButton.Interactable = true
 	toggleNoClipLabel.TextTransparency = 0
-	toggleAGButton.Interactable = false
-	toggleAGButton.Transparency = 1
-	toggleAGlabel.Transparency = 1
-	slider.Transparency = 1
-	slider.Interactable = false
-	sliderLabel.Transparency = 1
-	sliderIndicator.Transparency = 1
-	toggleAGButton.Interactable = false
-	toggleAGButton.Transparency = 1
 	toggleclosebutton.Transparency = 0
 	toggleclosebutton.Interactable = true
 	toggleflybutton.Transparency = 0
@@ -1402,27 +898,8 @@ togglePage2button.MouseButton1Click:Connect(function()
 end)
 
 togglePage3button.MouseButton1Click:Connect(function()
-	toggleButtonMEDKIT.Transparency = 1
-	toggleHighLightLabelMEDKIT.Transparency = 1
-	toggleHighlightLabel.Transparency = 1
-	toggleButtonCola.Transparency = 1
-	toggleHighlightCola.TextTransparency = 1
-	toggleNameLabel.Transparency = 1
-	toggleGENButton.Transparency = 1
-	toggleNameButton.Transparency = 1
-	toggleHighlightLabelGEN.Transparency = 1
-	toggleAGButton.Interactable = true
-	toggleAGButton.Transparency = 0
-	toggleAGlabel.TextTransparency = 0
-	slider.Transparency = 0
-	slider.Interactable = true
-	sliderLabel.TextTransparency = 0
-	sliderIndicator.Transparency = 0
-	toggleAGButton.Interactable = true
-	toggleAGButton.Transparency = 0
-	toggleButton.Interactable = false
-	toggleButton.Transparency = 1
-	toggleButton.TextTransparency = 1
+	toggleNameLabel.TextTransparency = 0
+	toggleNameButton.Transparency = 0
 	toggleNoFogLabel.Transparency = 1
 	toggleNoFogButton.Transparency = 1
 	toggleNoFogButton.Interactable = false
@@ -1454,25 +931,13 @@ togglePage3button.MouseButton1Click:Connect(function()
 end)
 
 togglePage4button.MouseButton1Click:Connect(function()
-	toggleHighLightLabelMEDKIT.TextTransparency = 1
-	toggleButtonMEDKIT.Transparency = 1
-	toggleHighlightLabel.TextTransparency = 1
-	toggleButton.Transparency = 1
-	toggleHighlightCola.TextTransparency = 1
-	toggleButtonCola.Transparency = 1
 	toggleNameLabel.TextTransparency = 1
 	toggleNameButton.Transparency = 1
-	toggleGENButton.Transparency = 1
-	toggleHighlightLabelGEN.TextTransparency = 1
 	knob.Interactable = false
 	label.TextTransparency = 1
 	bar.Transparency = 1
 	fill.Transparency = 1
 	knob.ImageTransparency = 1
-	toggleButtonCola.Interactable = false
-	toggleButton.Interactable = false
-	toggleButtonMEDKIT.Interactable = false
-	toggleGENButton.Interactable = false
 	toggleNameButton.Interactable = false
 	toggleNoFogLabel.TextTransparency = 1
 	toggleNoFogButton.Transparency = 1
@@ -1483,15 +948,6 @@ togglePage4button.MouseButton1Click:Connect(function()
 	toggleNoClipButton.Transparency = 1
 	toggleNoClipButton.Interactable = false
 	toggleNoClipLabel.TextTransparency = 1
-	toggleAGButton.Interactable = false
-	toggleAGButton.Transparency = 1
-	toggleAGlabel.Transparency = 1
-	slider.Transparency = 1
-	slider.Interactable = false
-	sliderLabel.Transparency = 1
-	sliderIndicator.Transparency = 1
-	toggleAGButton.Interactable = false
-	toggleAGButton.Transparency = 1
 	toggleclosebutton.Transparency = 1
 	toggleclosebutton.Interactable = false
 	toggleflybutton.Transparency = 1
@@ -1506,18 +962,6 @@ togglePage4button.MouseButton1Click:Connect(function()
 	toggleNOFESNAKEButton.Interactable = true
 	toggleNOFESNAKELabel.TextTransparency = 0
 	CreditsLabel.TextTransparency = 0
-end)
-
-toggleButtonCola.MouseButton1Click:Connect(function()
-	espEnabled1 = not espEnabled1
-	toggleESP(espEnabled1)
-	if toggleHighlightCola.Text == "Обводка BloxyCola: ВЫКЛ" then
-		toggleButtonCola.Text = "ВЫКЛ"
-		toggleHighlightCola.Text = "Обводка BloxyCola: ВКЛ"
-	else
-		toggleHighlightCola.Text = "Обводка BloxyCola: ВЫКЛ"
-		toggleButtonCola.Text = "ВКЛ"
-	end
 end)
 
 toggleNameButton.MouseButton1Click:Connect(function()
@@ -1535,45 +979,11 @@ end)
 closebuttonRE = nil
 
 toggleclosebutton. MouseButton1Click:Connect(function()
-	highlightEnabled = false
 	nameHighlightEnabled = false
-	espEnabled1 = false
-	espEnabled3 = false
 	espEnabled = false
 	closebuttonRE = true
-	clearHighlights2()
 	clearNameTags()
-	clearHighlights()
-	clearHighlights3()
 	screenGui:Destroy()
-end)
-
-toggleGENButton.MouseButton1Click:Connect(function()
-	espEnabled = not espEnabled
-	if espEnabled then
-		toggleHighlightLabelGEN.Text = "Генератор ESP: ВКЛ"
-		toggleGENButton.Text = "ВЫКЛ"
-		highlightInstances()
-	else
-		toggleHighlightLabelGEN.Text = "Генератор ESP: ВЫКЛ"
-		toggleGENButton.Text = "ВКЛ"
-		clearHighlights1()
-	end
-end)
-
-toggleButtonMEDKIT.MouseButton1Click:Connect(function()
-	espEnabled3 = not espEnabled3
-	toggleESP3(espEnabled3)
-	if toggleHighLightLabelMEDKIT.Text == "Обводка Medkit: ВКЛ" then
-		toggleHighLightLabelMEDKIT.Text = "Обводка Medkit: ВЫКЛ"
-	else
-		toggleHighLightLabelMEDKIT.Text = "Обводка Medkit: ВКЛ"
-	end
-	if toggleButtonMEDKIT.Text == "ВЫКЛ" then
-		toggleButtonMEDKIT.Text = "ВКЛ"
-	else
-		toggleButtonMEDKIT.Text = "ВЫКЛ"
-	end
 end)
 
 local FogEnd = game.Lighting.FogEnd 
@@ -1647,8 +1057,6 @@ knob1.InputBegan:Connect(function(input2)
 	end
 end)
 
-local generators = {}
-
 userInputService.InputChanged:Connect(function(input2)
 	if dragging2 and input2.UserInputType == Enum.UserInputType.MouseMovement then
 		local relativeX1 = math.clamp(input2.Position.X - bar1.AbsolutePosition.X, 0, bar1.AbsoluteSize.X)
@@ -1694,7 +1102,6 @@ local sigma = false
 
 player.CharacterAdded:Connect(function(char)
 	setupCharacter(char)
-	highlights = {}
 	nameTags = {}
 	sigma = true
 	if game.Players.LocalPlayer.Character:FindFirstChild("Animate") then
@@ -1731,39 +1138,6 @@ local function clearConnections()
 	connections = {}
 end
 
-local function setupListeners()
-	clearConnections()
-	local currentMap = getCurrentMapFolder()
-	if not currentMap then return end
-
-	for _, gen in ipairs(currentMap:GetChildren()) do
-		if gen:IsA("Model") then
-			local prompt = gen:FindFirstChildWhichIsA("ProximityPrompt", true)
-			if prompt and prompt.Name == "Prompt" then
-				local remotesFolder = gen:FindFirstChild("Remotes")
-				if remotesFolder then
-					for _, remote in ipairs(remotesFolder:GetChildren()) do
-						if remote:IsA("RemoteEvent") then
-							local conn = prompt.Triggered:Connect(function(triggeringPlayer)
-								if  isEnabled and triggeringPlayer == player then
-									spawn(function()
-										for i = 1, fixedRepeats do
-											if gen.Progress.Value >= 100 then break end
-											wait(delayBetweenCalls)
-											remote:FireServer()
-										end
-									end)
-								end
-							end)
-							table.insert(connections, conn)
-						end
-					end
-				end
-			end
-		end
-	end
-end
-
 local timer = 0
 
 RunService.Heartbeat:Connect(function(deltaTime)
@@ -1772,20 +1146,8 @@ RunService.Heartbeat:Connect(function(deltaTime)
 		game.Lighting.FogStart = 0
 		game.Lighting.GlobalShadows = false
 	end
-	if highlightEnabled then
-		updateHighlights()
-	end
 	if nameHighlightEnabled then
 		updateNameTags()
-	end
-	if espEnabled1 then
-		createHighlightsForAll()
-	end
-	if espEnabled3 then
-		createHighlightsForAll3()
-	end
-	if espEnabled == false then
-		clearHighlights1()
 	end
 	if noclipEnabled then
 		noclip()
@@ -1798,16 +1160,4 @@ player.CharacterAdded:Connect(function(char)
 	character = char
 	humanoid = character:WaitForChild("Humanoid")
 	died = false
-end)
-
-player.CharacterAdded:Connect(function()
-	setupListeners()
-end)
-
-RunService.Heartbeat:Connect(function(dt)
-	timer = timer + dt
-	if timer >= 1 then
-		setupListeners()
-		timer = 0
-	end
 end)
