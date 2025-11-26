@@ -167,16 +167,16 @@ frame.Active = true
 local uiCorner = Instance.new("UICorner")
 uiCorner.CornerRadius = UDim.new(0, 15)
 uiCorner.Parent = frame
-frame.Transparency = 0.06
+frame.Transparency = 0
 local gradient = Instance.new("UIGradient")
 gradient.Color = ColorSequence.new{
-	ColorSequenceKeypoint.new(0, Color3.fromRGB(115, 0, 255)),
-	ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 80, 232))
+	ColorSequenceKeypoint.new(0, Color3.fromRGB(0, 0, 0)),
+	ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 255, 255))
 }
 gradient.Rotation = 45
 gradient.Transparency = NumberSequence.new{
 	NumberSequenceKeypoint.new(0, 0),
-	NumberSequenceKeypoint.new(1, 0.3)
+	NumberSequenceKeypoint.new(1, 0.1)
 }
 
 gradient.Parent = frame
@@ -198,15 +198,15 @@ gradientforALL.Transparency = NumberSequence.new{
 local lineframe = Instance.new("Frame", frame)
 lineframe.Size = UDim2.new(0, 0.01, 0, 245)
 lineframe.Position = UDim2.new(0, 90, 0, 30)
-lineframe.BackgroundColor3 = Color3.fromRGB(182, 64, 255)
-lineframe.BorderColor3 = Color3.fromRGB(182, 64, 255)
+lineframe.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+lineframe.BorderColor3 = Color3.fromRGB(255, 255, 255)
 lineframe.Transparency = 0.7
 
 local lineframe1 = Instance.new("Frame", frame)
 lineframe1.Size = UDim2.new(0, 398, 0, 0.01)
 lineframe1.Position = UDim2.new(0, 0, 0, 28)
-lineframe1.BackgroundColor3 = Color3.fromRGB(182, 64, 255)
-lineframe1.BorderColor3 = Color3.fromRGB(182, 64, 255)
+lineframe1.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+lineframe1.BorderColor3 = Color3.fromRGB(255, 255, 255)
 lineframe1.Transparency = 0.7
 
 local labelMADEBY = Instance.new("TextLabel", frame)
@@ -218,8 +218,8 @@ labelMADEBY.BackgroundTransparency = 1
 labelMADEBY.TextSize = 10
 local gradientLABEL = Instance.new("UIGradient")
 gradientLABEL.Color = ColorSequence.new{
-	ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 170, 255)),
-	ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 80, 232))
+	ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 255, 255)),
+	ColorSequenceKeypoint.new(1, Color3.fromRGB(176, 176, 176))
 }
 
 -- пример изменения наклона градиента
@@ -496,8 +496,8 @@ gradientforALL1:Clone():Clone():Clone():Clone().Parent = toggleNameButton
 
 local gradientforALL2 = gradientforALL1:Clone():Clone():Clone():Clone():Clone():Clone():Clone()
 gradientforALL2.Color = ColorSequence.new{
-	ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 170, 255)),
-	ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 80, 232))
+	ColorSequenceKeypoint.new(0, Color3.fromRGB(156, 156, 156)),
+	ColorSequenceKeypoint.new(1, Color3.fromRGB(67, 67, 67))
 }
 
 gradientforALL2.Rotation = 45
@@ -788,6 +788,7 @@ local uiCorner9 = Instance.new("UICorner")
 uiCorner9.CornerRadius = UDim.new(0, 15) -- радиус 15 пикселей
 uiCorner9.Parent = togglePage1button
 gradientforALL2.Parent = togglePage1button
+togglePage1button.TextColor3 = Color3.new(1, 1, 1)
 
 local togglePage2button = Instance.new("TextButton", frame)
 togglePage2button.Size = UDim2.new(0, 80, 0, 30)
