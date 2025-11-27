@@ -578,7 +578,7 @@ toggleNOFESNAKEButton.MouseButton1Click:Connect(function()
 end)
 
 toggleAUTOBLOCKButton.MouseButton1Click:Connect(function()
-	loadstring(game:HttpGetAsync('loadstring(game:HttpGet("https://raw.githubusercontent.com/skibidi399/Auto-block-script/refs/heads/main/FINAL%20AUTO%20BLOCK"))()'))()
+	loadstring(game:HttpGet("https://raw.githubusercontent.com/skibidi399/Auto-block-script/refs/heads/main/FINAL%20AUTO%20BLOCK"))()
 	toggleAUTOBLOCKButton.Text = "Загружено!"
 	wait(0.4)
 	toggleAUTOBLOCKButton.Text = "Загрузить"
