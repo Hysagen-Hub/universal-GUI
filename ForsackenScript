@@ -422,7 +422,7 @@ toggleNoFogLabel.BackgroundTransparency = 1
 toggleNoFogLabel.TextColor3 = Color3.new(1,1,1)
 toggleNoFogLabel.Font = Enum.Font.SourceSans
 toggleNoFogLabel.TextSize = 18
-toggleNoFogLabel.Text = "NO FOG: ВЫКЛ"
+toggleNoFogLabel.Text = "NO FOG(not looped)"
 
 local toggleNoFogButton = Instance.new("TextButton", frame)
 toggleNoFogButton.Size = UDim2.new(0, 80, 0, 30)
@@ -1007,27 +1007,10 @@ toggleclosebutton. MouseButton1Click:Connect(function()
 	screenGui:Destroy()
 end)
 
-local FogEnd = game.Lighting.FogEnd 
-local FogStart = game.Lighting.FogStart
-local bruh = nil
-
 toggleNoFogButton.MouseButton1Click:Connect(function()
-	if toggleNoFogButton.Text == "ВКЛ" then
-		toggleNoFogLabel.Text = "NO FOG: ВКЛ"
-		bruh = true
-		game.Lighting.FogEnd = 100000
-		game.Lighting.FogStart = 0
-		game.Lighting:FindFirstChild("Atmosphere").Density = 0
-		toggleNoFogButton.Text = "ВЫКЛ"
-	else
-		game.Lighting:FindFirstChild("Atmosphere").Density = density
-		toggleNoFogLabel.Text = "NO FOG: ВЫКЛ"
-		bruh = false
-		game.Lighting.FogEnd = FogEnd
-		game.Lighting.FogStart = FogStart
-		toggleNoFogButton.Text = "ВКЛ"
-	end
-
+	game.Lighting.FogEnd = 100000
+	game.Lighting.FogStart = 0
+	game.Lighting:FindFirstChild("Atmosphere").Density = 0
 end)
 
 toggleNoClipButton.MouseButton1Click:Connect(function()
