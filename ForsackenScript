@@ -921,6 +921,7 @@ end)
 togglePage3button.MouseButton1Click:Connect(function()
 	toggleNameLabel.TextTransparency = 0
 	toggleNameButton.Transparency = 0
+	toggleNameButton.Interactable = false
 	toggleNoFogLabel.Transparency = 1
 	toggleNoFogButton.Transparency = 1
 	toggleNoFogButton.Interactable = false
