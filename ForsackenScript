@@ -288,7 +288,6 @@ knob1.Size = UDim2.new(0, 30, 0, 30)
 knob1.Position = UDim2.new(0, -15, 0, -5)
 knob1.BackgroundTransparency = 1
 knob1.Image = "rbxassetid://3570695787"
-knob1.Modal = true
 
 bar1.Transparency = 1
 fill1.Transparency = 1
@@ -322,7 +321,6 @@ knob.Position = UDim2.new(0, -15, 0, -5)
 knob.BackgroundTransparency = 1
 knob.ImageTransparency = 1
 knob.Image = "rbxassetid://3570695787"
-knob.Modal = true
 knob.Interactable = false
 knob.AutoButtonColor = false
 
