@@ -97,11 +97,6 @@ local function FB()
 	game:GetService("Lighting").Brightness = 1
 	game.Lighting.ShadowSoftness = 0
 end
-local function UNFB()
-	game.Lighting.GlobalShadows = true
-	game:GetService("Lighting").Brightness = brightness
-	game.Lighting.ShadowSoftness = shsoftness
-end
 
 local function setupCharacter(character)
 	local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
@@ -331,7 +326,7 @@ toggleFullBrightLabel.BackgroundTransparency = 1
 toggleFullBrightLabel.TextColor3 = Color3.new(1,1,1)
 toggleFullBrightLabel.Font = Enum.Font.SourceSans
 toggleFullBrightLabel.TextSize = 18
-toggleFullBrightLabel.Text = "FULL BRIGHT: ВЫКЛ"
+toggleFullBrightLabel.Text = "FULL BRIGHT(not looped)"
 
 local toggleFullBrightButton = Instance.new("TextButton", frame)
 toggleFullBrightButton.Size = UDim2.new(0, 80, 0, 30)
@@ -854,7 +849,7 @@ togglePage1button.MouseButton1Click:Connect(function()
 	bar.Transparency = 1
 	fill.Transparency = 1
 	knob.ImageTransparency = 1
-	toggleNameButton.Interactable = true
+	toggleNameButton.Interactable = false
 	toggleNoFogLabel.TextTransparency = 0
 	toggleNoFogButton.Transparency = 0
 	toggleNoFogButton.Interactable = true
@@ -921,7 +916,7 @@ end)
 togglePage3button.MouseButton1Click:Connect(function()
 	toggleNameLabel.TextTransparency = 0
 	toggleNameButton.Transparency = 0
-	toggleNameButton.Interactable = false
+	toggleNameButton.Interactable = true
 	toggleNoFogLabel.Transparency = 1
 	toggleNoFogButton.Transparency = 1
 	toggleNoFogButton.Interactable = false
@@ -1048,16 +1043,7 @@ toggleNoClipButton.MouseButton1Click:Connect(function()
 end)
 
 toggleFullBrightButton.MouseButton1Click:Connect(function()
-	if toggleFullBrightButton.Text == "ВКЛ" then
-		FB()
-		toggleFullBrightLabel.Text = "FULL BRIGHT: ВКЛ"
-		toggleFullBrightButton.Text = "ВЫКЛ"
-	else
-		UNFB()
-		toggleFullBrightLabel.Text = "FULL BRIGHT ВЫКЛ"
-		toggleFullBrightButton.Text = "ВКЛ"
-	end
-
+	FB()
 end)
 
 knob.InputBegan:Connect(function(input)
