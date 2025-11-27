@@ -482,6 +482,7 @@ toggleNameButton.Font = Enum.Font.SourceSansBold
 toggleNameButton.TextSize = 18
 toggleNameButton.Text = "ВКЛ"
 toggleNameButton.Transparency = 1
+toggleNameButton.Interactable = false
 local uiCorner7 = Instance.new("UICorner")
 uiCorner7.CornerRadius = UDim.new(0, 15) -- радиус 15 пикселей
 uiCorner7.Parent = toggleNameButton
