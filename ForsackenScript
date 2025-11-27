@@ -359,7 +359,7 @@ CreditsLabel.BackgroundTransparency = 1
 CreditsLabel.TextColor3 = Color3.new(1,1,1)
 CreditsLabel.Font = Enum.Font.SourceSansBold
 CreditsLabel.TextSize = 15
-CreditsLabel.Text = "По всем вопросам/предложениям что бы ещё добавить в скрипт пишите на мой твинк @Hysagen_Twink, там отвечаю"
+CreditsLabel.Text = "По всем вопросам/предложениям что бы ещё добавить в скрипт пишите на мой твинк @Hysagen, там отвечаю"
 CreditsLabel.Transparency = 1
 
 local toggleNOFESNAKEButton = Instance.new("TextButton", frame)
