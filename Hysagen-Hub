@@ -359,7 +359,7 @@ CreditsLabel.BackgroundTransparency = 1
 CreditsLabel.TextColor3 = Color3.new(1,1,1)
 CreditsLabel.Font = Enum.Font.SourceSansBold
 CreditsLabel.TextSize = 15
-CreditsLabel.Text = "По всем вопросам/предложениям что бы ещё добавить в скрипт пишите на мой твинк @Hysagen, там отвечаю"
+CreditsLabel.Text = "По всем вопросам/предложениям что бы ещё добавить в скрипт пишите на мой твинк @Hysagen_Twink, там отвечаю"
 CreditsLabel.Transparency = 1
 
 local toggleNOFESNAKEButton = Instance.new("TextButton", frame)
@@ -477,6 +477,31 @@ local uiCorner5 = Instance.new("UICorner")
 uiCorner5.CornerRadius = UDim.new(0, 15)
 uiCorner5.Parent = toggleNoClipButton
 gradientforALL1:Clone():Clone().Parent = toggleNoClipButton
+
+local toggleflipscriptLabel = Instance.new("TextLabel", frame)
+toggleflipscriptLabel.Size = UDim2.new(0, 200, 0, 30)
+toggleflipscriptLabel.Position = UDim2.new(0, 80, 0, 100)
+toggleflipscriptLabel.BackgroundTransparency = 1
+toggleflipscriptLabel.TextColor3 = Color3.new(1,1,1)
+toggleflipscriptLabel.Font = Enum.Font.SourceSans
+toggleflipscriptLabel.TextSize = 18
+toggleflipscriptLabel.Text = "flip script(F to flip)"
+toggleflipscriptLabel.Transparency = 1
+
+local toggleflipscriptButton = Instance.new("TextButton", frame)
+toggleflipscriptButton.Size = UDim2.new(0, 80, 0, 30)
+toggleflipscriptButton.Position = UDim2.new(0, 290, 0, 100)
+toggleflipscriptButton.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
+toggleflipscriptButton.TextColor3 = Color3.new(1,1,1)
+toggleflipscriptButton.Font = Enum.Font.SourceSansBold
+toggleflipscriptButton.TextSize = 18
+toggleflipscriptButton.Text = "Загрузить"
+toggleflipscriptButton.Transparency = 1
+toggleflipscriptButton.Interactable = false
+local uiCorner6 = Instance.new("UICorner")
+uiCorner6.CornerRadius = UDim.new(0, 15)
+uiCorner6.Parent = toggleflipscriptButton
+gradientforALL1:Clone():Clone():Clone():Clone():Clone().Parent = toggleflipscriptButton
 
 local toggleNoClipLabel = Instance.new("TextLabel", frame)
 toggleNoClipLabel.Size = UDim2.new(0, 200, 0, 30)
@@ -609,6 +634,14 @@ toggleAUTOBLOCKButton.MouseButton1Click:Connect(function()
 	wait(0.4)
 	toggleAUTOBLOCKButton.Text = "Загрузить"
 end)
+
+toggleflipscriptButton.MouseButton1Click:Connect(function()
+	loadstring(game:HttpGet("https://raw.githubusercontent.com/SHRTRYScriptMANhere/stolenahhfrotflip/refs/heads/main/Flip",true))()
+	toggleflipscriptButton.Text = "Загружено!"
+	wait(0.4)
+	toggleflipscriptButton.Text = "Загрузить"
+end)
+
 
 toggleflybutton.MouseButton1Click:Connect(function()
 	if toggleflybutton.Text == "ВКЛ" then
@@ -912,6 +945,9 @@ togglePage1button.MouseButton1Click:Connect(function()
 	toggleRingPartsLabel.Transparency = 1
 	toggleRingPartsButton.Interactable = false
 	toggleRingPartsButton.Transparency = 1
+	toggleflipscriptLabel.Transparency = 1
+	toggleflipscriptButton.Transparency = 1
+	toggleflipscriptButton.Interactable = false
 end)
 
 togglePage2button.MouseButton1Click:Connect(function()
@@ -952,6 +988,9 @@ togglePage2button.MouseButton1Click:Connect(function()
 	toggleRingPartsLabel.Transparency = 1
 	toggleRingPartsButton.Interactable = false
 	toggleRingPartsButton.Transparency = 1
+	toggleflipscriptLabel.Transparency = 1
+	toggleflipscriptButton.Transparency = 1
+	toggleflipscriptButton.Interactable = false
 end)
 
 togglePage3button.MouseButton1Click:Connect(function()
@@ -992,6 +1031,9 @@ togglePage3button.MouseButton1Click:Connect(function()
 	toggleRingPartsLabel.Transparency = 1
 	toggleRingPartsButton.Interactable = false
 	toggleRingPartsButton.Transparency = 1
+	toggleflipscriptLabel.TextTransparency = 0
+	toggleflipscriptButton.Transparency = 0
+	toggleflipscriptButton.Interactable = true
 end)
 
 togglePage4button.MouseButton1Click:Connect(function()
@@ -1032,6 +1074,9 @@ togglePage4button.MouseButton1Click:Connect(function()
 	toggleRingPartsLabel.TextTransparency = 0
 	toggleRingPartsButton.Interactable = true
 	toggleRingPartsButton.Transparency = 0
+	toggleflipscriptLabel.Transparency = 1
+	toggleflipscriptButton.Transparency = 1
+	toggleflipscriptButton.Interactable = false
 end)
 
 toggleNameButton.MouseButton1Click:Connect(function()
@@ -1185,18 +1230,9 @@ end
 local timer = 0
 
 RunService.Heartbeat:Connect(function(deltaTime)
-	if bruh then
-		game.Lighting.FogEnd = 100000
-		game.Lighting.FogStart = 0
-		game.Lighting.GlobalShadows = false
-	end
-	if nameHighlightEnabled then
-		updateNameTags()
-	end
-	if noclipEnabled then
-		noclip()
-	end
-	if not isEnabled then return end
+	game.Lighting.FogEnd = 100000
+	game.Lighting.FogStart = 0
+	game.Lighting.GlobalShadows = false
 end)
 
 
