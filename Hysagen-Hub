@@ -159,20 +159,17 @@ frame.Size = UDim2.new(0, 400, 0, 280)
 frame.Position = UDim2.new(0.5, -175, 0.5, -90)
 frame.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
 frame.Active = true
+frame.Transparency = 0.4
 local uiCorner = Instance.new("UICorner")
 uiCorner.CornerRadius = UDim.new(0, 15)
 uiCorner.Parent = frame
 frame.Transparency = 0
 local gradient = Instance.new("UIGradient")
 gradient.Color = ColorSequence.new{
-	ColorSequenceKeypoint.new(0, Color3.fromRGB(0, 0, 0)),
+	ColorSequenceKeypoint.new(0, Color3.fromRGB(62, 62, 62)),
 	ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 255, 255))
 }
-gradient.Rotation = 45
-gradient.Transparency = NumberSequence.new{
-	NumberSequenceKeypoint.new(0, 0),
-	NumberSequenceKeypoint.new(1, 0.1)
-}
+gradient.Rotation = 65
 
 gradient.Parent = frame
 gradientforALL = gradient:Clone()
@@ -193,16 +190,20 @@ gradientforALL.Transparency = NumberSequence.new{
 local lineframe = Instance.new("Frame", frame)
 lineframe.Size = UDim2.new(0, 0.01, 0, 245)
 lineframe.Position = UDim2.new(0, 90, 0, 30)
-lineframe.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-lineframe.BorderColor3 = Color3.fromRGB(255, 255, 255)
-lineframe.Transparency = 0.7
+lineframe.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
+lineframe.BorderColor3 = Color3.fromRGB(45, 45, 45)
 
 local lineframe1 = Instance.new("Frame", frame)
 lineframe1.Size = UDim2.new(0, 398, 0, 0.01)
-lineframe1.Position = UDim2.new(0, 0, 0, 28)
-lineframe1.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-lineframe1.BorderColor3 = Color3.fromRGB(255, 255, 255)
-lineframe1.Transparency = 0.7
+lineframe1.Position = UDim2.new(0, 1, 0, 28)
+lineframe1.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
+lineframe1.BorderColor3 = Color3.fromRGB(45, 45, 45)
+
+local lineframe2 = Instance.new("Frame", frame)
+lineframe2.Size = UDim2.new(0, 87, 0, 0.01)
+lineframe2.Position = UDim2.new(0, 1, 0, 190)
+lineframe2.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
+lineframe2.BorderColor3 = Color3.fromRGB(45, 45, 45)
 
 local labelMADEBY = Instance.new("TextLabel", frame)
 labelMADEBY.Size = UDim2.new(0, 200, 0, 25)
@@ -226,7 +227,17 @@ gradientLABEL.Transparency = NumberSequence.new{
 	NumberSequenceKeypoint.new(1, 0.3)
 }
 gradientLABEL.Parent = labelMADEBY
+
 local Players = game:GetService("Players")
+
+local imtired = Instance.new("Frame", frame)
+imtired.Size = UDim2.new(0, 85, 0, 46)
+imtired.Position = UDim2.new(0, 2, 0, 197)
+imtired.BackgroundColor3 = Color3.fromRGB(48, 48, 48)
+imtired.Transparency = 0.4
+local imtiredcorner = Instance.new("UICorner", imtired)
+imtiredcorner.CornerRadius = UDim.new(0.25, 0)
+
 local avatarImageBACKGROUND = Instance.new("ImageButton", frame)
 avatarImageBACKGROUND.Size = UDim2.new(0, 40, 0, 40)
 avatarImageBACKGROUND.Position = UDim2.new(0, 2, 0, 200)
@@ -250,7 +261,7 @@ local firstNickname = player.Name
 local secondNickname = player.DisplayName
 local laba = Instance.new("TextLabel", frame)
 laba.Size = UDim2.new(1, -20, 0, 30)
-laba.Position = UDim2.new(0, 2, 0, 245)
+laba.Position = UDim2.new(0, 5, 0, 250)
 laba.BackgroundTransparency = 1
 laba.TextColor3 = Color3.new(1, 1, 1)
 laba.Font = Enum.Font.SourceSansBold
@@ -261,7 +272,7 @@ laba.TextColor3 = Color3.fromRGB(124, 124, 124)
 
 local laba2 = Instance.new("TextLabel", frame)
 laba2.Size = UDim2.new(1, -20, 0, 30)
-laba2.Position = UDim2.new(0, 2, 0, 230)
+laba2.Position = UDim2.new(0, 5, 0, 235)
 laba2.BackgroundTransparency = 1
 laba2.TextColor3 = Color3.new(1, 1, 1)
 laba2.Font = Enum.Font.SourceSansBold
@@ -290,7 +301,7 @@ knob1.ImageTransparency = 1
 knob1.Interactable = false
 
 local label = Instance.new("TextLabel", frame)
-label.Text = "Ускорение: 0"
+label.Text = "speed: 0"
 label.Size = UDim2.new(1, 0, 0, 30)
 label.Position = UDim2.new(0, 40, 0, 25)
 label.BackgroundTransparency = 1
@@ -326,7 +337,7 @@ toggleFullBrightLabel.BackgroundTransparency = 1
 toggleFullBrightLabel.TextColor3 = Color3.new(1,1,1)
 toggleFullBrightLabel.Font = Enum.Font.SourceSans
 toggleFullBrightLabel.TextSize = 18
-toggleFullBrightLabel.Text = "FULL BRIGHT(not looped)"
+toggleFullBrightLabel.Text = "full bright (not looped)"
 
 local toggleFullBrightButton = Instance.new("TextButton", frame)
 toggleFullBrightButton.Size = UDim2.new(0, 80, 0, 30)
@@ -335,7 +346,7 @@ toggleFullBrightButton.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
 toggleFullBrightButton.TextColor3 = Color3.new(1,1,1)
 toggleFullBrightButton.Font = Enum.Font.SourceSansBold
 toggleFullBrightButton.TextSize = 18
-toggleFullBrightButton.Text = "ВКЛ"
+toggleFullBrightButton.Text = "ON"
 gradientforALL:Clone().Parent = toggleFullBrightButton
 local uiCorner1 = Instance.new("UICorner")
 uiCorner1.CornerRadius = UDim.new(0, 15) -- радиус 15 пикселей
@@ -348,18 +359,18 @@ toggleNOFESNAKELabel.BackgroundTransparency = 1
 toggleNOFESNAKELabel.TextColor3 = Color3.new(1,1,1)
 toggleNOFESNAKELabel.Font = Enum.Font.SourceSans
 toggleNOFESNAKELabel.TextSize = 18
-toggleNOFESNAKELabel.Text = "NO FE SNAKE"
+toggleNOFESNAKELabel.Text = "snake (no fe)"
 
 local CreditsLabel = Instance.new("TextLabel", frame)
 CreditsLabel.TextWrapped = true
 CreditsLabel.Size = UDim2.new(0, 300, 0, 70)
-CreditsLabel.Position = UDim2.new(0, 95, 0, 200)
+CreditsLabel.Position = UDim2.new(0, 95, 0, 225)
 CreditsLabel.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
 CreditsLabel.BackgroundTransparency = 1
-CreditsLabel.TextColor3 = Color3.new(1,1,1)
+CreditsLabel.TextColor3 = Color3.new(0.619608, 0.619608, 0.619608)
 CreditsLabel.Font = Enum.Font.SourceSansBold
 CreditsLabel.TextSize = 15
-CreditsLabel.Text = "По всем вопросам/предложениям что бы ещё добавить в скрипт пишите на мой твинк @Hysagen_Twink, там отвечаю"
+CreditsLabel.Text = "for any questions dm me in telegram @Hysagen(russ/eng)"
 CreditsLabel.Transparency = 1
 
 local toggleNOFESNAKEButton = Instance.new("TextButton", frame)
@@ -369,7 +380,7 @@ toggleNOFESNAKEButton.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
 toggleNOFESNAKEButton.TextColor3 = Color3.new(1,1,1)
 toggleNOFESNAKEButton.Font = Enum.Font.SourceSansBold
 toggleNOFESNAKEButton.TextSize = 18
-toggleNOFESNAKEButton.Text = "Загрузить"
+toggleNOFESNAKEButton.Text = "LOAD"
 gradientforALL:Clone().Parent = toggleFullBrightButton
 local uiCorner12 = Instance.new("UICorner")
 uiCorner12.CornerRadius = UDim.new(0, 15)
@@ -407,7 +418,7 @@ toggleAUTOBLOCKButton.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
 toggleAUTOBLOCKButton.TextColor3 = Color3.new(1,1,1)
 toggleAUTOBLOCKButton.Font = Enum.Font.SourceSansBold
 toggleAUTOBLOCKButton.TextSize = 18
-toggleAUTOBLOCKButton.Text = "Загрузить"
+toggleAUTOBLOCKButton.Text = "LOAD"
 gradientforALL:Clone():clone():Clone().Parent = toggleAUTOBLOCKButton
 local uiCorner3 = Instance.new("UICorner")
 uiCorner3.CornerRadius = UDim.new(0, 15) -- радиус 15 пикселей
@@ -432,7 +443,7 @@ toggleRingPartsButton.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
 toggleRingPartsButton.TextColor3 = Color3.new(1,1,1)
 toggleRingPartsButton.Font = Enum.Font.SourceSansBold
 toggleRingPartsButton.TextSize = 18
-toggleRingPartsButton.Text = "Загрузить"
+toggleRingPartsButton.Text = "LOAD"
 toggleRingPartsButton.Interactable = false
 toggleRingPartsButton.Transparency = 1
 gradientforALL:Clone():clone():Clone():Clone().Parent = toggleRingPartsButton
@@ -447,7 +458,7 @@ toggleNoFogLabel.BackgroundTransparency = 1
 toggleNoFogLabel.TextColor3 = Color3.new(1,1,1)
 toggleNoFogLabel.Font = Enum.Font.SourceSans
 toggleNoFogLabel.TextSize = 18
-toggleNoFogLabel.Text = "NO FOG(not looped)"
+toggleNoFogLabel.Text = "no fog (not looped)"
 
 local toggleNoFogButton = Instance.new("TextButton", frame)
 toggleNoFogButton.Size = UDim2.new(0, 80, 0, 30)
@@ -456,7 +467,7 @@ toggleNoFogButton.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
 toggleNoFogButton.TextColor3 = Color3.new(1,1,1)
 toggleNoFogButton.Font = Enum.Font.SourceSansBold
 toggleNoFogButton.TextSize = 18
-toggleNoFogButton.Text = "ВКЛ"
+toggleNoFogButton.Text = "ON"
 gradientforALL:Clone():clone().Parent = toggleNoFogButton
 local uiCorner2 = Instance.new("UICorner")
 uiCorner2.CornerRadius = UDim.new(0, 15) -- радиус 15 пикселей
@@ -470,13 +481,38 @@ toggleNoClipButton.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
 toggleNoClipButton.TextColor3 = Color3.new(1,1,1)
 toggleNoClipButton.Font = Enum.Font.SourceSansBold
 toggleNoClipButton.TextSize = 18
-toggleNoClipButton.Text = "ВКЛ"
+toggleNoClipButton.Text = "ON"
 toggleNoClipButton.Interactable = false
 toggleNoClipButton.Transparency = 1
 local uiCorner5 = Instance.new("UICorner")
 uiCorner5.CornerRadius = UDim.new(0, 15)
 uiCorner5.Parent = toggleNoClipButton
 gradientforALL1:Clone():Clone().Parent = toggleNoClipButton
+
+local toggleflingLabel = Instance.new("TextLabel", frame)
+toggleflingLabel.Size = UDim2.new(0, 200, 0, 30)
+toggleflingLabel.Position = UDim2.new(0, 80, 0, 100)
+toggleflingLabel.BackgroundTransparency = 1
+toggleflingLabel.TextColor3 = Color3.new(1,1,1)
+toggleflingLabel.Font = Enum.Font.SourceSans
+toggleflingLabel.TextSize = 18
+toggleflingLabel.Text = "good fling script"
+toggleflingLabel.Transparency = 1
+
+local toggleflingButton = Instance.new("TextButton", frame)
+toggleflingButton.Size = UDim2.new(0, 80, 0, 30)
+toggleflingButton.Position = UDim2.new(0, 290, 0, 100)
+toggleflingButton.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
+toggleflingButton.TextColor3 = Color3.new(1,1,1)
+toggleflingButton.Font = Enum.Font.SourceSansBold
+toggleflingButton.TextSize = 18
+toggleflingButton.Text = "LOAD"
+toggleflingButton.Transparency = 1
+toggleflingButton.Interactable = false
+local uiCorner13 = Instance.new("UICorner")
+uiCorner13.CornerRadius = UDim.new(0, 15)
+uiCorner13.Parent = toggleflingButton
+gradientforALL1:Clone():Clone():Clone():Clone():Clone():Clone():Clone():Clone().Parent = toggleflingButton
 
 local toggleflipscriptLabel = Instance.new("TextLabel", frame)
 toggleflipscriptLabel.Size = UDim2.new(0, 200, 0, 30)
@@ -495,7 +531,7 @@ toggleflipscriptButton.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
 toggleflipscriptButton.TextColor3 = Color3.new(1,1,1)
 toggleflipscriptButton.Font = Enum.Font.SourceSansBold
 toggleflipscriptButton.TextSize = 18
-toggleflipscriptButton.Text = "Загрузить"
+toggleflipscriptButton.Text = "LOAD"
 toggleflipscriptButton.Transparency = 1
 toggleflipscriptButton.Interactable = false
 local uiCorner6 = Instance.new("UICorner")
@@ -510,7 +546,7 @@ toggleNoClipLabel.BackgroundTransparency = 1
 toggleNoClipLabel.TextColor3 = Color3.new(1,1,1)
 toggleNoClipLabel.Font = Enum.Font.SourceSans
 toggleNoClipLabel.TextSize = 18
-toggleNoClipLabel.Text = "NO CLIP: ВЫКЛ"
+toggleNoClipLabel.Text = "noclip: OFF"
 toggleNoClipLabel.Transparency = 1
 
 local toggleNameLabel = Instance.new("TextLabel", frame)
@@ -520,7 +556,7 @@ toggleNameLabel.BackgroundTransparency = 1
 toggleNameLabel.TextColor3 = Color3.new(1,1,1)
 toggleNameLabel.Font = Enum.Font.SourceSans
 toggleNameLabel.TextSize = 18
-toggleNameLabel.Text = "Подсветка ников: ВЫКЛ"
+toggleNameLabel.Text = "personage highlight: OFF"
 toggleNameLabel.Transparency = 1
 
 local toggleNameButton = Instance.new("TextButton", frame)
@@ -530,7 +566,7 @@ toggleNameButton.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
 toggleNameButton.TextColor3 = Color3.new(1,1,1)
 toggleNameButton.Font = Enum.Font.SourceSansBold
 toggleNameButton.TextSize = 18
-toggleNameButton.Text = "ВКЛ"
+toggleNameButton.Text = "ON"
 toggleNameButton.Transparency = 1
 toggleNameButton.Interactable = false
 local uiCorner7 = Instance.new("UICorner")
@@ -568,7 +604,7 @@ toggleINFYIELDbutton.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
 toggleINFYIELDbutton.TextColor3 = Color3.new(1,1,1)
 toggleINFYIELDbutton.Font = Enum.Font.SourceSansBold
 toggleINFYIELDbutton.TextSize = 18
-toggleINFYIELDbutton.Text = "Загрузить"
+toggleINFYIELDbutton.Text = "LOAD"
 toggleINFYIELDbutton.Interactable = false
 toggleINFYIELDbutton.Transparency = 1
 local uiCorner8 = Instance.new("UICorner")
@@ -583,7 +619,7 @@ toggleLabelFLY.BackgroundTransparency = 1
 toggleLabelFLY.TextColor3 = Color3.new(1,1,1)
 toggleLabelFLY.Font = Enum.Font.SourceSans
 toggleLabelFLY.TextSize = 18
-toggleLabelFLY.Text = "полет: ВЫКЛ"
+toggleLabelFLY.Text = "fly: OFF"
 toggleLabelFLY.TextTransparency = 1
 
 local toggleflybutton = Instance.new("TextButton", frame)
@@ -593,7 +629,7 @@ toggleflybutton.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
 toggleflybutton.TextColor3 = Color3.new(1,1,1)
 toggleflybutton.Font = Enum.Font.SourceSansBold
 toggleflybutton.TextSize = 18
-toggleflybutton.Text = "ВКЛ"
+toggleflybutton.Text = "ON"
 toggleflybutton.Interactable = false
 toggleflybutton.Transparency = 1
 local uiCorner123 = Instance.new("UICorner")
@@ -641,46 +677,46 @@ end)
 
 toggleNOFESNAKEButton.MouseButton1Click:Connect(function()
 	loadstring(game:HttpGet("https://pastebin.com/raw/gYM0ejM2"))("T.me/AvtorScripts")
-	toggleNOFESNAKEButton.Text = "Загружено!"
+	toggleNOFESNAKEButton.Text = "success!"
 	wait(0.4)
-	toggleNOFESNAKEButton.Text = "Загрузить"
+	toggleNOFESNAKEButton.Text = "LOAD"
 end)
 
 toggleRingPartsButton.MouseButton1Click:Connect(function()
 	loadstring(game:HttpGet("https://raw.githubusercontent.com/Hysagen-Hub/universal-GUITEST/refs/heads/main/TEST"))()
-	toggleRingPartsButton.Text = "Загружено!"
+	toggleRingPartsButton.Text = "success!"
 	wait(0.4)
-	toggleRingPartsButton.Text = "Загрузить"
+	toggleRingPartsButton.Text = "LOAD"
 end)
 
 toggleAUTOBLOCKButton.MouseButton1Click:Connect(function()
 	loadstring(game:HttpGet("https://raw.githubusercontent.com/skibidi399/Auto-block-script/refs/heads/main/FINAL%20AUTO%20BLOCK"))()
-	toggleAUTOBLOCKButton.Text = "Загружено!"
+	toggleAUTOBLOCKButton.Text = "success!"
 	wait(0.4)
-	toggleAUTOBLOCKButton.Text = "Загрузить"
+	toggleAUTOBLOCKButton.Text = "LOAD"
 end)
 
 toggleflipscriptButton.MouseButton1Click:Connect(function()
 	loadstring(game:HttpGet("https://raw.githubusercontent.com/SHRTRYScriptMANhere/stolenahhfrotflip/refs/heads/main/Flip",true))()
-	toggleflipscriptButton.Text = "Загружено!"
+	toggleflipscriptButton.Text = "success!"
 	wait(0.4)
-	toggleflipscriptButton.Text = "Загрузить"
+	toggleflipscriptButton.Text = "LOAD"
 end)
 
 toggleINFYIELDbutton.MouseButton1Click:Connect(function()
 	loadstring(game:HttpGet('https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source'))()
-	toggleINFYIELDbutton.Text = "Загружено!"
+	toggleINFYIELDbutton.Text = "success!"
 	wait(0.4)
-	toggleINFYIELDbutton.Text = "Загрузить"
+	toggleINFYIELDbutton.Text = "LOAD"
 end)
 
 toggleflybutton.MouseButton1Click:Connect(function()
-	if toggleflybutton.Text == "ВКЛ" then
-		toggleflybutton.Text = "ВЫКЛ"
-		toggleLabelFLY.Text = "полет: ВКЛ"
+	if toggleflybutton.Text == "ON" then
+		toggleflybutton.Text = "OFF"
+		toggleLabelFLY.Text = "полет: ON"
 	else
-		toggleflybutton.Text = "ВКЛ"
-		toggleLabelFLY.Text = "полет: ВЫКЛ"
+		toggleflybutton.Text = "ON"
+		toggleLabelFLY.Text = "полет: OFF"
 	end
 end)
 
@@ -982,6 +1018,9 @@ togglePage1button.MouseButton1Click:Connect(function()
 	toggleLabelINFYIELD.Transparency = 1
 	toggleINFYIELDbutton.Transparency = 1
 	toggleINFYIELDbutton.Interactable = false
+	toggleflingLabel.Transparency = 1
+	toggleflingButton.Transparency = 1
+	toggleflingButton.Interactable = false
 end)
 
 togglePage2button.MouseButton1Click:Connect(function()
@@ -1028,6 +1067,9 @@ togglePage2button.MouseButton1Click:Connect(function()
 	toggleLabelINFYIELD.TextTransparency = 0
 	toggleINFYIELDbutton.Transparency = 0
 	toggleINFYIELDbutton.Interactable = true
+	toggleflingLabel.Transparency = 1
+	toggleflingButton.Transparency = 1
+	toggleflingButton.Interactable = false
 end)
 
 togglePage3button.MouseButton1Click:Connect(function()
@@ -1074,6 +1116,9 @@ togglePage3button.MouseButton1Click:Connect(function()
 	toggleLabelINFYIELD.Transparency = 1
 	toggleINFYIELDbutton.Transparency = 1
 	toggleINFYIELDbutton.Interactable = false
+	toggleflingLabel.Transparency = 1
+	toggleflingButton.Transparency = 1
+	toggleflingButton.Interactable = false
 end)
 
 togglePage4button.MouseButton1Click:Connect(function()
@@ -1120,17 +1165,20 @@ togglePage4button.MouseButton1Click:Connect(function()
 	toggleLabelINFYIELD.Transparency = 1
 	toggleINFYIELDbutton.Transparency = 1
 	toggleINFYIELDbutton.Interactable = false
+	toggleflingLabel.TextTransparency = 0
+	toggleflingButton.Transparency = 0
+	toggleflingButton.Interactable = true
 end)
 
 toggleNameButton.MouseButton1Click:Connect(function()
 	if nameHighlightEnabled then
 		disableNameTags()
-		toggleNameLabel.Text = "Подсветка ников: ВЫКЛ"
-		toggleNameButton.Text = "ВКЛ"
+		toggleNameLabel.Text = "personage highlight: OFF"
+		toggleNameButton.Text = "ON"
 	else
 		enableNameTags()
-		toggleNameLabel.Text = "Подсветка ников: ВКЛ"
-		toggleNameButton.Text = "ВЫКЛ"
+		toggleNameLabel.Text = "personage highlight: ON"
+		toggleNameButton.Text = "OFF"
 	end
 end)
 
@@ -1153,12 +1201,12 @@ end)
 toggleNoClipButton.MouseButton1Click:Connect(function()
 	noclipEnabled = not noclipEnabled
 	noclip()
-	if toggleNoClipButton.Text == "ВКЛ" then
-		toggleNoClipButton.Text = "ВЫКЛ"
-		toggleNoClipLabel.Text = "NO CLIP: ВКЛ"
+	if toggleNoClipButton.Text == "ON" then
+		toggleNoClipButton.Text = "OFF"
+		toggleNoClipLabel.Text = "noclip: ON"
 	else
-		toggleNoClipButton.Text = "ВКЛ"
-		toggleNoClipLabel.Text = "NO CLIP: ВЫКЛ"
+		toggleNoClipButton.Text = "ON"
+		toggleNoClipLabel.Text = "noclip: OFF"
 	end
 end)
 
@@ -1179,7 +1227,7 @@ userInputService.InputChanged:Connect(function(input)
 		speed = math.floor(percent * 100 + 0.5)
 		fill.Size = UDim2.new(percent, 0, 1, 0)
 		knob.Position = UDim2.new(percent, -15, 0, -5)
-		label.Text = "Ускорение: "..speed
+		label.Text = "speed: "..speed
 	end
 end)
 
@@ -1242,8 +1290,8 @@ player.CharacterAdded:Connect(function(char)
 	wait(0.7)
 	game.Players.LocalPlayer.Character.Humanoid.PlatformStand = false
 	game.Players.LocalPlayer.Character.Animate.Disabled = false
-	toggleflybutton.Text = "ВКЛ"
-	toggleLabelFLY.Text = "FLY: ВЫКЛ"
+	toggleflybutton.Text = "ON"
+	toggleLabelFLY.Text = "FLY: OFF"
 end)
 
 local died = false
