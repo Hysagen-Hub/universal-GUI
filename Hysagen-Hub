@@ -589,7 +589,7 @@ gradientforALL2.Transparency = NumberSequence.new{
 
 local toggleLabelINFYIELD = Instance.new("TextLabel", frame)
 toggleLabelINFYIELD.Size = UDim2.new(0, 200, 0, 30)
-toggleLabelINFYIELD.Position = UDim2.new(0, 80, 0, 190)
+toggleLabelINFYIELD.Position = UDim2.new(0, 80, 0, 195)
 toggleLabelINFYIELD.BackgroundTransparency = 1
 toggleLabelINFYIELD.TextColor3 = Color3.new(1,1,1)
 toggleLabelINFYIELD.Font = Enum.Font.SourceSans
@@ -599,7 +599,7 @@ toggleLabelINFYIELD.TextTransparency = 1
 
 local toggleINFYIELDbutton = Instance.new("TextButton", frame)
 toggleINFYIELDbutton.Size = UDim2.new(0, 80, 0, 30)
-toggleINFYIELDbutton.Position = UDim2.new(0, 290, 0, 190)
+toggleINFYIELDbutton.Position = UDim2.new(0, 290, 0, 195)
 toggleINFYIELDbutton.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
 toggleINFYIELDbutton.TextColor3 = Color3.new(1,1,1)
 toggleINFYIELDbutton.Font = Enum.Font.SourceSansBold
