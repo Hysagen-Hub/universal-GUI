@@ -14,8 +14,6 @@ local UserInputService = game:GetService("UserInputService")
 local RunService = game:GetService("RunService")
 local Workspace = game:GetService("Workspace")
 local density = game.Lighting:FindFirstChild("Atmosphere"):FindFirstChild("Density")
-local survivorsFolder
-local killersFolder
 local shsoftness = game.Lighting.ShadowSoftness
 
 local function clearNameTags()
@@ -25,16 +23,26 @@ local function clearNameTags()
 	nameTags = {}
 end
 
+local localPlayer = players.LocalPlayer
+
 local function createNameTag(model, color)
 	if nameTags[model] then return end
 	if model:IsA("Model") and model:FindFirstChild("HumanoidRootPart") then
+		-- Находим игрока по модели персонажа
+		local player = players:GetPlayerFromCharacter(model)
+		local playerName = model.Name
+
+		if player then
+			playerName = player.DisplayName or player.Name
+		end
+
 		local billboard = Instance.new("BillboardGui")
 		billboard.Name = "NameTag"
 		billboard.Adornee = model:FindFirstChild("HumanoidRootPart")
 		billboard.Size = UDim2.new(0, 100, 0, 30)
 		billboard.StudsOffset = Vector3.new(0, 2.5, 0)
 		billboard.AlwaysOnTop = true
-		billboard.Parent = player:WaitForChild("PlayerGui")
+		billboard.Parent = localPlayer:WaitForChild("PlayerGui")  -- Используем localPlayer
 
 		local textLabel = Instance.new("TextLabel")
 		textLabel.BackgroundTransparency = 1
@@ -43,7 +51,7 @@ local function createNameTag(model, color)
 		textLabel.TextSize = 20
 		textLabel.TextColor3 = color
 		textLabel.TextStrokeTransparency = 0.4
-		textLabel.Text = model.Name
+		textLabel.Text = playerName
 		textLabel.Parent = billboard
 
 		nameTags[model] = billboard
@@ -53,26 +61,24 @@ end
 local function updateNameTags()
 	if not nameHighlightEnabled then return end
 
-	survivorsFolder = survivorsFolder or (workspace.Players and workspace.Players:FindFirstChild("Survivors"))
-	killersFolder = killersFolder or (workspace.Players and workspace.Players:FindFirstChild("Killers"))
+	-- Получаем все модели в workspace (включая вложенные)
+	local allDescendants = workspace:GetDescendants()
+	local processedModels = {}
 
-	if survivorsFolder then
-		for _, model in pairs(survivorsFolder:GetChildren()) do
-			createNameTag(model, Color3.fromRGB(0, 168, 0)) -- синий для survivors
-		end
-	end
-
-	if killersFolder then
-		for _, model in pairs(killersFolder:GetChildren()) do
-			createNameTag(model, Color3.fromRGB(139, 0, 0)) -- темно-красный для killers
+	for _, item in pairs(allDescendants) do
+		if item:IsA("Model") and item:FindFirstChild("HumanoidRootPart") then
+			-- Проверяем, не обрабатывали ли мы уже эту модель
+			if not processedModels[item] then
+				processedModels[item] = true
+				local color = Color3.fromRGB(255, 255, 255)
+				createNameTag(item, color)
+			end
 		end
 	end
 
 	-- Удаляем nameTags для моделей, которых уже нет
 	for model, tag in pairs(nameTags) do
-		local inSurvivors = survivorsFolder and survivorsFolder:FindFirstChild(model.Name)
-		local inKillers = killersFolder and killersFolder:FindFirstChild(model.Name)
-		if not inSurvivors and not inKillers then
+		if not model.Parent or not model:IsDescendantOf(workspace) then
 			tag:Destroy()
 			nameTags[model] = nil
 		end
@@ -228,8 +234,6 @@ gradientLABEL.Transparency = NumberSequence.new{
 }
 gradientLABEL.Parent = labelMADEBY
 
-local Players = game:GetService("Players")
-
 local imtired = Instance.new("Frame", frame)
 imtired.Size = UDim2.new(0, 85, 0, 46)
 imtired.Position = UDim2.new(0, 2, 0, 197)
@@ -246,7 +250,7 @@ avatarImageBACKGROUND.Image = "rbxassetid://3570695787"
 local avatarImage = Instance.new("ImageLabel", avatarImageBACKGROUND)
 avatarImage.Size = UDim2.new(0, 40, 0, 40)
 avatarImage.Position = UDim2.new(0, 0, 0, 0)
-avatarImage.Image = Players:GetUserThumbnailAsync(player.UserId, Enum.ThumbnailType.HeadShot, Enum.ThumbnailSize.Size100x100)
+avatarImage.Image = players:GetUserThumbnailAsync(player.UserId, Enum.ThumbnailType.HeadShot, Enum.ThumbnailSize.Size100x100)
 avatarImage.BackgroundTransparency = 1
 local avacorner = Instance.new('UICorner', avatarImage)
 avacorner.CornerRadius = UDim.new(1, 0)
@@ -514,6 +518,31 @@ uiCorner13.CornerRadius = UDim.new(0, 15)
 uiCorner13.Parent = toggleflingButton
 gradientforALL1:Clone():Clone():Clone():Clone():Clone():Clone():Clone():Clone().Parent = toggleflingButton
 
+local toggleFLabel = Instance.new("TextLabel", frame)
+toggleFLabel.Size = UDim2.new(0, 200, 0, 30)
+toggleFLabel.Position = UDim2.new(0, 80, 0, 135)
+toggleFLabel.BackgroundTransparency = 1
+toggleFLabel.TextColor3 = Color3.new(1,1,1)
+toggleFLabel.Font = Enum.Font.SourceSans
+toggleFLabel.TextSize = 18
+toggleFLabel.Text = "fuck script"
+toggleFLabel.Transparency = 1
+
+local toggleFButton = Instance.new("TextButton", frame)
+toggleFButton.Size = UDim2.new(0, 80, 0, 30)
+toggleFButton.Position = UDim2.new(0, 290, 0, 135)
+toggleFButton.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
+toggleFButton.TextColor3 = Color3.new(1,1,1)
+toggleFButton.Font = Enum.Font.SourceSansBold
+toggleFButton.TextSize = 18
+toggleFButton.Text = "LOAD"
+toggleFButton.Transparency = 1
+toggleFButton.Interactable = false
+local uiCorner14 = Instance.new("UICorner")
+uiCorner14.CornerRadius = UDim.new(0, 15)
+uiCorner14.Parent = toggleFButton
+gradientforALL1:Clone():Clone():Clone():Clone():Clone():Clone():Clone():Clone():clone().Parent = toggleFButton
+
 local toggleflipscriptLabel = Instance.new("TextLabel", frame)
 toggleflipscriptLabel.Size = UDim2.new(0, 200, 0, 30)
 toggleflipscriptLabel.Position = UDim2.new(0, 80, 0, 100)
@@ -586,6 +615,8 @@ gradientforALL2.Transparency = NumberSequence.new{
 	NumberSequenceKeypoint.new(0, 0),
 	NumberSequenceKeypoint.new(1, 0.3)
 }
+
+gradientforALL2:Clone():Clone():Clone():Clone():Clone().Parent = imtired
 
 local toggleLabelINFYIELD = Instance.new("TextLabel", frame)
 toggleLabelINFYIELD.Size = UDim2.new(0, 200, 0, 30)
@@ -673,6 +704,13 @@ UserInputService.InputEnded:Connect(function(input)
 	if sliding and input.UserInputType == Enum.UserInputType.MouseButton1 then
 		sliding = false
 	end
+end)
+
+toggleFButton.MouseButton1Click:Connect(function()
+	loadstring(game:HttpGet("https://raw.githubusercontent.com/Hysagen-Hub/FUCK-BANG-GUI/refs/heads/main/main"))()
+	toggleFButton.Text = "success!"
+	wait(0.4)
+	toggleFButton.Text = "LOAD"
 end)
 
 toggleNOFESNAKEButton.MouseButton1Click:Connect(function()
@@ -968,7 +1006,7 @@ toggleclosebutton.Interactable = false
 local uiCorner11 = Instance.new("UICorner")
 uiCorner11.CornerRadius = UDim.new(0, 15) -- радиус 15 пикселей
 uiCorner11.Parent = toggleclosebutton
-gradientforALL2:Clone():Clone():Clone().Parent = toggleclosebutton
+gradientforALL2:Clone():Clone():Clone():Clone().Parent = toggleclosebutton
 
 local UserInputService = game:GetService("UserInputService")
 local dragging1 = false
@@ -1021,6 +1059,9 @@ togglePage1button.MouseButton1Click:Connect(function()
 	toggleflingLabel.Transparency = 1
 	toggleflingButton.Transparency = 1
 	toggleflingButton.Interactable = false
+	toggleFLabel.Transparency = 1
+	toggleFButton.Transparency = 1
+	toggleFButton.Interactable = false
 end)
 
 togglePage2button.MouseButton1Click:Connect(function()
@@ -1070,6 +1111,9 @@ togglePage2button.MouseButton1Click:Connect(function()
 	toggleflingLabel.Transparency = 1
 	toggleflingButton.Transparency = 1
 	toggleflingButton.Interactable = false
+	toggleFLabel.Transparency = 1
+	toggleFButton.Transparency = 1
+	toggleFButton.Interactable = false
 end)
 
 togglePage3button.MouseButton1Click:Connect(function()
@@ -1119,6 +1163,9 @@ togglePage3button.MouseButton1Click:Connect(function()
 	toggleflingLabel.Transparency = 1
 	toggleflingButton.Transparency = 1
 	toggleflingButton.Interactable = false
+	toggleFLabel.Transparency = 1
+	toggleFButton.Transparency = 1
+	toggleFButton.Interactable = false
 end)
 
 togglePage4button.MouseButton1Click:Connect(function()
@@ -1168,6 +1215,9 @@ togglePage4button.MouseButton1Click:Connect(function()
 	toggleflingLabel.TextTransparency = 0
 	toggleflingButton.Transparency = 0
 	toggleflingButton.Interactable = true
+	toggleFLabel.TextTransparency = 0
+	toggleFButton.Transparency = 0
+	toggleFButton.Interactable = true
 end)
 
 toggleNameButton.MouseButton1Click:Connect(function()
