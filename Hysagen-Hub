@@ -2,7 +2,6 @@ local TweenService = game:GetService("TweenService")
 local RunService = game:GetService("RunService")
 local player = game.Players.LocalPlayer
 local userInputService = game:GetService("UserInputService")
-local runService = game:GetService("RunService")
 local players = game:GetService("Players")
 local espEnabled = false
 local speed = 0
@@ -15,6 +14,9 @@ local RunService = game:GetService("RunService")
 local Workspace = game:GetService("Workspace")
 local density = game.Lighting:FindFirstChild("Atmosphere"):FindFirstChild("Density")
 local shsoftness = game.Lighting.ShadowSoftness
+local isHidden = false
+local hiddenPlayers = {}
+local originalProperties = {}
 
 local function clearNameTags()
 	for _, tag in pairs(nameTags) do
@@ -108,7 +110,7 @@ local function setupCharacter(character)
 	local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
 	local humanoid = character:WaitForChild("Humanoid")
 
-	runService.RenderStepped:Connect(function(dt)
+	RunService.RenderStepped:Connect(function(dt)
 		if speed > 0 then
 			local moveDir = humanoid.MoveDirection
 			if moveDir.Magnitude > 0 then
@@ -568,6 +570,28 @@ uiCorner6.CornerRadius = UDim.new(0, 15)
 uiCorner6.Parent = toggleflipscriptButton
 gradientforALL1:Clone():Clone():Clone():Clone():Clone().Parent = toggleflipscriptButton
 
+local toggleHidePlayersLabel = Instance.new("TextLabel", frame)
+toggleHidePlayersLabel.Size = UDim2.new(0, 200, 0, 30)
+toggleHidePlayersLabel.Position = UDim2.new(0, 80, 0, 100)
+toggleHidePlayersLabel.BackgroundTransparency = 1
+toggleHidePlayersLabel.TextColor3 = Color3.new(1,1,1)
+toggleHidePlayersLabel.Font = Enum.Font.SourceSans
+toggleHidePlayersLabel.TextSize = 18
+toggleHidePlayersLabel.Text = "hide players: OFF"
+
+local toggleHidePlayersButton = Instance.new("TextButton", frame)
+toggleHidePlayersButton.Size = UDim2.new(0, 80, 0, 30)
+toggleHidePlayersButton.Position = UDim2.new(0, 290, 0, 100)
+toggleHidePlayersButton.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
+toggleHidePlayersButton.TextColor3 = Color3.new(1,1,1)
+toggleHidePlayersButton.Font = Enum.Font.SourceSansBold
+toggleHidePlayersButton.TextSize = 18
+toggleHidePlayersButton.Text = "ON"
+local uiCorner15 = Instance.new("UICorner")
+uiCorner15.CornerRadius = UDim.new(0, 15)
+uiCorner15.Parent = toggleHidePlayersButton
+gradientforALL1:Clone():Clone():Clone():Clone():Clone():Clone():Clone():Clone():clone():Clone().Parent = toggleHidePlayersButton
+
 local toggleNoClipLabel = Instance.new("TextLabel", frame)
 toggleNoClipLabel.Size = UDim2.new(0, 200, 0, 30)
 toggleNoClipLabel.Position = UDim2.new(0, 80, 0, 90)
@@ -585,7 +609,7 @@ toggleNameLabel.BackgroundTransparency = 1
 toggleNameLabel.TextColor3 = Color3.new(1,1,1)
 toggleNameLabel.Font = Enum.Font.SourceSans
 toggleNameLabel.TextSize = 18
-toggleNameLabel.Text = "personage highlight: OFF"
+toggleNameLabel.Text = "nickname highlight: OFF"
 toggleNameLabel.Transparency = 1
 
 local toggleNameButton = Instance.new("TextButton", frame)
@@ -1062,6 +1086,9 @@ togglePage1button.MouseButton1Click:Connect(function()
 	toggleFLabel.Transparency = 1
 	toggleFButton.Transparency = 1
 	toggleFButton.Interactable = false
+	toggleHidePlayersButton.Transparency = 0
+	toggleHidePlayersButton.Interactable = true
+	toggleHidePlayersLabel.TextTransparency = 0
 end)
 
 togglePage2button.MouseButton1Click:Connect(function()
@@ -1114,6 +1141,9 @@ togglePage2button.MouseButton1Click:Connect(function()
 	toggleFLabel.Transparency = 1
 	toggleFButton.Transparency = 1
 	toggleFButton.Interactable = false
+	toggleHidePlayersButton.Transparency = 1
+	toggleHidePlayersButton.Interactable = false
+	toggleHidePlayersLabel.Transparency = 1
 end)
 
 togglePage3button.MouseButton1Click:Connect(function()
@@ -1166,6 +1196,9 @@ togglePage3button.MouseButton1Click:Connect(function()
 	toggleFLabel.Transparency = 1
 	toggleFButton.Transparency = 1
 	toggleFButton.Interactable = false
+	toggleHidePlayersButton.Transparency = 1
+	toggleHidePlayersButton.Interactable = false
+	toggleHidePlayersLabel.Transparency = 1
 end)
 
 togglePage4button.MouseButton1Click:Connect(function()
@@ -1218,16 +1251,21 @@ togglePage4button.MouseButton1Click:Connect(function()
 	toggleFLabel.TextTransparency = 0
 	toggleFButton.Transparency = 0
 	toggleFButton.Interactable = true
+	toggleHidePlayersButton.Transparency = 1
+	toggleHidePlayersButton.Interactable = false
+	toggleHidePlayersLabel.Transparency = 1
 end)
+
+
 
 toggleNameButton.MouseButton1Click:Connect(function()
 	if nameHighlightEnabled then
 		disableNameTags()
-		toggleNameLabel.Text = "personage highlight: OFF"
+		toggleNameLabel.Text = "nickname highlight: OFF"
 		toggleNameButton.Text = "ON"
 	else
 		enableNameTags()
-		toggleNameLabel.Text = "personage highlight: ON"
+		toggleNameLabel.Text = "nickname highlight: ON"
 		toggleNameButton.Text = "OFF"
 	end
 end)
@@ -1423,5 +1461,143 @@ end)
 UserInputService.InputChanged:Connect(function(input)
 	if dragging and input == dragInput then
 		update(input.Position)
+	end
+end)
+
+local function togglePlayerVisibility(player, hide)
+	local character = player.Character
+	if not character then return end
+
+	if hide then
+		if not originalProperties[player] then
+			originalProperties[player] = {}
+		end
+
+		local parts = {}
+		for _, descendant in pairs(character:GetDescendants()) do
+			if descendant:IsA("BasePart") then
+				table.insert(parts, descendant)
+			end
+		end
+
+		for _, part in pairs(parts) do
+			if not originalProperties[player][part] then
+				originalProperties[player][part] = {
+					Transparency = part.Transparency,
+					CanCollide = part.CanCollide,
+					Anchored = part.Anchored
+				}
+			end
+
+			part.Transparency = 1
+			part.CanCollide = false
+		end
+
+		local humanoid = character:FindFirstChildOfClass("Humanoid")
+		if humanoid then
+			humanoid.DisplayDistanceType = Enum.HumanoidDisplayDistanceType.None
+		end
+
+		hiddenPlayers[player] = true
+
+	else
+		if originalProperties[player] then
+			for part, properties in pairs(originalProperties[player]) do
+				if part and part.Parent then
+					part.Transparency = properties.Transparency
+					part.CanCollide = properties.CanCollide
+					part.Anchored = properties.Anchored
+				end
+			end
+		end
+
+		local humanoid = character:FindFirstChildOfClass("Humanoid")
+		if humanoid then
+			humanoid.DisplayDistanceType = Enum.HumanoidDisplayDistanceType.Viewer
+		end
+
+		hiddenPlayers[player] = nil
+		originalProperties[player] = nil
+	end
+end
+
+local function onCharacterAdded(player, character)
+	if player == localPlayer then return end
+
+	if isHidden then
+		character:WaitForChild("HumanoidRootPart")
+		task.wait(0.5)
+		togglePlayerVisibility(player, true)
+	end
+end
+
+local function updateClientsHide()
+	for _, player in pairs(players:GetPlayers()) do
+		if player ~= localPlayer then
+			local character = player.Character
+			if character then
+				togglePlayerVisibility(player, isHidden)
+			end
+		end
+	end
+end
+
+local function toggleClientsHide()
+	isHidden = not isHidden
+
+	if isHidden then
+
+		updateClientsHide()
+
+		for _, player in pairs(players:GetPlayers()) do
+			if player ~= localPlayer then
+				player.CharacterAdded:Connect(function(character)
+					onCharacterAdded(player, character)
+				end)
+			end
+		end
+
+	else
+		for player, _ in pairs(hiddenPlayers) do
+			togglePlayerVisibility(player, false)
+		end
+
+		hiddenPlayers = {}
+		originalProperties = {}
+	end
+end
+
+local function initialize()
+	for _, player in pairs(players:GetPlayers()) do
+		if player ~= localPlayer and player.Character then
+			onCharacterAdded(player, player.Character)
+		end
+	end
+
+	-- Подписываемся на новых игроков
+	players.PlayerAdded:Connect(function(player)
+		player.CharacterAdded:Connect(function(character)
+			onCharacterAdded(player, character)
+		end)
+	end)
+
+	localPlayer.CharacterAdded:Connect(function(character)
+		if isHidden then
+			task.wait(1)
+			updateClientsHide()
+		end
+	end)
+end
+
+initialize()
+
+toggleHidePlayersButton.MouseButton1Click:Connect(function()
+	toggleClientsHide()
+	if isHidden then
+		toggleHidePlayersLabel.Text = "hide players: ON"
+		toggleHidePlayersButton.Text = "OFF"
+	else
+		toggleHidePlayersLabel.Text = "hide players: OFF"
+		toggleHidePlayersButton.Text = "ON"
 	end
 end)
