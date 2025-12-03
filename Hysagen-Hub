@@ -12,7 +12,10 @@ local nameTags = {}
 local UserInputService = game:GetService("UserInputService")
 local RunService = game:GetService("RunService")
 local Workspace = game:GetService("Workspace")
-local density = game.Lighting:FindFirstChild("Atmosphere"):FindFirstChild("Density")
+local density = 0
+if game.Lighting:FindFirstChild("Atmosphere") then
+	density = game.Lighting:FindFirstChild("Atmosphere"):FindFirstChild("Density")
+end 
 local shsoftness = game.Lighting.ShadowSoftness
 local isHidden = false
 local hiddenPlayers = {}
